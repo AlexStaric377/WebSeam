@@ -1,0 +1,51 @@
+body {
+    background: #fff;
+}
+
+.container-fluid {
+  display: flex; /* or inline-flex */
+}
+
+.container-fluid {
+  flex-direction: row;
+}
+
+.container-fluid {
+  flex-wrap: wrap;
+}
+
+.container-fluid {
+  flex-flow: column wrap;
+}
+
+.container-fluid {
+  justify-content: left + safe;
+}
+
+div.parent {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+main .nav-item {
+    float: left;
+}
+
+main .features {
+    float: left;
+    color: #2c2c2c;
+    margin-top: 100px;
+    text-align: center;
+    width: auto;
+}
+
+main .features h1 {font-size: 35px;}
+main .features p {
+    max-width: 1000px;
+    margin: 20px;
+    auto
+}
+
+
+
+
