@@ -21,6 +21,9 @@ def index(request):  # httpRequest
     return render(request, 'diagnoz/index.html')
 
 
+def glavmeny(request):
+    return render(request, 'diagnoz/glavmeny.html')
+
 def reception(request):  # httpRequest
     return render(request, 'diagnoz/reception.html')
 

@@ -1,5 +1,4 @@
 from django.urls import include
-from django.urls import include
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -30,11 +29,10 @@ urlpatterns = [
     path('likarlibdiagnoz', views.likarlibdiagnoz, name='likarlibdiagnoz'),
     path('adminlanguage', views.adminlanguage, name='adminlanguage'),
     path('contentinterwiev', views.contentinterwiev, name='contentinterwiev'),
-    #    path('nextfeature', views.nextfeature,  name='nextfeature'),
     path('featurespisok/<str:featurespisok_keyComplaint> <str:featurespisok_keyFeature> ', views.featurespisok,
          name='featurespisok'),
     path('nextfeature/<str:nextfeature_keyComplaint> <str:nextfeature_name>', views.nextfeature, name='nextfeature'),
-
+    path('glavmeny', views.glavmeny, name='glavmeny'),
 ]
 
 urlpatterns += [
