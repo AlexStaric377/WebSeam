@@ -1,18 +1,21 @@
-from django.contrib.auth.models import User
+from django.urls import include
 from django.urls import include
 from django.urls import path
-from rest_framework import routers, serializers, viewsets
+from rest_framework.urlpatterns import format_suffix_patterns
 
-from . import views
+from diagnoz import views
+
+urls_api = r'http GET http://192.168.1.113:50001/api/ApiControllerComplaint/ Accept:application/json'
+urls_api_pk = r'http GET http://192.168.1.113:50001/api/ApiControllerComplaint/A.007/0/ Accept:application/json'
 
 urlpatterns = [
+
     path('', views.index, name='home'),
-    path('api-auth/', include('rest_framework.urls')),
     path('reception', views.reception, name='reception'),
     path('pacient', views.pacient, name='pacient'),
     path('likar', views.likar, name='likar'),
-    path('admin', views.admin, name='admin'),
-    path('receptinterwiev', views.receptinterwiev, name='receptinterwiev'),
+    path('setings', views.setings, name='setings'),
+    path('receptinterwiev', views.InterwievListview.as_view(), name='receptinterwiev'),
     path('pacientprofil', views.pacientprofil, name='pacientprofil'),
     path('pacientinterwiev', views.pacientinterwiev, name='pacientinterwiev'),
     path('pacientlistinterwiev', views.pacientlistinterwiev, name='pacientlistinterwiev'),
@@ -26,31 +29,19 @@ urlpatterns = [
     path('likarworkdiagnoz', views.likarworkdiagnoz, name='likarworkdiagnoz'),
     path('likarlibdiagnoz', views.likarlibdiagnoz, name='likarlibdiagnoz'),
     path('adminlanguage', views.adminlanguage, name='adminlanguage'),
-    path('contentinterwiev', views.contentinterwiev, name='contentinterwiev')
+    path('contentinterwiev', views.contentinterwiev, name='contentinterwiev'),
+    #    path('nextfeature', views.nextfeature,  name='nextfeature'),
+    path('featurespisok/<str:featurespisok_keyComplaint> <str:featurespisok_keyFeature> ', views.featurespisok,
+         name='featurespisok'),
+    path('nextfeature/<str:nextfeature_keyComplaint> <str:nextfeature_name>', views.nextfeature, name='nextfeature'),
 
 ]
 
-
-# Serializers define the API representation.
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'username', 'email', 'is_staff']
-
-
-# ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-# Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns += [
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path("api-auth/", include('rest_framework.urls', namespace="rest_framework")),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
+
+# http GET http://192.168.1.113:50001/api/ApiControllerComplaint/
+# http GET http://192.168.1.113:50001/api/ApiControllerComplaint/ Accept:application/json

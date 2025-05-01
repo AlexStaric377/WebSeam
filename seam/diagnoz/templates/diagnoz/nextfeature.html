@@ -10,23 +10,21 @@
         <ul class="navbar-nav mr-auto flex-column">
             <li class="nav-item active">
                 <a aria-current="page" class="nav-link" href="{% url 'contentinterwiev' %}"><font
-                        style="vertical-align: inherit;">Зміст опитування</font></a>
+                        style="vertical-align: inherit;"><font style="vertical-align: inherit;">Зміст опитування</font></font></a>
             </li>
         </ul>
     </div>
 </nav>
 <div class="container-fluid">
-    <h5> Оберіть де вас турбує нездужання </h5>
-    {% block list %}
-    {% for item in complaintlist %}
+    <h5> {{ compl }} </h5>
+    {% block featurelist %}
+    {% for item in featurelist %}
+    <a aria-current="page" class="nav-link" href="{% url 'featurespisok' item.keyComplaint item.keyFeature  %}"><font
+            style="vertical-align: inherit;">{{item.name}}</font></a>
 
-    <a aria-current="page" class="nav-link" href="{% url 'nextfeature' item.keyComplaint item.name %}"><font
-            style="vertical-align: inherit;"> {{ item.name }} </font>
-    </a>
     {% endfor %}
     {% endblock %}
 
 </div>
 
 {% endblock %}
-

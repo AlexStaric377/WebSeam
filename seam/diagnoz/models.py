@@ -1,16 +1,27 @@
 from django.db import models
-from pygments.lexers import get_all_lexers
-from pygments.styles import get_all_styles
 
-LEXERS = [item for item in get_all_lexers() if item[1]]
-LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
-STYLE_CHOICES = sorted([(item, item) for item in get_all_styles()])
 
 
 class Complaint(models.Model):
-    KeyComplaint = models.TextField()
-    Name = models.TextField()
-    IdUser = models.CharField(max_length=100, default='')
+    KeyComplaint = models.TextField('Код нездужання')
+    Name = models.TextField('Нездужання')
+    IdUser = models.CharField('код користувача', max_length=100, default='')
+
+    def __str__(self):
+        return self.KeyComplaint, self.Name
 
     class Meta:
-        ordering = ['created']
+        ordering = ['KeyComplaint']
+
+
+class Feature(models.Model):
+    KeyComplaint = models.TextField('Код нездужання')
+    KeyFeature = models.TextField('Код характера нездужання ')
+    Name = models.TextField('назва характера нездужання ')
+    IdUser = models.CharField('код користувача', max_length=100, default='')
+
+    class Meta:
+        ordering = ['KeyComplaint']
+
+    def __str__(self):
+        return self.KeyComplaint, self.KeyFeature, self.Name
