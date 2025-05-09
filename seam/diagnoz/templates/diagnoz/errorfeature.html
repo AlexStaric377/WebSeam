@@ -17,19 +17,11 @@
 </nav>
 <div class="container-fluid">
     <h5> {{ compl }} </h5>
-    {% block featurelist %}
-    {% for item in featurelist %}
-    <a aria-current="page" class="nav-link"
-       href="{% url 'featurespisok' item.keyComplaint item.keyFeature item.name %}"><font
-            style="vertical-align: inherit;">{{item.name}}</font></a>
-
-    {% endfor %}
+    {% block detalinglist %}
+    <p>За результатами вибору на цей час комбінація симптомів не сприяє визначенню діагнозу</p>
     {% endblock %}
-</div>
-{% endblock %}
-<div style="display: inline-block">
-    <p></p>
     <a class="text-decoration-none text-reset" href="{% url 'receptinterwiev' %}">
         <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20">' '</a>
-    <a aria-current="page" class="text-decoration-none text-reset" href="{% url 'nextgrdetaling' %}">{{next}}</a>
 </div>
+
+{% endblock %}
