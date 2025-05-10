@@ -22,3 +22,5 @@ strokagrdetaling = ""
 diagnozStroka = []
 kodProtokola = ""
 nametInterview = ""
+icddiagnoz = ""
+grupDiagnoz = []

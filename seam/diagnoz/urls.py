@@ -47,6 +47,9 @@ urlpatterns = [
     path('receptprofillikar', views.receptprofillikar, name='receptprofillikar'),
     path('savediagnoz', views.savediagnoz, name='savediagnoz'),
     path('backdiagnoz', views.backdiagnoz, name='backdiagnoz'),
+    path('receptprofillmedzaklad', views.receptprofillmedzaklad, name='receptprofillmedzaklad'),
+    path('selectdprofillikar/<str:selected_edrpou>', views.selectdprofillikar, name='selectdprofillikar'),
+    path('inputprofilpacient/<str:selected_doctor>', views.inputprofilpacient, name='inputprofilpacient'),
 
 ]
 

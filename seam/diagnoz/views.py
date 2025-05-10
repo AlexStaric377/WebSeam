@@ -302,6 +302,8 @@ def writediagnoz(select_kodProtokola, select_nametInterview):
     for item in settingsvar.diagnozStroka:
         if select_kodProtokola == item['kodProtokola']:
             api = rest_api('/api/DependencyDiagnozController/' + "0/" + item['kodProtokola'] + "/0")
+            apiicd = rest_api('/api/DiagnozController/' + api['kodDiagnoz'] + "/0/0")
+            settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
             api = rest_api('/api/RecommendationController/' + api['kodRecommend'] + "/0")
             settingsvar.html = 'diagnoz/versiyadiagnoza.html'
             settingsvar.nextstepdata = {
@@ -351,6 +353,55 @@ def backdiagnoz(request):
 
 
 #  --- Кінець блоку  опитування
+
+# --- Блок вибору медзакладу та профільного лікаря
+
+def receptprofillmedzaklad(request):
+    grupmedzaklad = []
+
+    settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" + settingsvar.icddiagnoz)
+    for item in settingsvar.grupDiagnoz:
+        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0')
+        grupmedzaklad.append(medzaklad)
+
+    html = 'diagnoz/receptionprofilzaklad.html'
+    data = {
+        'compl': 'Перелік профільних медзакладів',
+        'detalinglist': grupmedzaklad
+    }
+    return render(request, html, context=data)
+
+
+def selectdprofillikar(request, selected_edrpou):
+    gruplikar = []
+    Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_edrpou + "/0")
+    for item in Grupproflikar:
+        likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0')
+        for icdgrdiagnoz in settingsvar.grupDiagnoz:
+            for likargrdz in likarGrupDiagnoz:
+                if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_edrpou in icdgrdiagnoz[
+                    'edrpou']:
+                    gruplikar.append(item)
+
+    html = 'diagnoz/selectedprofillikar.html'
+    data = {
+        'compl': 'Перелік профільних лікарів',
+        'detalinglist': gruplikar
+    }
+    return render(request, html, context=data)
+
+
+def inputprofilpacient(request, selected_doctor):
+    html = 'diagnoz/profilpacent.html'
+    data = {
+        'compl': 'Перелік профільних лікарів',
+        'detalinglist': gruplikar
+    }
+
+    return render(request, html)
+
+
+# --- кінець блоку
 # ----Пациент
 
 def receptfamilylikar(request):

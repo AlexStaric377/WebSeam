@@ -18,7 +18,11 @@
 <div class="container-fluid">
     <h5> {{ compl }} </h5>
     {% block detalinglist %}
-
+    {% for item in detalinglist %}
+    <a aria-current="page" class="nav-link"
+       href="{% url 'inputprofilpacient' item.kodDoctor  %}"><font style="vertical-align: inherit;">
+        {{item.name}} {{item.surname}} {{item.specialnoct}} {{item.telefon}}</font></a>
+    {% endfor %}
     {% endblock %}
     <a href="{% url 'reception' %}">Далі</a>
 </div>
