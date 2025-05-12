@@ -149,27 +149,35 @@ def nextstepgrdetaling():
                 set = ""
 
                 if itemkeyfeature['keyGrDetailing'] != None:
-                    settingsvar.detalingname.append(itemkeyfeature['nameDetailing'])
-                    if itemkeyfeature['keyFeature'] in settingsvar.strokagrdetaling:
-                        if itemkeyfeature['keyGrDetailing'] not in settingsvar.strokagrdetaling:
-                            set = settingsvar.strokagrdetaling + itemkeyfeature['keyGrDetailing'] + ";"
-                    else:
-                        set = settingsvar.strokagrdetaling + itemkeyfeature['keyFeature'] + ";" + itemkeyfeature[
-                            'keyGrDetailing'] + ";"
-                    if len(set) != 0:
-                        CmdStroka = rest_api('/api/InterviewController/' + "0/0/0/0/" + set)
-                        if len(CmdStroka) > 0:
-                            settingsvar.strokagrdetaling = set
-                            settingsvar.spisokGrDetailing.append(itemkeyfeature['keyGrDetailing'])
-                            settingsvar.strokainterview = []
-                            for itemgrDetail in CmdStroka:
-                                settingsvar.strokainterview.append(itemgrDetail['grDetail'])
-
+                    if len(itemkeyfeature['keyGrDetailing']) > 5:
+                        settingsvar.detalingname.append(itemkeyfeature['nameDetailing'])
+                        if itemkeyfeature['keyFeature'] in settingsvar.strokagrdetaling:
+                            if itemkeyfeature['keyGrDetailing'] not in settingsvar.strokagrdetaling:
+                                set = settingsvar.strokagrdetaling + itemkeyfeature['keyGrDetailing'] + ";"
                         else:
-                            for itemgrDetail in settingsvar.strokainterview:
-                                if itemkeyfeature['keyGrDetailing'] + ";" in itemgrDetail:
-                                    settingsvar.strokagrdetaling = set
-                                    settingsvar.spisokGrDetailing.append(itemkeyfeature['keyGrDetailing'])
+                            set = settingsvar.strokagrdetaling + itemkeyfeature['keyFeature'] + ";" + itemkeyfeature[
+                            'keyGrDetailing'] + ";"
+                        if len(set) != 0:
+                            CmdStroka = rest_api('/api/InterviewController/' + "0/0/0/0/" + set)
+                            if len(CmdStroka) > 0:
+                                settingsvar.strokagrdetaling = set
+                                settingsvar.spisokGrDetailing.append(itemkeyfeature['keyGrDetailing'])
+                                settingsvar.strokainterview = []
+                                for itemgrDetail in CmdStroka:
+                                    settingsvar.strokainterview.append(itemgrDetail['grDetail'])
+
+                            else:
+                                for itemgrDetail in settingsvar.strokainterview:
+                                    if itemkeyfeature['keyGrDetailing'] + ";" in itemgrDetail:
+                                        if itemkeyfeature['keyGrDetailing'] not in settingsvar.strokagrdetaling:
+                                            settingsvar.strokagrdetaling = set
+                                            settingsvar.spisokGrDetailing.append(itemkeyfeature['keyGrDetailing'])
+                                            break
+                    else:
+                        settingsvar.spisoklistdetaling.append(itemkeyfeature)
+                        if itemkeyfeature['keyFeature'] not in settingsvar.strokagrdetaling:
+                            settingsvar.strokagrdetaling = settingsvar.strokagrdetaling + itemkeyfeature[
+                                'keyFeature'] + ";"
                 else:
                     settingsvar.spisoklistdetaling.append(itemkeyfeature)
                     if itemkeyfeature['keyFeature'] not in settingsvar.strokagrdetaling:
@@ -177,6 +185,7 @@ def nextstepgrdetaling():
             if len(settingsvar.spisoklistdetaling) > 0:
                 enddetaling = 'enddetaling'
                 settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
+                settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
                 settingsvar.nextstepdata = {
                     'nextdetali': enddetaling,
                     'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name,
@@ -191,16 +200,17 @@ def nextstepgrdetaling():
                 for itemgrdetaling in settingsvar.spisokGrDetailing:
                     settingsvar.rest_apiGrDetaling = rest_api(
                         '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/")
+                    settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
                     settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
+                    settingsvar.itemdetalingname = settingsvar.detalingname[0]
                     settingsvar.nextstepdata = {
-                        'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " +
-                                 settingsvar.detalingname[0],
+                        'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " + settingsvar.itemdetalingname,
                         'next': '  Далі ',
                         'detalinglist': settingsvar.rest_apiGrDetaling
                     }
                     settingsvar.html = 'diagnoz/grdetaling.html'
-                    del settingsvar.spisokkeyfeature[0]
-                    #                    if len(settingsvar.spisokGrDetailing)==1: del settingsvar.spisoknamefeature[0]
+                    del settingsvar.spisokGrDetailing[0]
+                    del settingsvar.detalingname[0]
                     return
             else:
                 del settingsvar.spisokkeyfeature[0]
@@ -244,8 +254,8 @@ def selectdetaling(request, select_kodDetailing, select_nameDetailing):
                 del settingsvar.spisoklistdetaling[index]
 
             index = index + 1
-            enddetaling = 'enddetaling'
-            data = {
+        enddetaling = 'enddetaling'
+        data = {
                 'nextdetali': enddetaling,
                 'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name,
                 'next': '  Далі ',
@@ -269,15 +279,14 @@ def selectgrdetaling(request, select_kodDetailing, select_nameGrDetailing):
                 del settingsvar.rest_apiGrDetaling[index]
 
                 data = {
-                    'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " +
-                             settingsvar.detalingname[0],
+                    'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " + settingsvar.itemdetalingname,
                     'next': '  Далі ',
                     'detalinglist': settingsvar.rest_apiGrDetaling
                 }
                 return render(request, 'diagnoz/grdetaling.html', context=data)
             index = index + 1
-    del settingsvar.detalingname[0]
-    del settingsvar.spisoknamefeature[0]
+
+    if len(settingsvar.spisokGrDetailing) == 0: del settingsvar.spisokkeyfeature[0]
     return render(request, 'diagnoz/errorfeature.html')
 
 
@@ -285,7 +294,7 @@ def selectgrdetaling(request, select_kodDetailing, select_nameGrDetailing):
 def enddetaling(request):
     if len(settingsvar.spisokkeyfeature) > 0:
         if (settingsvar.viewdetaling == False and len(settingsvar.spisoklistdetaling) > 0):
-
+            settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
             data = {
                 'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name,
                 'next': '  Далі ',
@@ -297,21 +306,25 @@ def enddetaling(request):
             return render(request, 'diagnoz/detaling.html', context=data)
         else:
             settingsvar.spisoklistdetaling = []
-        #            del settingsvar.spisoknamefeature[0]
+
         if len(settingsvar.spisokGrDetailing) > 0:
-            del settingsvar.spisokGrDetailing[0]
-            if len(settingsvar.spisokGrDetailing) == 0: del settingsvar.spisoknamefeature[0]
             for itemgrdetaling in settingsvar.spisokGrDetailing:
+                settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
                 settingsvar.rest_apiGrDetaling = rest_api('/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/")
+                settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 data = {
-                    'compl': settingsvar.feature_name + ", " + settingsvar.spisoknamefeature[0] + ", " +
-                             settingsvar.detalingname[0],
+                    'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " + settingsvar.itemdetalingname,
                     'next': '  Далі ',
                     'detalinglist': settingsvar.rest_apiGrDetaling
                 }
-                #                    del settingsvar.spisokGrDetailing[itemgrdetaling]
-                return render(request, 'diagnoz/grdetaling.html', context=data)
+                del settingsvar.detalingname[0]
+                del settingsvar.spisokGrDetailing[0]
 
+                return render(request, 'diagnoz/grdetaling.html', context=data)
+        else:
+            if (settingsvar.itemkeyfeature == settingsvar.spisokkeyfeature[0]):
+                del settingsvar.spisokkeyfeature[0]
+                del settingsvar.spisoknamefeature[0]
         if len(settingsvar.spisokkeyfeature) > 0:
             nextstepgrdetaling()
             if len(settingsvar.spisokkeyfeature) == 0 and len(settingsvar.spisoklistdetaling) == 0 and len(

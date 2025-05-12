@@ -27,3 +27,5 @@ kodProtokola = ""
 nametInterview = ""
 icddiagnoz = ""
 grupDiagnoz = []
+itemdetalingname = ""
+itemkeyfeature = ""
