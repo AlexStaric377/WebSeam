@@ -138,6 +138,7 @@ def nextgrdetaling(request):
 
 # --- функция распределения списков симптомов по локальным и групповым
 def nextstepgrdetaling():
+    settingsvar.detalingname = []
     settingsvar.listdetaling = {}
     settingsvar.spisokselectDetailing = []
     settingsvar.spisokGrDetailing = []
@@ -146,7 +147,9 @@ def nextstepgrdetaling():
             listkeyfeature = rest_api('api/DetailingController/' + "0/" + keyfeature + "/0/")
             for itemkeyfeature in listkeyfeature:
                 set = ""
+
                 if itemkeyfeature['keyGrDetailing'] != None:
+                    settingsvar.detalingname.append(itemkeyfeature['nameDetailing'])
                     if itemkeyfeature['keyFeature'] in settingsvar.strokagrdetaling:
                         if itemkeyfeature['keyGrDetailing'] not in settingsvar.strokagrdetaling:
                             set = settingsvar.strokagrdetaling + itemkeyfeature['keyGrDetailing'] + ";"
@@ -158,31 +161,46 @@ def nextstepgrdetaling():
                         if len(CmdStroka) > 0:
                             settingsvar.strokagrdetaling = set
                             settingsvar.spisokGrDetailing.append(itemkeyfeature['keyGrDetailing'])
+                            settingsvar.strokainterview = []
+                            for itemgrDetail in CmdStroka:
+                                settingsvar.strokainterview.append(itemgrDetail['grDetail'])
+
+                        else:
+                            for itemgrDetail in settingsvar.strokainterview:
+                                if itemkeyfeature['keyGrDetailing'] + ";" in itemgrDetail:
+                                    settingsvar.strokagrdetaling = set
+                                    settingsvar.spisokGrDetailing.append(itemkeyfeature['keyGrDetailing'])
                 else:
                     settingsvar.spisoklistdetaling.append(itemkeyfeature)
+                    if itemkeyfeature['keyFeature'] not in settingsvar.strokagrdetaling:
+                        settingsvar.strokagrdetaling = settingsvar.strokagrdetaling + itemkeyfeature['keyFeature'] + ";"
             if len(settingsvar.spisoklistdetaling) > 0:
                 enddetaling = 'enddetaling'
-                listdetaling = settingsvar.spisoklistdetaling
+                settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
                 settingsvar.nextstepdata = {
                     'nextdetali': enddetaling,
-                    'compl': settingsvar.feature_name,
+                    'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name,
                     'next': '  Далі ',
                     'detalinglist': settingsvar.spisoklistdetaling
                 }
                 settingsvar.html = 'diagnoz/detaling.html'
                 del settingsvar.spisokkeyfeature[0]
+                del settingsvar.spisoknamefeature[0]
                 return
             if len(settingsvar.spisokGrDetailing) > 0:
                 for itemgrdetaling in settingsvar.spisokGrDetailing:
                     settingsvar.rest_apiGrDetaling = rest_api(
                         '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/")
+                    settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
                     settingsvar.nextstepdata = {
-                        'compl': settingsvar.feature_name,
+                        'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " +
+                                 settingsvar.detalingname[0],
                         'next': '  Далі ',
                         'detalinglist': settingsvar.rest_apiGrDetaling
                     }
                     settingsvar.html = 'diagnoz/grdetaling.html'
                     del settingsvar.spisokkeyfeature[0]
+                    #                    if len(settingsvar.spisokGrDetailing)==1: del settingsvar.spisoknamefeature[0]
                     return
             else:
                 del settingsvar.spisokkeyfeature[0]
@@ -224,11 +242,12 @@ def selectdetaling(request, select_kodDetailing, select_nameDetailing):
             settingsvar.DiagnozRecomendaciya = lstDiagnoz
             if select_kodDetailing == item['kodDetailing']:
                 del settingsvar.spisoklistdetaling[index]
+
             index = index + 1
             enddetaling = 'enddetaling'
             data = {
                 'nextdetali': enddetaling,
-                'compl': settingsvar.feature_name + ', Деталізація характеру',
+                'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name,
                 'next': '  Далі ',
                 'detalinglist': settingsvar.spisoklistdetaling
             }
@@ -248,13 +267,17 @@ def selectgrdetaling(request, select_kodDetailing, select_nameGrDetailing):
         for item in settingsvar.rest_apiGrDetaling:
             if select_kodDetailing == item['kodDetailing']:
                 del settingsvar.rest_apiGrDetaling[index]
+
                 data = {
-                    'compl': settingsvar.feature_name + ', Деталізація характеру',
+                    'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " +
+                             settingsvar.detalingname[0],
                     'next': '  Далі ',
                     'detalinglist': settingsvar.rest_apiGrDetaling
                 }
                 return render(request, 'diagnoz/grdetaling.html', context=data)
             index = index + 1
+    del settingsvar.detalingname[0]
+    del settingsvar.spisoknamefeature[0]
     return render(request, 'diagnoz/errorfeature.html')
 
 
@@ -262,24 +285,27 @@ def selectgrdetaling(request, select_kodDetailing, select_nameGrDetailing):
 def enddetaling(request):
     if len(settingsvar.spisokkeyfeature) > 0:
         if (settingsvar.viewdetaling == False and len(settingsvar.spisoklistdetaling) > 0):
-            listdetaling = settingsvar.spisoklistdetaling
+
             data = {
-                'compl': settingsvar.feature_name + ', Деталізація характеру',
+                'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name,
                 'next': '  Далі ',
-                'detalinglist': listdetaling
+                'detalinglist': settingsvar.spisoklistdetaling
             }
             settingsvar.viewdetaling = True
             del settingsvar.spisokkeyfeature[0]
+            del settingsvar.spisoknamefeature[0]
             return render(request, 'diagnoz/detaling.html', context=data)
         else:
             settingsvar.spisoklistdetaling = []
-
+        #            del settingsvar.spisoknamefeature[0]
         if len(settingsvar.spisokGrDetailing) > 0:
             del settingsvar.spisokGrDetailing[0]
+            if len(settingsvar.spisokGrDetailing) == 0: del settingsvar.spisoknamefeature[0]
             for itemgrdetaling in settingsvar.spisokGrDetailing:
                 settingsvar.rest_apiGrDetaling = rest_api('/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/")
                 data = {
-                    'compl': settingsvar.feature_name + ', Деталізація характеру',
+                    'compl': settingsvar.feature_name + ", " + settingsvar.spisoknamefeature[0] + ", " +
+                             settingsvar.detalingname[0],
                     'next': '  Далі ',
                     'detalinglist': settingsvar.rest_apiGrDetaling
                 }
@@ -355,14 +381,14 @@ def backdiagnoz(request):
 #  --- Кінець блоку  опитування
 
 # --- Блок вибору медзакладу та профільного лікаря
-
+# --- вибір профільного медзакладу
 def receptprofillmedzaklad(request):
     grupmedzaklad = []
 
     settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" + settingsvar.icddiagnoz)
     for item in settingsvar.grupDiagnoz:
         medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0')
-        grupmedzaklad.append(medzaklad)
+        if ('5' in medzaklad['idStatus']): grupmedzaklad.append(medzaklad)
 
     html = 'diagnoz/receptionprofilzaklad.html'
     data = {
@@ -372,6 +398,7 @@ def receptprofillmedzaklad(request):
     return render(request, html, context=data)
 
 
+# --- Вибір лікаря у профільному мед закладі
 def selectdprofillikar(request, selected_edrpou):
     gruplikar = []
     Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_edrpou + "/0")
@@ -391,6 +418,7 @@ def selectdprofillikar(request, selected_edrpou):
     return render(request, html, context=data)
 
 
+# --- введення профілю пацієнта для запису на прийом до лікаря
 def inputprofilpacient(request, selected_doctor):
     html = 'diagnoz/profilpacent.html'
     data = {

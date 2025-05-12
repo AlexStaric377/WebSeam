@@ -1,5 +1,7 @@
 # Глобальні перемінні
 feature_name = ""
+detaling_feature_name = ""
+detalingname = []
 spisokkeyfeature = []
 spisoknamefeature = []
 listfeature = {}
@@ -19,6 +21,7 @@ nextstepdata = {}
 spisokkeyinterview = []
 spisoknameinterview = []
 strokagrdetaling = ""
+strokainterview = []
 diagnozStroka = []
 kodProtokola = ""
 nametInterview = ""
