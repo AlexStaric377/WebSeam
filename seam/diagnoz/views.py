@@ -276,18 +276,18 @@ def selectgrdetaling(request, select_kodDetailing, select_nameGrDetailing):
     if len(settingsvar.rest_apiGrDetaling) > 0:
         for item in settingsvar.rest_apiGrDetaling:
             if select_kodDetailing == item['kodDetailing']:
-                del settingsvar.rest_apiGrDetaling[index]
+
 
                 data = {
                     'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " + settingsvar.itemdetalingname,
                     'next': '  Далі ',
                     'detalinglist': settingsvar.rest_apiGrDetaling
                 }
+                del settingsvar.rest_apiGrDetaling[index]
                 return render(request, 'diagnoz/grdetaling.html', context=data)
             index = index + 1
 
-    if len(settingsvar.spisokGrDetailing) == 0: del settingsvar.spisokkeyfeature[0]
-    return render(request, 'diagnoz/errorfeature.html')
+    return render(request, 'diagnoz/grdetaling.html', context=data)
 
 
 # --- кінець інтервью, пошук та виведення  попереднього діагнозу
@@ -330,6 +330,8 @@ def enddetaling(request):
             if len(settingsvar.spisokkeyfeature) == 0 and len(settingsvar.spisoklistdetaling) == 0 and len(
                     settingsvar.spisokGrDetailing) == 0:
                 diagnoz()
+        else:
+            diagnoz()
     else:
         diagnoz()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -401,8 +403,11 @@ def receptprofillmedzaklad(request):
     settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" + settingsvar.icddiagnoz)
     for item in settingsvar.grupDiagnoz:
         medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0')
-        if ('5' in medzaklad['idStatus']): grupmedzaklad.append(medzaklad)
-
+        if ('5' in medzaklad['idStatus']):
+            if len(grupmedzaklad) == 0: grupmedzaklad.append(medzaklad)
+            for itemmedzaklad in grupmedzaklad:
+                if medzaklad['edrpou'] not in itemmedzaklad['edrpou']:
+                    grupmedzaklad.append(medzaklad)
     html = 'diagnoz/receptionprofilzaklad.html'
     data = {
         'compl': 'Перелік профільних медзакладів',
@@ -422,6 +427,8 @@ def selectdprofillikar(request, selected_edrpou):
                 if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_edrpou in icdgrdiagnoz[
                     'edrpou']:
                     gruplikar.append(item)
+                    break
+            break
 
     html = 'diagnoz/selectedprofillikar.html'
     data = {

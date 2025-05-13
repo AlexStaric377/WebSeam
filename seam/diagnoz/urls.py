@@ -33,7 +33,7 @@ urlpatterns = [
         'featurespisok/<str:featurespisok_keyComplaint>,  <str:featurespisok_keyFeature>,  <str:featurespisok_nameFeature>',
         views.featurespisok,
          name='featurespisok'),
-    path('nextfeature/<str:nextfeature_keyComplaint>, <str:nextfeature_name>', views.nextfeature, name='nextfeature'),
+    path('nextfeature/<str:nextfeature_keyComplaint>,  <str:nextfeature_name>', views.nextfeature, name='nextfeature'),
     path('glavmeny', views.glavmeny, name='glavmeny'),
     path('nextgrdetaling', views.nextgrdetaling, name='nextgrdetaling'),
     path('enddetaling', views.enddetaling, name='enddetaling'),
