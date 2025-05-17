@@ -20,7 +20,7 @@
     {% block detalinglist %}
     {% for item in detalinglist %}
     <a aria-current="page" class="nav-link"
-       href="{% url 'selectdprofillikar' item.edrpou %}"><font style="vertical-align: inherit;">{{item.name}}</font></a>
+       href="{% url 'selectdprofillikar' item.edrpou  item.idStatus %}"><font style="vertical-align: inherit;">{{item.name}}</font></a>
     {% endfor %}
     {% endblock %}
     <a href="{% url 'reception' %}">Далі</a>

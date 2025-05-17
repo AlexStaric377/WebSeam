@@ -397,38 +397,63 @@ def backdiagnoz(request):
 
 # --- Блок вибору медзакладу та профільного лікаря
 # --- вибір профільного медзакладу
-def receptprofillmedzaklad(request):
-    grupmedzaklad = []
 
-    settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" + settingsvar.icddiagnoz)
-    for item in settingsvar.grupDiagnoz:
-        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0')
-        if ('5' in medzaklad['idStatus']):
-            if len(grupmedzaklad) == 0: grupmedzaklad.append(medzaklad)
-            for itemmedzaklad in grupmedzaklad:
-                if medzaklad['edrpou'] not in itemmedzaklad['edrpou']:
-                    grupmedzaklad.append(medzaklad)
-    html = 'diagnoz/receptionprofilzaklad.html'
-    data = {
+def selectmedzaklad(statuszaklad):
+    settingsvar.grupmedzaklad = []
+    match statuszaklad:
+        case "2":
+            medzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad)
+            for item in medzaklad:
+                if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(item)
+                for itemmedzaklad in settingsvar.grupmedzaklad:
+                    if item['edrpou'] not in itemmedzaklad['edrpou']:
+                        settingsvar.grupmedzaklad.append(item)
+        case "5":
+            settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" + settingsvar.icddiagnoz)
+            for item in settingsvar.grupDiagnoz:
+                medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0')
+                if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(medzaklad)
+                for itemmedzaklad in settingsvar.grupmedzaklad:
+                    if medzaklad['edrpou'] not in itemmedzaklad['edrpou']:
+                        settingsvar.grupmedzaklad.append(medzaklad)
+
+    settingsvar.html = 'diagnoz/receptionprofilzaklad.html'
+    settingsvar.nextstepdata = {
         'compl': 'Перелік профільних медзакладів',
-        'detalinglist': grupmedzaklad
+        'detalinglist': settingsvar.grupmedzaklad
     }
-    return render(request, html, context=data)
+    return
 
+
+# --- вибір профільного медзакладу
+def receptprofillmedzaklad(request):
+    selectmedzaklad('5')
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- вибір Амбулаторно-поліклінічного закладу до сімейного лікаря
+def receptfamilylikar(request):
+    selectmedzaklad('2')
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # --- Вибір лікаря у профільному мед закладі
-def selectdprofillikar(request, selected_edrpou):
+def selectdprofillikar(request, selected_edrpou, selected_idstatus):
     gruplikar = []
     Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_edrpou + "/0")
     for item in Grupproflikar:
-        likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0')
-        for icdgrdiagnoz in settingsvar.grupDiagnoz:
-            for likargrdz in likarGrupDiagnoz:
-                if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_edrpou in icdgrdiagnoz[
-                    'edrpou']:
-                    gruplikar.append(item)
+        match selected_idstatus:
+            case "2":
+                gruplikar.append(item)
+            case "5":
+                likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0')
+                for icdgrdiagnoz in settingsvar.grupDiagnoz:
+                    for likargrdz in likarGrupDiagnoz:
+                        if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_edrpou in \
+                                icdgrdiagnoz[
+                                    'edrpou']:
+                            gruplikar.append(item)
+                            break
                     break
-            break
 
     html = 'diagnoz/selectedprofillikar.html'
     data = {
@@ -449,21 +474,21 @@ def inputprofilpacient(request, selected_doctor):
     return render(request, html)
 
 
+def savediagnoz(request):
+    html = 'diagnoz/savediagnoz.html'
+    data = {
+        'compl': 'Шановний користувач! Ваш протокол опитування та попередній діагноз збережено.'
+    }
+    return render(request, html, data)
+
+
 # --- кінець блоку
 # ----Пациент
 
-def receptfamilylikar(request):
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 def receptprofillikar(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-
-
-def savediagnoz(request):
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-
-
 
 
 def pacientprofil(request):  # httpRequest

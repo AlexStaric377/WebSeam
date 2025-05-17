@@ -29,3 +29,4 @@ icddiagnoz = ""
 grupDiagnoz = []
 itemdetalingname = ""
 itemkeyfeature = ""
+grupmedzaklad = []
