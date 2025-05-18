@@ -8,12 +8,30 @@ from django.shortcuts import render
 from diagnoz import settingsvar
 
 
-def rest_api(api_url):
+def rest_api(api_url, data, method):
     env = environ.Env()
     urls_api = env('urls_api')
     urls = urls_api + api_url
-    response = requests.get(urls)
+
+    match method:
+        case 'GET':
+            response = requests.get(urls)
+        case 'POST':
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.post(urls, headers=headers, data=json.dumps(data))
+        case 'PUT':
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            response = requests.post(urls, headers=headers, data=json.dumps(data))
+        case 'DEL':
+            response = requests.delete(urls)
     return json.loads(response.content)
+
+
+#    return
 
 def index(request):  # httpRequest
     return render(request, 'diagnoz/index.html')
@@ -77,8 +95,9 @@ def cleanvars():
 
 def interwievcomplaint(request):
     cleanvars()
+    api = rest_api('api/ApiControllerComplaint/', '', 'GET')
     data = {
-        'complaintlist': rest_api('api/ApiControllerComplaint/')
+        'complaintlist': api
     }
     return render(request, 'diagnoz/receptinterwiev.html', context=data)
 
@@ -87,12 +106,15 @@ def interwievcomplaint(request):
 
 def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     settingsvar.DiagnozRecomendaciya.append(nextfeature_keyComplaint + ";")
+    settingsvar.spselectnameDetailing.append(nextfeature_name)
+    settingsvar.spisokselectDetailing.append(nextfeature_keyComplaint)
     settingsvar.strokagrdetaling = settingsvar.strokagrdetaling + nextfeature_keyComplaint + ";"
     settingsvar.spisokkeyinterview.append(nextfeature_keyComplaint + ";")
     settingsvar.feature_name = nextfeature_name
     settingsvar.listfeature = {}
     if len(settingsvar.listfeature) <= 0:
-        settingsvar.listfeature = rest_api('api/FeatureController/' + "0/" + nextfeature_keyComplaint + "/0/")
+        settingsvar.listfeature = rest_api('api/FeatureController/' + "0/" + nextfeature_keyComplaint + "/0/", '',
+                                           'GET')
     html = 'diagnoz/nextfeature.html'
     data = {
         'compl': nextfeature_name,
@@ -103,14 +125,13 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
 
 
 def featurespisok(request, featurespisok_keyComplaint, featurespisok_keyFeature, featurespisok_nameFeature):
-    # --- добавить контлоь цепочек груп
-    #    str = settingsvar.strokagrdetaling+featurespisok_keyFeature+";"
-    #    CmdStroka = rest_api('/api/InterviewController/' + "0/0/0/0/" +  str)
-    #    if  len(CmdStroka)>0:
+
     settingsvar.DiagnozRecomendaciya.append(featurespisok_keyFeature + ";")
     settingsvar.spisokkeyinterview.append(featurespisok_keyFeature + ";")
     settingsvar.spisokkeyfeature.append(featurespisok_keyFeature)
     settingsvar.spisoknamefeature.append(featurespisok_nameFeature)
+    settingsvar.spselectnameDetailing.append(featurespisok_nameFeature)
+    settingsvar.spisokselectDetailing.append(featurespisok_keyFeature)
     index = 0
     if len(settingsvar.listfeature) > 0:
         for item in settingsvar.listfeature:
@@ -140,11 +161,10 @@ def nextgrdetaling(request):
 def nextstepgrdetaling():
     settingsvar.detalingname = []
     settingsvar.listdetaling = {}
-    settingsvar.spisokselectDetailing = []
     settingsvar.spisokGrDetailing = []
     if len(settingsvar.spisokkeyfeature) > 0:
         for keyfeature in settingsvar.spisokkeyfeature:
-            listkeyfeature = rest_api('api/DetailingController/' + "0/" + keyfeature + "/0/")
+            listkeyfeature = rest_api('api/DetailingController/' + "0/" + keyfeature + "/0/", '', 'GET')
             for itemkeyfeature in listkeyfeature:
                 set = ""
 
@@ -158,7 +178,7 @@ def nextstepgrdetaling():
                             set = settingsvar.strokagrdetaling + itemkeyfeature['keyFeature'] + ";" + itemkeyfeature[
                             'keyGrDetailing'] + ";"
                         if len(set) != 0:
-                            CmdStroka = rest_api('/api/InterviewController/' + "0/0/0/0/" + set)
+                            CmdStroka = rest_api('/api/InterviewController/' + "0/0/0/0/" + set, '', 'GET')
                             if len(CmdStroka) > 0:
                                 settingsvar.strokagrdetaling = set
                                 settingsvar.spisokGrDetailing.append(itemkeyfeature['keyGrDetailing'])
@@ -199,7 +219,7 @@ def nextstepgrdetaling():
             if len(settingsvar.spisokGrDetailing) > 0:
                 for itemgrdetaling in settingsvar.spisokGrDetailing:
                     settingsvar.rest_apiGrDetaling = rest_api(
-                        '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/")
+                        '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/", '', 'GET')
                     settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
                     settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
                     settingsvar.itemdetalingname = settingsvar.detalingname[0]
@@ -220,7 +240,7 @@ def nextstepgrdetaling():
     if len(settingsvar.DiagnozRecomendaciya) == 0:
         cleanvars()
         settingsvar.nextstepdata = {
-            'complaintlist': rest_api('api/ApiControllerComplaint/')
+            'complaintlist': rest_api('api/ApiControllerComplaint/', '', 'GET')
         }
         settingsvar.html = 'diagnoz/receptinterwiev.html'
 
@@ -310,7 +330,8 @@ def enddetaling(request):
         if len(settingsvar.spisokGrDetailing) > 0:
             for itemgrdetaling in settingsvar.spisokGrDetailing:
                 settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
-                settingsvar.rest_apiGrDetaling = rest_api('/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/")
+                settingsvar.rest_apiGrDetaling = rest_api('/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/",
+                                                          '', 'GET')
                 settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 data = {
                     'compl': settingsvar.feature_name + ", " + settingsvar.detaling_feature_name + ", " + settingsvar.itemdetalingname,
@@ -342,10 +363,10 @@ def writediagnoz(select_kodProtokola, select_nametInterview):
     settingsvar.nametInterview = select_nametInterview
     for item in settingsvar.diagnozStroka:
         if select_kodProtokola == item['kodProtokola']:
-            api = rest_api('/api/DependencyDiagnozController/' + "0/" + item['kodProtokola'] + "/0")
-            apiicd = rest_api('/api/DiagnozController/' + api['kodDiagnoz'] + "/0/0")
+            api = rest_api('/api/DependencyDiagnozController/' + "0/" + item['kodProtokola'] + "/0", '', 'GET')
+            apiicd = rest_api('/api/DiagnozController/' + api['kodDiagnoz'] + "/0/0", '', 'GET')
             settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
-            api = rest_api('/api/RecommendationController/' + api['kodRecommend'] + "/0")
+            api = rest_api('/api/RecommendationController/' + api['kodRecommend'] + "/0", '', 'GET')
             settingsvar.html = 'diagnoz/versiyadiagnoza.html'
             settingsvar.nextstepdata = {
                 'opis': item['opistInterview'],
@@ -362,7 +383,7 @@ def diagnoz():
     for item in settingsvar.DiagnozRecomendaciya:
         diagnozselect = diagnozselect + item
     while ";" in diagnozselect:
-        settingsvar.diagnozStroka = rest_api('/api/InterviewController/' + "0/" + diagnozselect + "/-1/0/0")
+        settingsvar.diagnozStroka = rest_api('/api/InterviewController/' + "0/" + diagnozselect + "/-1/0/0", '', 'GET')
         if len(settingsvar.diagnozStroka) == 0:
             diagnozselect = diagnozselect[:len(diagnozselect) - 1]
             diagnozselect = diagnozselect[:diagnozselect.rfind(';')]
@@ -379,7 +400,7 @@ def selectdiagnoz(request, select_kodProtokola, select_nametInterview):
 
 
 def contentinterwiev(request):  # httpRequest
-    api = rest_api('/api/ContentInterviewController/' + settingsvar.kodProtokola)
+    api = rest_api('/api/ContentInterviewController/' + settingsvar.kodProtokola, '', 'GET')
     settingsvar.html = 'diagnoz/contentinterwiev.html'
     data = {
         'compl': settingsvar.nametInterview,
@@ -402,16 +423,17 @@ def selectmedzaklad(statuszaklad):
     settingsvar.grupmedzaklad = []
     match statuszaklad:
         case "2":
-            medzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad)
+            medzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad, '', 'GET')
             for item in medzaklad:
                 if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(item)
                 for itemmedzaklad in settingsvar.grupmedzaklad:
                     if item['edrpou'] not in itemmedzaklad['edrpou']:
                         settingsvar.grupmedzaklad.append(item)
         case "5":
-            settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" + settingsvar.icddiagnoz)
+            settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" + settingsvar.icddiagnoz, '',
+                                               'GET')
             for item in settingsvar.grupDiagnoz:
-                medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0')
+                medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
                 if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(medzaklad)
                 for itemmedzaklad in settingsvar.grupmedzaklad:
                     if medzaklad['edrpou'] not in itemmedzaklad['edrpou']:
@@ -439,13 +461,13 @@ def receptfamilylikar(request):
 # --- Вибір лікаря у профільному мед закладі
 def selectdprofillikar(request, selected_edrpou, selected_idstatus):
     gruplikar = []
-    Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_edrpou + "/0")
+    Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_edrpou + "/0", '', 'GET')
     for item in Grupproflikar:
         match selected_idstatus:
             case "2":
                 gruplikar.append(item)
             case "5":
-                likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0')
+                likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '', 'GET')
                 for icdgrdiagnoz in settingsvar.grupDiagnoz:
                     for likargrdz in likarGrupDiagnoz:
                         if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_edrpou in \
@@ -474,7 +496,33 @@ def inputprofilpacient(request, selected_doctor):
     return render(request, html)
 
 
+# --- Зберегти протокол опитування
+
+def SelectNewKodComplInteriew():
+    CmdStroka = []
+    indexcmp = "CMP.000000000001"
+    CmdStroka = rest_api('/api/CompletedInterviewController/' + "0/45", '', 'GET')
+
+    if len(CmdStroka) > 0:
+        kodCompl = CmdStroka['kodComplInterv']
+        indexdia = int(kodCompl[5:16])
+        repl = "000000000000"
+        indexcmp = "CMP." + repl[0: len(repl) - len(str(indexdia))] + str(indexdia + 1)
+
+    return indexcmp;
+
 def savediagnoz(request):
+    dict = {}
+    Numberstroka = 0
+    kodComplInterv = SelectNewKodComplInteriew()
+    for item in settingsvar.spselectnameDetailing:
+        json = {'id': 0,
+                'KodComplInterv': kodComplInterv,
+                'numberstr': Numberstroka,
+                'KodDetailing': settingsvar.spisokselectDetailing[Numberstroka],
+                'DetailsInterview': item
+                }
+        saveintreview = rest_api('/api/CompletedInterviewController/', json, 'POST')
     html = 'diagnoz/savediagnoz.html'
     data = {
         'compl': 'Шановний користувач! Ваш протокол опитування та попередній діагноз збережено.'
