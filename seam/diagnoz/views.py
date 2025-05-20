@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import environ
@@ -501,7 +502,7 @@ def inputprofilpacient(request, selected_doctor):
 def SelectNewKodComplInteriew():
     CmdStroka = []
     indexcmp = "CMP.000000000001"
-    CmdStroka = rest_api('/api/CompletedInterviewController/' + "0/45", '', 'GET')
+    CmdStroka = rest_api('/api/CompletedInterviewController/' + "0/1", '', 'GET')
 
     if len(CmdStroka) > 0:
         kodCompl = CmdStroka['kodComplInterv']
@@ -511,18 +512,48 @@ def SelectNewKodComplInteriew():
 
     return indexcmp;
 
-def savediagnoz(request):
-    dict = {}
+
+def addCompletedInterview():
     Numberstroka = 0
-    kodComplInterv = SelectNewKodComplInteriew()
     for item in settingsvar.spselectnameDetailing:
         json = {'id': 0,
-                'KodComplInterv': kodComplInterv,
+                'KodComplInterv': settingsvar.kodComplInterv,
                 'numberstr': Numberstroka,
                 'KodDetailing': settingsvar.spisokselectDetailing[Numberstroka],
                 'DetailsInterview': item
                 }
         saveintreview = rest_api('/api/CompletedInterviewController/', json, 'POST')
+        Numberstroka = Numberstroka + 1
+    return
+
+
+def addColectionInterview():
+    details = ""
+    dateInterview = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    settingsvar.kodComplInterv = SelectNewKodComplInteriew()
+    for item in settingsvar.spisokselectDetailing:
+        details = details + item + ';'
+    json = {'id': 0,
+            'kodDoctor': settingsvar.koddoctora,
+            'kodPacient': settingsvar.kodpacienta,
+            'dateInterview': dateInterview,
+            'DateDoctor': settingsvar.datedoctor,
+            'kodProtokola': settingsvar.kodProtokola,
+            'detailsInterview': details,
+            'resultDiagnoz': settingsvar.resultDiagnoz,
+            'kodComplInterv': settingsvar.kodComplInterv,
+            'nameInterview': settingsvar.nametInterview
+            }
+
+    saveintreview = rest_api('/api/ColectionInterviewController/', json, 'POST')
+    return
+
+
+def savediagnoz(request):
+    # --- додати проткол опитування
+    addColectionInterview()
+    # ---  Додати опитування
+    addCompletedInterview()
     html = 'diagnoz/savediagnoz.html'
     data = {
         'compl': 'Шановний користувач! Ваш протокол опитування та попередній діагноз збережено.'
