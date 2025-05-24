@@ -7,6 +7,7 @@ import requests
 from django.shortcuts import render
 
 from diagnoz import settingsvar
+from .forms import PacientForm
 
 
 def rest_api(api_url, data, method):
@@ -488,11 +489,11 @@ def selectdprofillikar(request, selected_edrpou, selected_idstatus):
 
 # --- введення профілю пацієнта для запису на прийом до лікаря
 def inputprofilpacient(request, selected_doctor):
-    html = 'diagnoz/profilpacent.html'
-    data = {
-        'compl': 'Перелік профільних лікарів',
-        'detalinglist': gruplikar
-    }
+    html = 'diagnoz/pacentprofil.html'
+    #    data = {
+    #        'compl': 'Перелік профільних лікарів',
+    #        'detalinglist': gruplikar
+    #    }
 
     return render(request, html)
 
@@ -570,8 +571,26 @@ def receptprofillikar(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# --- Введення профілю пацієнта
 def pacientprofil(request):  # httpRequest
-    return render(request, 'diagnoz/pacientprofil.html')
+    if request.method == 'POST':
+        form = PacientForm(request.POST)
+        #       if form.is_valid():
+        selected_firstName = form.data['firstName']
+        selected_lastName = form.data['lastName']
+        selected_gender = form.data['gender']
+        selected_age = form.data['age']
+
+    # --- записати в Бд введенний профіль
+
+    #           saveprofil = rest_api('/api/ColectionInterviewController/', json, 'POST')
+    #           return render(request, 'diagnoz/pacient.html')
+    else:
+        form = PacientForm()
+    data = {
+        'form': form
+    }
+    return render(request, 'diagnoz/pacientprofil.html', data)
 
 
 def pacientinterwiev(request):  # httpRequest
