@@ -47,6 +47,7 @@ def reception(request):  # httpRequest
 
 
 def pacient(request):  # httpRequest
+    settingsvar.setintertview = False
     return render(request, 'diagnoz/pacient.html')
 
 
@@ -461,8 +462,9 @@ def receptfamilylikar(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # --- Вибір лікаря у профільному мед закладі
-def selectdprofillikar(request, selected_edrpou, selected_idstatus):
+def selectdprofillikar(request, selected_edrpou, selected_idstatus, selected_name):
     gruplikar = []
+    settingsvar.namemedzaklad = selected_name
     Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_edrpou + "/0", '', 'GET')
     for item in Grupproflikar:
         match selected_idstatus:
@@ -489,13 +491,21 @@ def selectdprofillikar(request, selected_edrpou, selected_idstatus):
 
 # --- введення профілю пацієнта для запису на прийом до лікаря
 def inputprofilpacient(request, selected_doctor):
-    html = 'diagnoz/pacentprofil.html'
-    #    data = {
-    #        'compl': 'Перелік профільних лікарів',
-    #        'detalinglist': gruplikar
-    #    }
+    settingsvar.namelikar = ""
+    settingsvar.mobtellikar = ""
+    settingsvar.koddoctora = selected_doctor
+    settingsvar.setintertview = True
+    CmdStroka = rest_api('/api/ApiControllerDoctor/' + selected_doctor + "/0/0", '', 'GET')
+    if len(CmdStroka) > 0:
+        settingsvar.namelikar = CmdStroka['name'] + "" + CmdStroka['surname']
+        settingsvar.mobtellikar = CmdStroka['telefon']
+    settingsvar.html = 'diagnoz/pacientprofil.html'
+    pacientprofil(request)
+    form = PacientForm()
+    if settingsvar.html == 'diagnoz/pacientprofil.html':
+        settingsvar.nextstepdata = {'form': form}
 
-    return render(request, html)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 # --- Зберегти протокол опитування
@@ -530,14 +540,14 @@ def addCompletedInterview():
 
 def addColectionInterview():
     details = ""
-    dateInterview = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    settingsvar.dateInterview = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     settingsvar.kodComplInterv = SelectNewKodComplInteriew()
     for item in settingsvar.spisokselectDetailing:
         details = details + item + ';'
     json = {'id': 0,
             'kodDoctor': settingsvar.koddoctora,
             'kodPacient': settingsvar.kodpacienta,
-            'dateInterview': dateInterview,
+            'dateInterview': settingsvar.dateInterview,
             'DateDoctor': settingsvar.datedoctor,
             'kodProtokola': settingsvar.kodProtokola,
             'detailsInterview': details,
@@ -557,7 +567,8 @@ def savediagnoz(request):
     addCompletedInterview()
     html = 'diagnoz/savediagnoz.html'
     data = {
-        'compl': 'Шановний користувач! Ваш протокол опитування та попередній діагноз збережено.'
+        'compl': 'Шановний користувач! Ваш протокол опитування та попередній діагноз збережено.',
+        'backurl': 'pacient'
     }
     return render(request, html, data)
 
@@ -571,27 +582,124 @@ def receptprofillikar(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# --- Створення нового коду профілю пацієнта
+def newpacientprofil():
+    CmdStroka = []
+    indexcmp = "PCN.000000001"
+    CmdStroka = rest_api('/api/PacientController/0/0/0/0/0', '', 'GET')
+
+    if len(CmdStroka) > 0:
+        kodPacient = CmdStroka['kodPacient']
+        indexdia = int(kodPacient[5:14])
+        repl = "000000000"
+        settingsvar.kodPacient = "PCN." + repl[0: len(repl) - len(str(indexdia))] + str(indexdia + 1)
+
+    return settingsvar.kodPacient
+
 # --- Введення профілю пацієнта
 def pacientprofil(request):  # httpRequest
+    settingsvar.html = 'diagnoz/pacientprofil.html'
+    data = {}
     if request.method == 'POST':
         form = PacientForm(request.POST)
         #       if form.is_valid():
-        selected_firstName = form.data['firstName']
-        selected_lastName = form.data['lastName']
-        selected_gender = form.data['gender']
-        selected_age = form.data['age']
+        json = {'id': 0,
+                'KodPacient': newpacientprofil(),
+                'KodKabinet': "",
+                'Age': form.data['age'],
+                'Weight': form.data['weight'],
+                'Growth': form.data['body_height'],
+                'Gender': form.data['gender'],
+                'Tel': form.data['mob_telefon'],
+                'Email': form.data['email'],
+                'Name': form.data['firstName'],
+                'Surname': form.data['lastName'],
+                'Pind': form.data['post_index'],
+                'Profession': form.data['profession']
+                }
 
-    # --- записати в Бд введенний профіль
+        # --- записати в Бд введенний профіль
+        saveprofil = rest_api('/api/PacientController/', json, 'POST')
+        if len(saveprofil) > 0:
+            if settingsvar.setintertview == True:
+                settingsvar.html = 'diagnoz/finishreception.html'
+                settingsvar.nextstepdata = {
+                    'pacient': json['Name'] + " " + json['Surname'],
+                    'shapka': 'Увага! Ви сформували запит на прийом до лікаря.',
+                    'medzaklad': settingsvar.namemedzaklad,
+                    'likar': 'Лікар: ' + settingsvar.namelikar + "тел.: " + settingsvar.mobtellikar,
+                    'datereception': 'Дата прийому: ' + settingsvar.datereception,
+                    'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
+                    'podval': 'Ви підтверджуєте свій вибір?'
+                }
+            else:
+                settingsvar.html = 'diagnoz/savediagnoz.html'
+                settingsvar.nextstepdata = {
+                    'compl': 'Шановний користувач! Ваш профіль збережено.',
+                    'backurl': 'pacient'
+                }
+        else:
+            settingsvar.html = 'diagnoz/savediagnoz.html'
+            settingsvar.nextstepdata = {
+                'compl': 'Шановний користувач! Похибка на серевері. Ваш профіль не збережено.',
+                'backurl': 'pacient'
+            }
 
-    #           saveprofil = rest_api('/api/ColectionInterviewController/', json, 'POST')
-    #           return render(request, 'diagnoz/pacient.html')
+    #        return render(request, settingsvar.html,settingsvar.nextstepdata )
+
     else:
         form = PacientForm()
-    data = {
-        'form': form
-    }
-    return render(request, 'diagnoz/pacientprofil.html', data)
+        settingsvar.nextstepdata = {'form': form}
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
+
+# ---  Збереження запису до лікаря в історії пацієнта
+def addReceptionPacient():
+    json = {'id': 0,
+            'KodPacient': settingsvar.kodPacient,
+            'KodDoctor': settingsvar.koddoctora,
+            'DateInterview': settingsvar.dateInterview,
+            'KodComplInterv': settingsvar.kodComplInterv,
+            'KodProtokola': settingsvar.kodProtokola,
+            'TopictVizita': 'Підтвердження попереднього діагнозу, призначення плану лікування.',
+            }
+    # --- записати в Бд
+    saveprofil = rest_api('/api/LifePacientController/', json, 'POST')
+    return
+
+
+# ---  Збереження запису до лікаря протоколу опитування пацієнта
+def addReceptionLikar():
+    json = {'id': 0,
+            'KodPacient': settingsvar.kodPacient,
+            'KodDoctor': settingsvar.koddoctora,
+            'DateDoctor': settingsvar.datereception,
+            'DateInterview': settingsvar.dateInterview,
+            'KodComplInterv': settingsvar.kodComplInterv,
+            'KodProtokola': settingsvar.kodProtokola,
+            'TopictVizita': 'Підтвердження попереднього діагнозу, призначення плану лікування.',
+            }
+
+    # --- записати в Бд
+    saveprofil = rest_api('/api/RegistrationAppointmentController/', json, 'POST')
+    return
+
+
+# --- Збереження протоколу опитування та запису до лікаря
+def saveraceptionlikar(request):  # httpRequest
+    # --- додати проткол опитування
+    addColectionInterview()
+    # ---  Додати опитування
+    addCompletedInterview()
+    # ---  Додати запис до лікаря в історії пацієнта
+    addReceptionPacient()
+    # ---  Додати запис до лікаря протоколу опитування пацієнта
+    addReceptionLikar()
+    settingsvar.nextstepdata = {
+        'finishtext': 'Шановний користувач! Ваш протокол опитування,  попередній діагноз та запис до лікаря збережено.'
+    }
+    settingsvar.html = 'diagnoz/saveraceptionlikar.html'
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def pacientinterwiev(request):  # httpRequest
     return render(request, 'diagnoz/pacientinterwiev.html')
