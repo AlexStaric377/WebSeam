@@ -15,9 +15,18 @@
     </div>
 </nav>
 <div class="container-fluid">
-    <h6> {{ finishtext }} </h6>
-
-    <a href="{{backurl}}">Далі</a>
+    <h6> {{ pacient }} </h6>
+    <h6>{{ shapka }}</h6>
+    <h6> {{ medzaklad }} </h6>
+    <h6> {{ likar }} </h6>
+    <h6> {{ datereception }} </h6>
+    <h6> {{ diagnoz }} </h6>
+    <h6> {{ podval }} </h6>
+    <div style="display: inline-block">
+        <p></p>
+        <a class="text-decoration-none text-reset" href="{% url 'saveraceptionlikar' %}">[ Так ] </a>
+        <a class="text-decoration-none text-reset" href="{% url 'pacient' %}"> [ Ні ]</a>
+    </div>
 </div>
 
 {% endblock %}
