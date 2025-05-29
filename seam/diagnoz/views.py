@@ -7,7 +7,7 @@ import requests
 from django.shortcuts import render
 
 from diagnoz import settingsvar
-from .forms import PacientForm
+from .forms import PacientForm, AccountUserForm
 
 
 def rest_api(api_url, data, method):
@@ -30,7 +30,11 @@ def rest_api(api_url, data, method):
             response = requests.post(urls, headers=headers, data=json.dumps(data))
         case 'DEL':
             response = requests.delete(urls)
-    return json.loads(response.content)
+    stroka = []
+    if len(response.content) > 1:
+        stroka = json.loads(response.content)
+
+    return stroka
 
 
 #    return
@@ -563,6 +567,7 @@ def inputprofilpacient(request, selected_doctor):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# -----------------------------------------------------------------------
 # --- Зберегти протокол опитування
 # --- визначення нового коду протоколу опитування
 def SelectNewKodComplInteriew():
@@ -632,9 +637,65 @@ def savediagnoz(request):
     return render(request, html, data)
 
 
-# --- кінець  готьового блоку
-
+# --- кінець  готового блоку
+#-------------------------------------------------------------------------
 # ---------  Кабінет Пациента
+
+# --------------------------
+# Реєстрація входу до кабінету пацієнта
+
+def accountuser(request):
+    settingsvar.html = 'diagnoz/accountuser.html'
+    if request.method == 'POST':
+        formaccount = AccountUserForm(request.POST)
+        #        login = formaccount.data['login']
+        #        pas = formaccount.data['password']
+        json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
+        Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+        if len(Stroka) > 0:
+            kodpacienta = Stroka['idUser']
+            user = rest_api('/api/PacientController/' + kodpacienta + '/0/0/0/0', '', 'GET')
+            if len(user) > 0:
+                formpacient = PacientForm(initial=user)
+                settingsvar.nextstepdata = {
+                    'form': formpacient,
+                    'next': 'Далі'
+                }
+                settingsvar.html = 'diagnoz/pacientprofil.html'
+            else:
+                settingsvar.html = 'diagnoz/savediagnoz.html'
+                backurl = funcbakurl()
+                settingsvar.nextstepdata = {
+                    'compl': 'Шановний користувач! Невірно введено номер телефону або пароль.',
+                    'backurl': backurl
+                }
+
+        else:
+            settingsvar.html = 'diagnoz/savediagnoz.html'
+            backurl = funcbakurl()
+            settingsvar.nextstepdata = {
+                'compl': 'Шановний користувач! Невірно введено номер телефону або пароль.',
+                'backurl': backurl
+            }
+    else:
+        formaccount = AccountUserForm()
+        settingsvar.nextstepdata = {
+            'form': formaccount,
+            'compl': 'Зареєструватися',
+            'backurl': 'kabinetpacient',
+            'reestrinput': 'Кабінет пацієнта'
+        }
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def kabinetpacient(request):
+    settingsvar.html = 'diagnoz/pacientprofil.html'
+    form = PacientForm()
+    settingsvar.nextstepdata = {'form': form}
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
 # --- Створення нового коду профілю пацієнта
 def newpacientprofil():
     CmdStroka = []
@@ -662,13 +723,13 @@ def pacientprofil(request):  # httpRequest
                 'KodKabinet': "",
                 'Age': form.data['age'],
                 'Weight': form.data['weight'],
-                'Growth': form.data['body_height'],
+                'Growth': form.data['growth'],
                 'Gender': form.data['gender'],
-                'Tel': form.data['mob_telefon'],
+                'Tel': form.data['tel'],
                 'Email': form.data['email'],
-                'Name': form.data['firstName'],
-                'Surname': form.data['lastName'],
-                'Pind': form.data['post_index'],
+                'Name': form.data['name'],
+                'Surname': form.data['surname'],
+                'Pind': form.data['pind'],
                 'Profession': form.data['profession']
                 }
 
@@ -685,7 +746,10 @@ def pacientprofil(request):  # httpRequest
             }
     else:
         form = PacientForm()
-        settingsvar.nextstepdata = {'form': form}
+        settingsvar.nextstepdata = {
+            'form': form,
+            'next': 'Зберегти'
+        }
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 

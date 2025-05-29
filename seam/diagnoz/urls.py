@@ -52,7 +52,9 @@ urlpatterns = [
          views.selectdprofillikar,
          name='selectdprofillikar'),
     path('inputprofilpacient/<str:selected_doctor>', views.inputprofilpacient, name='inputprofilpacient'),
-    path('saveraceptionlikar', views.saveraceptionlikar, name='saveraceptionlikar')
+    path('saveraceptionlikar', views.saveraceptionlikar, name='saveraceptionlikar'),
+    path('accountuser', views.accountuser, name='accountuser'),
+    path('kabinetpacient', views.kabinetpacient, name='kabinetpacient'),
 ]
 
 urlpatterns += [

@@ -7,22 +7,22 @@
 <div class="col-md-7 col-lg-8">
     <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
         пацієнта</font></font></h4>
-    <form class="needs-validation" method="POST" novalidate="">
+    <form action="" method="POST">
         {% csrf_token %}
         <div class="row g-3">
             <div class="col-sm-4">
                 <label class="form-label"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">{{ form.firstName.label }}</font></font>
+                        style="vertical-align: inherit;">{{ form.name.label }}</font></font>
                 </label>
-                {{form.firstName}}
+                {{form.name}}
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
                 </div>
             </div>
             <div class="col-sm-4">
                 <label class="form-label"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">{{ form.lastName.label }}</font></font></label>
-                {{form.lastName}}
+                        style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
+                {{form.surname}}
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
                 </div>
@@ -53,8 +53,6 @@
                         style="vertical-align: inherit;">Вимагається назва професії.</font></font>
                 </div>
             </div>
-
-
             <p>
             <div class="col-md-2">
                 <label class="form-label"><font style="vertical-align: inherit;"><font
@@ -67,8 +65,8 @@
 
             <div class="col-md-2">
                 <label class="form-label"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">{{form.body_height.label}}</font></font></label>
-                {{form.body_height}}
+                        style="vertical-align: inherit;">{{form.growth.label}}</font></font></label>
+                {{form.growth}}
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">Вимагається допустима зріст.</font></font>
                 </div>
@@ -77,8 +75,8 @@
             <p>
             <div class="col-md-2">
                 <label class="form-label"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">{{form.post_index.label}}</font></font></label>
-                {{form.post_index}}
+                        style="vertical-align: inherit;">{{form.pind.label}}</font></font></label>
+            {{form.pind}}
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">Вкажіть допустимий індекс.</font></font>
                 </div>
@@ -86,9 +84,9 @@
 
             <div class="col-md-3">
                 <label class="form-label"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">{{form.mob_telefon.label}}</font></font>
+                        style="vertical-align: inherit;">{{form.tel.label}}</font></font>
                 </label>
-                {{form.mob_telefon}}
+                {{form.tel}}
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">Вимагається допустимий номер.</font></font>
                 </div>
@@ -105,7 +103,8 @@
                 </font></font></div>
             </div>
             <p>
-                <button class="w-45 btn btn-primary btn-lg" type="submit"><font style="vertical-align: inherit;"><font
+                <button class="w-45 h-35 btn btn-primary btn-lg" type="submit"><font
+                        style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">Зберегти</font></font></button>
             </p>
         </div>
