@@ -19,11 +19,13 @@ class PacientForm(forms.Form):
                                      widget=forms.NumberInput(attrs={'class': 'form-control'}))
     pind = forms.CharField(max_length=5, min_length=5, label="Поштовий індекс",
                                  widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "03146"}))
-    tel = forms.IntegerField(max_value=999999999999, label="Телефон", widget=forms.NumberInput(
+    tel = forms.CharField(label="Телефон", widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
     email = forms.EmailField(label="Электронна пошта (Email)", required=False,
                              widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "ви@example.com"}))
 
+
+# ---    next = forms.Field(initial='Зберегти')
 
 class AccountUserForm(forms.Form):
     login = forms.CharField(max_length=13, label='Телефон:',

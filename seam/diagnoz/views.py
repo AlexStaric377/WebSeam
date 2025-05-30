@@ -101,6 +101,7 @@ def cleanvars():
     settingsvar.strokagrdetaling = ""
     settingsvar.strokagrdetaling = ""
     settingsvar.diagnozStroka = []
+    interwievpacient = False
     return
 
 
@@ -645,23 +646,35 @@ def savediagnoz(request):
 # Реєстрація входу до кабінету пацієнта
 
 def accountuser(request):
+
     settingsvar.html = 'diagnoz/accountuser.html'
-    if request.method == 'POST':
-        formaccount = AccountUserForm(request.POST)
-        #        login = formaccount.data['login']
-        #        pas = formaccount.data['password']
-        json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
-        Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
-        if len(Stroka) > 0:
-            kodpacienta = Stroka['idUser']
-            user = rest_api('/api/PacientController/' + kodpacienta + '/0/0/0/0', '', 'GET')
-            if len(user) > 0:
-                formpacient = PacientForm(initial=user)
-                settingsvar.nextstepdata = {
-                    'form': formpacient,
-                    'next': 'Далі'
-                }
-                settingsvar.html = 'diagnoz/pacientprofil.html'
+    if settingsvar.setpost == False:
+        if request.method == 'POST':
+            formaccount = AccountUserForm(request.POST)
+            #        login = formaccount.data['login']
+            #        pas = formaccount.data['password']
+            json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
+            Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+            if len(Stroka) > 0:
+                settingsvar.kodPacient = Stroka['idUser']
+                settingsvar.pacient = rest_api('/api/PacientController/' + settingsvar.kodPacient + '/0/0/0/0', '',
+                                               'GET')
+                if len(settingsvar.pacient) > 0:
+                    settingsvar.setpost = True
+                    formpacient = PacientForm(initial=settingsvar.pacient)
+                    settingsvar.nextstepdata = {
+                        'form': formpacient,
+                        'next': 'Далі'
+                    }
+                    settingsvar.html = 'diagnoz/pacientprofil.html'
+                else:
+                    settingsvar.html = 'diagnoz/savediagnoz.html'
+                    backurl = funcbakurl()
+                    settingsvar.nextstepdata = {
+                        'compl': 'Шановний користувач! Невірно введено номер телефону або пароль.',
+                        'backurl': backurl
+                    }
+
             else:
                 settingsvar.html = 'diagnoz/savediagnoz.html'
                 backurl = funcbakurl()
@@ -669,22 +682,33 @@ def accountuser(request):
                     'compl': 'Шановний користувач! Невірно введено номер телефону або пароль.',
                     'backurl': backurl
                 }
-
         else:
-            settingsvar.html = 'diagnoz/savediagnoz.html'
-            backurl = funcbakurl()
+            formaccount = AccountUserForm()
             settingsvar.nextstepdata = {
-                'compl': 'Шановний користувач! Невірно введено номер телефону або пароль.',
-                'backurl': backurl
+                'form': formaccount,
+                'compl': 'Зареєструватися',
+                'backurl': 'kabinetpacient',
+                'reestrinput': 'Кабінет пацієнта'
             }
     else:
-        formaccount = AccountUserForm()
-        settingsvar.nextstepdata = {
-            'form': formaccount,
-            'compl': 'Зареєструватися',
-            'backurl': 'kabinetpacient',
-            'reestrinput': 'Кабінет пацієнта'
-        }
+        match settingsvar.kabinetitem:
+            case 'profil':
+                settingsvar.html = 'diagnoz/pacient.html'
+                settingsvar.nextstepdata = {}
+
+            case 'interwiev':
+                settingsvar.html = 'diagnoz/receptinterwiev.html'
+                api = rest_api('api/ApiControllerComplaint/', '', 'GET')
+                settingsvar.nextstepdata = {
+                    'complaintlist': api
+                }
+            case 'listinterwiev':
+                settingsvar.html = 'diagnoz/pacientlistinterwiev.html'
+                api = rest_api('api/LifePacientController/', '', 'GET')
+                settingsvar.nextstepdata = {
+                    'complaintlist': api
+                }
+
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -712,9 +736,27 @@ def newpacientprofil():
 
 
 # --- Введення профілю пацієнта
+def Pacientinitial():
+    json = {'kodPacient': '',
+            'kodKabinet': '',
+            'age': '',
+            'weight': '',
+            'growth': '',
+            'gender': '',
+            'tel': '',
+            'email': '',
+            'name': '',
+            'surname': '',
+            'pind': '',
+            'profession': '',
+
+            }
+    return json
+
+
 def pacientprofil(request):  # httpRequest
     settingsvar.html = 'diagnoz/pacientprofil.html'
-    data = {}
+    settingsvar.kabinetitem = 'profil'
     if request.method == 'POST':
         form = PacientForm(request.POST)
         #       if form.is_valid():
@@ -744,7 +786,9 @@ def pacientprofil(request):  # httpRequest
                 'compl': 'Шановний користувач! Похибка на серевері. Ваш профіль не збережено.',
                 'backurl': backurl
             }
+
     else:
+        #        _pacient = Pacientinitial()
         form = PacientForm()
         settingsvar.nextstepdata = {
             'form': form,
@@ -806,14 +850,24 @@ def saveraceptionlikar(request):  # httpRequest
 
 # --- Провести опитування пациєнта в особистому кабінеті
 def pacientinterwiev(request):  # httpRequest
-    settingsvar.kodPacient = 'PCN.000000037'
-    settingsvar.pacient = rest_api('api/PacientController/' + settingsvar.kodPacient + '/0/0/0/0', '', 'GET')
     cleanvars()
-    api = rest_api('api/ApiControllerComplaint/', '', 'GET')
-    data = {
-        'complaintlist': api
-    }
-    return render(request, 'diagnoz/receptinterwiev.html', context=data)
+    settingsvar.kabinetitem = 'interwiev'
+    if settingsvar.setpost == False:
+        accountuser(request)
+    else:
+        api = rest_api('api/ApiControllerComplaint/', '', 'GET')
+        settingsvar.html = 'diagnoz/receptinterwiev.html'
+        settingsvar.nextstepdata = {
+            'complaintlist': api
+        }
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- Профіль проведеного інтервью
+def profilinterview(request, kodprorokola):  # httpRequest
+
+    return render(request, 'diagnoz/profilinterview.html')
+
 
 
 def pacientlistinterwiev(request):  # httpRequest

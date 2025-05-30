@@ -43,3 +43,6 @@ namemedzaklad = ""
 datereception = ""
 dateInterview = ""
 doctor = []
+setpost = False
+kabinetitem = 'profil'
+pacient = ""
