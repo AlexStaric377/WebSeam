@@ -54,7 +54,8 @@ urlpatterns = [
     path('saveraceptionlikar', views.saveraceptionlikar, name='saveraceptionlikar'),
     path('accountuser', views.accountuser, name='accountuser'),
     path('kabinetpacient', views.kabinetpacient, name='kabinetpacient'),
-    path('profilinterview', views.profilinterview, name='profilinterview')
+    path('profilinterview/<str:selected_protokol>', views.profilinterview, name='profilinterview'),
+    path('profilpacient', views.profilpacient, name='profilpacient')
 ]
 
 urlpatterns += [

@@ -46,3 +46,4 @@ doctor = []
 setpost = False
 kabinetitem = 'profil'
 pacient = ""
+listapi = []

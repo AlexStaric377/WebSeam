@@ -449,7 +449,6 @@ def contentinterwiev(request):  # httpRequest
     api = rest_api('/api/ContentInterviewController/' + settingsvar.kodProtokola, '', 'GET')
     settingsvar.html = 'diagnoz/contentinterwiev.html'
     iduser = funciduser()
-    backpage = funcbackpage()
     data = {
         'compl': settingsvar.nametInterview,
         'detalinglist': api,
@@ -764,8 +763,14 @@ def accountuser(request):
     else:
         match settingsvar.kabinetitem:
             case 'profil':
-                settingsvar.html = 'diagnoz/pacient.html'
-                settingsvar.nextstepdata = {}
+                iduser = funciduser()
+                formpacient = PacientForm(initial=settingsvar.pacient)
+                settingsvar.nextstepdata = {
+                    'form': formpacient,
+                    'next': 'Далі'
+                }
+                settingsvar.html = 'diagnoz/pacientprofil.html'
+
 
             case 'interwiev':
                 iduser = funciduser()
@@ -778,13 +783,22 @@ def accountuser(request):
             case 'listinterwiev':
                 iduser = funciduser()
                 settingsvar.html = 'diagnoz/pacientlistinterwiev.html'
-                api = rest_api('api/LifePacientController/' + settingsvar.kodPacient + '/0', '', 'GET')
                 listapi = []
-                listapi.append(api)
-                settingsvar.nextstepdata = {
-                    'complaintlist': listapi,
-                    'iduser': iduser
-                }
+                listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacient, '', 'GET')
+                if len(listapi) > 0:
+                    settingsvar.nextstepdata = {
+                        'iduser': iduser,
+                        'complaintlist': listapi
+                    }
+                else:
+                    settingsvar.html = 'diagnoz/savediagnoz.html'
+                    backurl = funcbakurl()
+                    iduser = funciduser()
+                    settingsvar.nextstepdata = {
+                        'iduser': iduser,
+                        'compl': 'Шановний користувач! За вашим запитом відсутні проведені опитування.',
+                        'backurl': backurl
+                    }
 
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -930,6 +944,24 @@ def saveraceptionlikar(request):  # httpRequest
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# --- Профіль пацієнта
+def profilpacient(request):  # httpRequest
+    cleanvars()
+    settingsvar.nawpage = 'pacientprofil'
+    settingsvar.kabinetitem = 'profil'
+    if settingsvar.setpost == False:
+        accountuser(request)
+    else:
+        iduser = funciduser()
+        formpacient = PacientForm(initial=settingsvar.pacient)
+        settingsvar.nextstepdata = {
+            'form': formpacient,
+            'next': 'Далі'
+        }
+        settingsvar.html = 'diagnoz/pacientprofil.html'
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
 # --- Провести опитування пациєнта в особистому кабінеті
 def pacientinterwiev(request):  # httpRequest
     cleanvars()
@@ -949,11 +981,40 @@ def pacientinterwiev(request):  # httpRequest
 
 
 # --- Профіль проведеного інтервью
-def profilinterview(request):  # httpRequest
-    # -- /<str:selected_protokol>
-    # -- selected_protokol
-    #--   item.kodProtokola
-    return render(request, 'diagnoz/profilinterview.html')
+def profilinterview(request, selected_protokol):  # httpRequest
+    likarName = ""
+    dateint = ""
+    select_dateDoctor = ""
+    settingsvar.nawpage = 'pacientlistinterwiev'
+    settingsvar.kodProtokola = selected_protokol
+    backurl = 'pacientlistinterwiev'
+    iduser = funciduser()
+    for item in settingsvar.listapi:
+        if selected_protokol == item['kodProtokola']:
+            if (item['dateDoctor'] != None):
+                select_dateDoctor = item['dateDoctor']
+            dateint = item['dateInterview']
+            if len(item['kodDoctor']) > 0:
+                doc = rest_api('api/ApiControllerDoctor/' + item['kodDoctor'] + '/0/0', '', 'GET')
+                likarName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['telefon']
+            break
+    depend = rest_api('api/DependencyDiagnozController/' + '0/' + selected_protokol + '/0', '', 'GET')
+    recommend = rest_api('api/RecommendationController/' + depend['kodRecommend'] + '/0', '', 'GET')
+    diagnoz = rest_api('api/DiagnozController/' + depend['kodDiagnoz'] + '/0/0', '', 'GET')
+    settingsvar.html = 'diagnoz/profilinterview.html'
+    settingsvar.nextstepdata = {
+        'pacient': 'Пацієнт:        ' + settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname'],
+        'likar': 'Лікар:          ' + likarName,
+        'dateinterv': 'Дата опитування: ' + dateint,
+        'datereception': 'Дата прийому:   ' + select_dateDoctor,
+        'diagnoz': 'Попередній діагноз: ' + diagnoz['nameDiagnoza'],
+        'recomendaciya': 'Рекомендації:   ' + recommend['contentRecommendation'],
+        'urlinet': 'Опис в інтернеті:   ' + diagnoz['uriDiagnoza'],
+        'iduser': iduser
+
+    }
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 #--- Перегляд проведених інтервью
@@ -961,20 +1022,22 @@ def profilinterview(request):  # httpRequest
 def pacientlistinterwiev(request):  # httpRequest
     # --- {{item.nameInterview}}
     cleanvars()
+    backurl = funcbakurl()
     settingsvar.nawpage = 'receptinterwiev'
     settingsvar.kabinetitem = 'listinterwiev'
     if settingsvar.setpost == False:
         accountuser(request)
+
     else:
         iduser = funciduser()
         settingsvar.html = 'diagnoz/pacientlistinterwiev.html'
-        api = rest_api('api/LifePacientController/' + settingsvar.kodPacient + '/0', '', 'GET')
-        listapi = []
-        listapi.append(api)
-        if len(api) > 0:
+
+        settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacient, '', 'GET')
+        if len(settingsvar.listapi) > 0:
             settingsvar.nextstepdata = {
                 'iduser': iduser,
-                'complaintlist': listapi
+                'complaintlist': settingsvar.listapi,
+                'backurl': backurl
             }
         else:
             settingsvar.html = 'diagnoz/savediagnoz.html'
