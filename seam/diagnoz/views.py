@@ -7,7 +7,7 @@ import requests
 from django.shortcuts import render
 
 from diagnoz import settingsvar
-from .forms import PacientForm, AccountUserForm
+from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm
 
 
 def rest_api(api_url, data, method):
@@ -111,7 +111,8 @@ def interwievcomplaint(request):
     iduser = funciduser()
     data = {
         'complaintlist': api,
-        'iduser': iduser
+        'iduser': iduser,
+        'backurl': 'reception'
     }
     return render(request, 'diagnoz/receptinterwiev.html', context=data)
 
@@ -171,6 +172,15 @@ def featurespisok(request, featurespisok_keyComplaint, featurespisok_keyFeature,
 
 def nextgrdetaling(request):
     nextstepgrdetaling()
+    if len(settingsvar.nextstepdata) == 0:
+        settingsvar.html = 'diagnoz/savediagnoz.html'
+        backurl = funcbakurl()
+        iduser = funciduser()
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'compl': 'Шановний користувач! За вашим запитом відсутні проведені опитування.',
+            'backurl': backurl
+        }
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -446,7 +456,9 @@ def selectdiagnoz(request, select_kodProtokola, select_nametInterview):
 
 # --- виведення змісту інтервью
 def contentinterwiev(request):  # httpRequest
-    api = rest_api('/api/ContentInterviewController/' + settingsvar.kodProtokola, '', 'GET')
+    api = []
+    if len(settingsvar.kodProtokola) > 0:
+        api = rest_api('/api/ContentInterviewController/' + settingsvar.kodProtokola, '', 'GET')
     settingsvar.html = 'diagnoz/contentinterwiev.html'
     iduser = funciduser()
     data = {
@@ -711,6 +723,81 @@ def savediagnoz(request):
 # --------------------------
 # Реєстрація входу до кабінету пацієнта
 
+def reestraccountuser(request):
+    settingsvar.html = 'diagnoz/reestraccountuser.html'
+    settingsvar.readprofil = False
+
+    if request.method == 'POST':
+        if settingsvar.setReestrAccount == False:
+            formaccount = ReestrAccountUserForm(request.POST)
+            #        login = formaccount.data['login']
+            #        pas = formaccount.data['password']
+            if formaccount.data['password'] != formaccount.data['dwpassword']:
+                iduser = funciduser()
+                settingsvar.html = 'diagnoz/savediagnoz.html'
+                backurl = funcbakurl()
+                settingsvar.nextstepdata = {
+                    'compl': 'Шановний користувач! Введені паролі не співпадають',
+                    'backurl': backurl,
+                    'iduser': iduser
+                }
+            else:
+
+                json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
+                Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+                if len(Stroka) > 0:
+                    iduser = funciduser()
+                    settingsvar.html = 'diagnoz/savediagnoz.html'
+                    backurl = funcbakurl()
+                    settingsvar.nextstepdata = {
+                        'compl': 'Шановний користувач! Введені паролі не співпадають',
+                        'backurl': backurl,
+                        'iduser': iduser
+                    }
+                else:
+                    details = False
+                    settingsvar.dateInterview = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                    json = {'id': 0,
+                            'idUser': newpacientprofil(),
+                            'idStatus': '2',
+                            'login': formaccount.data['login'],
+                            'password': formaccount.data['password'],
+                            'accountCreatDate': settingsvar.dateInterview,
+                            'subscription': details,
+                            }
+                    settingsvar.setReestrAccount = True
+                    saveaccount = rest_api('/api/AccountUserController/', json, 'POST')
+                    settingsvar.html = 'diagnoz/pacientprofil.html'
+                    pacientprofil(request)
+                    form = PacientForm()
+                    settingsvar.html == 'diagnoz/pacientprofil.html'
+                    settingsvar.nextstepdata = {'form': form}
+
+
+        else:
+            settingsvar.readprofil = True
+            iduser = funciduser()
+            formpacient = PacientForm(initial=settingsvar.pacient)
+            settingsvar.nextstepdata = {
+                'form': formpacient,
+                'next': settingsvar.readprofil
+            }
+            settingsvar.html = 'diagnoz/pacientprofil.html'
+    else:
+        if settingsvar.setpost == False:
+            settingsvar.readprofil = False
+            formreestraccount = ReestrAccountUserForm()
+            settingsvar.nextstepdata = {
+                'form': formreestraccount,
+                'backurl': 'kabinetpacient',
+                'reestrinput': 'Реєстрація в кабінеті пацієнта',
+            }
+        else:
+            kabinetpacient(request)
+            settingsvar.setpost = True
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
 def accountuser(request):
 
     settingsvar.html = 'diagnoz/accountuser.html'
@@ -727,10 +814,11 @@ def accountuser(request):
                                                'GET')
                 if len(settingsvar.pacient) > 0:
                     settingsvar.setpost = True
+                    settingsvar.readprofil = True
                     formpacient = PacientForm(initial=settingsvar.pacient)
                     settingsvar.nextstepdata = {
                         'form': formpacient,
-                        'next': 'Далі'
+                        'next': settingsvar.readprofil
                     }
                     settingsvar.html = 'diagnoz/pacientprofil.html'
                 else:
@@ -753,21 +841,23 @@ def accountuser(request):
                     'iduser': iduser
                 }
         else:
+            settingsvar.readprofil = False
             formaccount = AccountUserForm()
             settingsvar.nextstepdata = {
                 'form': formaccount,
                 'compl': 'Зареєструватися',
                 'backurl': 'kabinetpacient',
-                'reestrinput': 'Кабінет пацієнта'
+                'reestrinput': 'Кабінет пацієнта',
             }
     else:
         match settingsvar.kabinetitem:
             case 'profil':
+                settingsvar.readprofil = True
                 iduser = funciduser()
                 formpacient = PacientForm(initial=settingsvar.pacient)
                 settingsvar.nextstepdata = {
                     'form': formpacient,
-                    'next': 'Далі'
+                    'next': settingsvar.readprofil
                 }
                 settingsvar.html = 'diagnoz/pacientprofil.html'
 
@@ -807,7 +897,10 @@ def accountuser(request):
 def kabinetpacient(request):
     settingsvar.html = 'diagnoz/pacientprofil.html'
     form = PacientForm()
-    settingsvar.nextstepdata = {'form': form}
+    settingsvar.nextstepdata = {
+        'form': form,
+        'next': settingsvar.readprofil
+    }
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -952,19 +1045,24 @@ def profilpacient(request):  # httpRequest
     if settingsvar.setpost == False:
         accountuser(request)
     else:
+        settingsvar.html = 'diagnoz/pacientprofil.html'
+        if settingsvar.readprofil == True:
+            settingsvar.html = 'diagnoz/pacient.html'
+        settingsvar.readprofil = True
         iduser = funciduser()
         formpacient = PacientForm(initial=settingsvar.pacient)
         settingsvar.nextstepdata = {
             'form': formpacient,
-            'next': 'Далі'
+            'next': settingsvar.readprofil
         }
-        settingsvar.html = 'diagnoz/pacientprofil.html'
+
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 # --- Провести опитування пациєнта в особистому кабінеті
 def pacientinterwiev(request):  # httpRequest
     cleanvars()
+    settingsvar.readprofil = False
     settingsvar.nawpage = 'receptinterwiev'
     settingsvar.kabinetitem = 'interwiev'
     if settingsvar.setpost == False:
@@ -975,7 +1073,8 @@ def pacientinterwiev(request):  # httpRequest
         settingsvar.html = 'diagnoz/receptinterwiev.html'
         settingsvar.nextstepdata = {
             'complaintlist': api,
-            'iduser': iduser
+            'iduser': iduser,
+            'backurl': 'pacient'
         }
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -1022,6 +1121,7 @@ def profilinterview(request, selected_protokol):  # httpRequest
 def pacientlistinterwiev(request):  # httpRequest
     # --- {{item.nameInterview}}
     cleanvars()
+    settingsvar.readprofil = False
     backurl = funcbakurl()
     settingsvar.nawpage = 'receptinterwiev'
     settingsvar.kabinetitem = 'listinterwiev'

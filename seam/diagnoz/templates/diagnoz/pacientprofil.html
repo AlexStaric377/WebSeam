@@ -102,9 +102,15 @@
                 </font></font></div>
             </div>
             <p>
+                {% if next %}
+                <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
+                        style="vertical-align: inherit;"><font style="vertical-align: inherit;">Далі</font></font>
+                </button>
+                {% else %}
                 <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
                         style="vertical-align: inherit;"><font style="vertical-align: inherit;">Зберегти</font></font>
                 </button>
+                {% endif %}
             </p>
 
 

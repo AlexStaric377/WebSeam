@@ -1,0 +1,46 @@
+{% extends 'diagnoz/shablonpage.html' %}
+{% block content %}
+
+<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+    <div class="col">
+        <h4>{{reestrinput}}</h4>
+    </div>
+
+</nav>
+<form class="needs-validation" method="POST" novalidate="">
+    {% csrf_token %}
+    <div class="row g-3">
+        <div class="col-md-2">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{ form.login.label }}</font></font>
+            </label>
+            {{form.login}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вимагається дійсний номер телефону.</font></font>
+            </div>
+        </div>
+        <p></p>
+        <div class="col-md-2">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{ form.password.label }}</font></font></label>
+            {{form.password}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вимагається дійсний пароль.</font></font>
+            </div>
+        </div>
+        <p></p>
+        <div class="col-md-2">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{ form.dwpassword.label }}</font></font></label>
+            {{form.dwpassword}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вимагається дійсний пароль.</font></font>
+            </div>
+        </div>
+    </div>
+    <p></p>
+    <button class="w-40 h-20 btn btn-primary btn-lg" type="submit"><font style="vertical-align: inherit;"><font
+            style="vertical-align: inherit;">Підтвердити</font></font></button>
+</form>
+
+{% endblock %}

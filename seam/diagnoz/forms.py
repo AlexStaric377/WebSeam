@@ -32,3 +32,12 @@ class AccountUserForm(forms.Form):
                             widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
     password = forms.CharField(max_length=13, label='Пароль:',
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+class ReestrAccountUserForm(forms.Form):
+    login = forms.CharField(max_length=13, label='Телефон:',
+                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
+    password = forms.CharField(max_length=13, label='Пароль:',
+                               widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    dwpassword = forms.CharField(max_length=13, label='Повторити пароль:',
+                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))

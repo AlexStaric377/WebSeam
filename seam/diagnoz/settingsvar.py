@@ -47,3 +47,5 @@ setpost = False
 kabinetitem = 'profil'
 pacient = ""
 listapi = []
+readprofil = False
+setReestrAccount = False
