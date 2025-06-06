@@ -1,6 +1,7 @@
 from django import forms
 
 
+# --- Фориа Профіль пацієнта
 class PacientForm(forms.Form):
     Typegender = [("чол.", "чол."), ("жін.", "жін.")]
 
@@ -25,8 +26,7 @@ class PacientForm(forms.Form):
                              widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "ви@example.com"}))
 
 
-# ---    next = forms.Field(initial='Зберегти')
-
+#--- Форма реєестрації входу до кабінету пацієнта
 class AccountUserForm(forms.Form):
     login = forms.CharField(max_length=13, label='Телефон:',
                             widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
@@ -34,6 +34,7 @@ class AccountUserForm(forms.Form):
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 
+#--- Форма реєестрації нового облікового запису для пацієнтів
 class ReestrAccountUserForm(forms.Form):
     login = forms.CharField(max_length=13, label='Телефон:',
                             widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
@@ -41,3 +42,25 @@ class ReestrAccountUserForm(forms.Form):
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     dwpassword = forms.CharField(max_length=13, label='Повторити пароль:',
                                  widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+# --- Форма профіль лікаря
+class LikarForm(forms.Form):
+    kodDoctor = forms.CharField(max_length=5, min_length=5, label="Поштовий індекс",
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "03146"}))
+    name = forms.CharField(max_length=37, min_length=3, label="Ім'я",
+                           widget=forms.TextInput(attrs={'class': 'form-control'}))
+    surname = forms.CharField(max_length=37, min_length=3, label="Прізвище",
+                              widget=forms.TextInput(attrs={'class': 'form-control'}))
+    tel = forms.CharField(label="Телефон", widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
+    email = forms.EmailField(label="Электронна пошта (Email)", required=False,
+                             widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "ви@example.com"}))
+    edrpou = forms.CharField(max_length=70, label="Професія", required=False,
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+    specialnoct = forms.CharField(max_length=70, label="Професія", required=False,
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
+    napryamok = forms.CharField(max_length=70, label="Професія", required=False,
+                                widget=forms.TextInput(attrs={'class': 'form-control'}))
+    uriwebDoctor = forms.CharField(max_length=70, label="Професія", required=False,
+                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
