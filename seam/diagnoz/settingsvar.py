@@ -51,4 +51,4 @@ readprofil = False
 setReestrAccount = False
 jsonstroka = {}
 setpostlikar = False
-likar = ""
+likar = {}

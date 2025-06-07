@@ -46,21 +46,21 @@ class ReestrAccountUserForm(forms.Form):
 
 # --- Форма профіль лікаря
 class LikarForm(forms.Form):
-    kodDoctor = forms.CharField(max_length=5, min_length=5, label="Поштовий індекс",
-                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "03146"}))
+    kodDoctor = forms.CharField()
     name = forms.CharField(max_length=37, min_length=3, label="Ім'я",
                            widget=forms.TextInput(attrs={'class': 'form-control'}))
     surname = forms.CharField(max_length=37, min_length=3, label="Прізвище",
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
-    tel = forms.CharField(label="Телефон", widget=forms.TextInput(
+    telefon = forms.CharField(max_length=13, min_length=10, label="Телефон", widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
     email = forms.EmailField(label="Электронна пошта (Email)", required=False,
-                             widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "ви@example.com"}))
-    edrpou = forms.CharField(max_length=70, label="Професія", required=False,
+                             widget=forms.TextInput(
+                                 attrs={'class': 'form-control', 'placeholder': "mymail@example.com"}))
+    edrpou = forms.CharField(max_length=8, label="ЕДРПОУ", required=False,
                              widget=forms.TextInput(attrs={'class': 'form-control'}))
-    specialnoct = forms.CharField(max_length=70, label="Професія", required=False,
+    specialnoct = forms.CharField(max_length=70, label="Спеціальність", required=False,
                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
-    napryamok = forms.CharField(max_length=70, label="Професія", required=False,
+    napryamok = forms.CharField(max_length=70, label="Напрямок", required=False,
                                 widget=forms.TextInput(attrs={'class': 'form-control'}))
-    uriwebDoctor = forms.CharField(max_length=70, label="Професія", required=False,
+    uriwebDoctor = forms.CharField(max_length=70, label="Вебсторінка", required=False,
                                    widget=forms.TextInput(attrs={'class': 'form-control'}))

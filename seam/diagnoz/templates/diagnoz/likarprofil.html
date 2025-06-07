@@ -2,204 +2,91 @@
 
 {% block content %}
 <div class="col">
-    <h4>Кабінет лікаря</h4>
+    <h6>Кабінет лікаря</h6>
 </div>
 <div class="col-md-7 col-lg-8">
-    <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль лікаря</font></font>
-    </h4>
-    <form class="needs-validation" novalidate="">
+    <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
+        лікаря</font></font></h4>
+    <form action="" method="POST">
+        {% csrf_token %}
         <div class="row g-3">
-            <div class="col-sm-6">
-                <label class="form-label" for="firstName"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Имя</font></font></label>
-                <input class="form-control" id="firstName" placeholder="" required="" type="text" value="">
+            <div class="col-sm-4">
+                <label class="form-label"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">{{ form.name.label }}</font></font>
+                </label>
+                {{form.name}}
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Требуется действительное имя.
-                </font></font></div>
+                        style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
+                </div>
             </div>
-
-            <div class="col-sm-6">
-                <label class="form-label" for="lastName"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Фамилия</font></font></label>
-                <input class="form-control" id="lastName" placeholder="" required="" type="text" value="">
+            <div class="col-sm-4">
+                <label class="form-label"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
+                {{form.surname}}
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Требуется действительная фамилия.
-                </font></font></div>
+                        style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
+                </div>
             </div>
+            <p>
+            <div class="col-md-4">
+                <label class="form-label"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">{{form.specialnoct.label}}</font></font></label>
+                {{form.specialnoct}}
+                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Вимагається назва професії.</font></font>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">{{form.napryamok.label}}</font></font>
+                </label>
+                {{form.napryamok}}
+                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Вкажіть допустимий вік.</font></font>
+                </div>
+            </div>
+            <p>
+            <div class="col-md-2">
+                <label class="form-label"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">{{form.uriwebDoctor.label}}</font></font></label>
+                {{form.uriwebDoctor}}
+                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Вкажіть допустиму вагу.</font></font>
+                </div>
+            </div>
+            <p>
 
-            <div class="col-12">
-                <label class="form-label" for="username"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Имя пользователя</font></font></label>
-                <div class="input-group has-validation">
-                    <span class="input-group-text"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">@</font></font></span>
-                    <input class="form-control" id="username" placeholder="Имя пользователя" required="" type="text">
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">
-                        Ваше имя пользователя обязательно.
-                    </font></font></div>
+            <div class="col-md-2">
+                <label class="form-label"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">{{form.telefon.label}}</font></font>
+                </label>
+                {{form.telefon}}
+                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Вимагається допустимий номер.</font></font>
                 </div>
             </div>
 
-            <div class="col-12">
-                <label class="form-label" for="email"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Электронная почта </font></font><span
-                        class="text-body-secondary"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">(необязательно)</font></font></span></label>
-                <input class="form-control" id="email" placeholder="вы@example.com" type="email">
+            <div class="col-5">
+                <label class="form-label"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">{{form.email.label}} </font></font></label>
+                {{form.email}}
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">
-                    Введите действительный адрес электронной почты для получения обновлений по доставке.
+                    Ввеіть дійсну адресу электронної пошти для отримання повідомлення про підтвердження реєстрації.
                 </font></font></div>
             </div>
-
-            <div class="col-12">
-                <label class="form-label" for="address"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Адрес</font></font></label>
-                <input class="form-control" id="address" placeholder="1234 Мейн Стрит" required="" type="text">
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Пожалуйста, введите адрес доставки.
-                </font></font></div>
-            </div>
-
-            <div class="col-12">
-                <label class="form-label" for="address2"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Адрес 2 </font></font><span class="text-body-secondary"><font
-                        style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">(необязательно)</font></font></span></label>
-                <input class="form-control" id="address2" placeholder="Апартаменты или люкс" type="text">
-            </div>
-
-            <div class="col-md-5">
-                <label class="form-label" for="country"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Страна</font></font></label>
-                <select class="form-select" id="country" required="">
-                    <option value=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Выбирать...</font></font>
-                    </option>
-                    <option><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Соединенные
-                        Штаты</font></font></option>
-                </select>
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Пожалуйста, выберите правильную страну.
-                </font></font></div>
-            </div>
-
-            <div class="col-md-4">
-                <label class="form-label" for="state"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Состояние</font></font></label>
-                <select class="form-select" id="state" required="">
-                    <option value=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Выбирать...</font></font>
-                    </option>
-                    <option><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Калифорния</font></font></option>
-                </select>
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Укажите допустимый штат.
-                </font></font></div>
-            </div>
-
-            <div class="col-md-3">
-                <label class="form-label" for="zip"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Почтовый индекс</font></font></label>
-                <input class="form-control" id="zip" placeholder="" required="" type="text">
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Требуется почтовый индекс.
-                </font></font></div>
-            </div>
+            <p>
+                {% if next %}
+                <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
+                        style="vertical-align: inherit;"><font style="vertical-align: inherit;">Далі</font></font>
+                </button>
+                {% else %}
+                <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
+                        style="vertical-align: inherit;"><font style="vertical-align: inherit;">Зберегти</font></font>
+                </button>
+                {% endif %}
+            </p>
         </div>
-
-        <hr class="my-4">
-
-        <div class="form-check">
-            <input class="form-check-input" id="same-address" type="checkbox">
-            <label class="form-check-label" for="same-address"><font style="vertical-align: inherit;"><font
-                    style="vertical-align: inherit;">Адрес доставки совпадает с моим платежным
-                адресом.</font></font></label>
-        </div>
-
-        <div class="form-check">
-            <input class="form-check-input" id="save-info" type="checkbox">
-            <label class="form-check-label" for="save-info"><font style="vertical-align: inherit;"><font
-                    style="vertical-align: inherit;">Сохраните эту информацию для следующего раза.</font></font></label>
-        </div>
-
-        <hr class="my-4">
-
-        <h4 class="mb-3"><font style="vertical-align: inherit;"><font
-                style="vertical-align: inherit;">Оплата</font></font></h4>
-
-        <div class="my-3">
-            <div class="form-check">
-                <input checked="" class="form-check-input" id="credit" name="paymentMethod" required="" type="radio">
-                <label class="form-check-label" for="credit"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Кредитная карта</font></font></label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" id="debit" name="paymentMethod" required="" type="radio">
-                <label class="form-check-label" for="debit"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Дебетовая карта</font></font></label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" id="paypal" name="paymentMethod" required="" type="radio">
-                <label class="form-check-label" for="paypal"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">PayPal</font></font></label>
-            </div>
-        </div>
-
-        <div class="row gy-3">
-            <div class="col-md-6">
-                <label class="form-label" for="cc-name"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Имя на карточке</font></font></label>
-                <input class="form-control" id="cc-name" placeholder="" required="" type="text">
-                <small class="text-body-secondary"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Полное имя, как указано на карте</font></font></small>
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Имя на карте обязательно
-                </font></font></div>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label" for="cc-number"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Номер кредитной карты</font></font></label>
-                <input class="form-control" id="cc-number" placeholder="" required="" type="text">
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Требуется номер кредитной карты
-                </font></font></div>
-            </div>
-
-            <div class="col-md-3">
-                <label class="form-label" for="cc-expiration"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Истечение срока действия</font></font></label>
-                <input class="form-control" id="cc-expiration" placeholder="" required="" type="text">
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Требуется дата истечения срока действия
-                </font></font></div>
-            </div>
-
-            <div class="col-md-3">
-                <label class="form-label" for="cc-cvv"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">CVV</font></font></label>
-                <input class="form-control" id="cc-cvv" placeholder="" required="" type="text">
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">
-                    Требуется код безопасности
-                </font></font></div>
-            </div>
-        </div>
-
-        <hr class="my-4">
-
-        <button class="w-100 btn btn-primary btn-lg" type="submit"><font style="vertical-align: inherit;"><font
-                style="vertical-align: inherit;">Продолжить оформление заказа</font></font></button>
     </form>
 </div>
 {% endblock %}
