@@ -64,3 +64,13 @@ class LikarForm(forms.Form):
                                 widget=forms.TextInput(attrs={'class': 'form-control'}))
     uriwebDoctor = forms.CharField(max_length=70, label="Вебсторінка", required=False,
                                    widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+
+# --- Пошук пацієнта за прізвищем та телефоном
+class SearchPacient(forms.Form):
+    name = forms.CharField(max_length=37, min_length=3, label="Ім'я",
+                           widget=forms.TextInput(attrs={'class': 'form-control'}))
+    surname = forms.CharField(max_length=37, min_length=3, label="Прізвище",
+                              widget=forms.TextInput(attrs={'class': 'form-control'}))
+    telefon = forms.CharField(max_length=13, min_length=10, label="Телефон", widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
