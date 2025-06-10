@@ -52,3 +52,4 @@ setReestrAccount = False
 jsonstroka = {}
 setpostlikar = False
 likar = {}
+search = False

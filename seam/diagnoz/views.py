@@ -791,49 +791,53 @@ def accountuser(request):
     settingsvar.html = 'diagnoz/accountuser.html'
     if settingsvar.setpost == False:
         if request.method == 'POST':
-            formaccount = AccountUserForm(request.POST)
-            #        login = formaccount.data['login']
-            #        pas = formaccount.data['password']
-            json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
-            Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
-            if len(Stroka) > 0:
-                match settingsvar.kabinetitem:
-                    case "pacient" | "interwiev" | 'listinterwiev':
-                        settingsvar.kodPacient = Stroka['idUser']
-                        settingsvar.pacient = rest_api('/api/PacientController/' + settingsvar.kodPacient + '/0/0/0/0',
+            if settingsvar.search == True:
+                formsearch = SearchPacient(request.POST)
+                funcsearchpacient(formsearch)
+            else:
+                formaccount = AccountUserForm(request.POST)
+                json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
+                Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+                if len(Stroka) > 0:
+                    match settingsvar.kabinetitem:
+                        case "profil" | "pacient" | "interwiev" | 'listinterwiev':
+                            settingsvar.kodPacient = Stroka['idUser']
+                            settingsvar.pacient = rest_api(
+                                '/api/PacientController/' + settingsvar.kodPacient + '/0/0/0/0',
                                                        '', 'GET')
 
-                        if len(settingsvar.pacient) > 0:
-                            settingsvar.setpost = True
-                            settingsvar.readprofil = True
-                            formpacient = PacientForm(initial=settingsvar.pacient)
-                            settingsvar.nextstepdata = {
+                            if len(settingsvar.pacient) > 0:
+                                settingsvar.setpost = True
+                                settingsvar.readprofil = True
+                                formpacient = PacientForm(initial=settingsvar.pacient)
+                                settingsvar.nextstepdata = {
                                 'form': formpacient,
                                 'next': settingsvar.readprofil
-                            }
-                            settingsvar.html = 'diagnoz/pacientprofil.html'
-                        else:
-                            errorprofil(
+                                }
+                                settingsvar.html = 'diagnoz/pacientprofil.html'
+                            else:
+                                errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль пацієнта не знайдено.')
-                    case "likar" | 'likarinterwiev':
-                        settingsvar.kodLikar = Stroka['idUser']
-                        settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0', '',
+                        case "likar" | 'likarinterwiev':
+                            settingsvar.kodLikar = Stroka['idUser']
+                            settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
+                                                         '',
                                                      'GET')
-                        if len(settingsvar.likar) > 0:
-                            settingsvar.setpost = True
-                            settingsvar.readprofil = True
-                            settingsvar.setpostlikar = True
-                            formlikar = LikarForm(initial=settingsvar.likar)
-                            settingsvar.nextstepdata = {
+                            if len(settingsvar.likar) > 0:
+                                settingsvar.setpost = True
+                                settingsvar.readprofil = True
+                                settingsvar.setpostlikar = True
+                                formlikar = LikarForm(initial=settingsvar.likar)
+                                settingsvar.nextstepdata = {
                                 'form': formlikar,
                                 'next': settingsvar.readprofil
-                            }
-                            settingsvar.html = 'diagnoz/likarprofil.html'
-                        else:
-                            errorprofil(
+                                }
+                                settingsvar.html = 'diagnoz/likarprofil.html'
+                            else:
+                                errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль лікаря не знайдено.')
-            else:
-                errorprofil('Шановний користувач! Невірно введено номер телефону або пароль.')
+                else:
+                    errorprofil('Шановний користувач! Невірно введено номер телефону або пароль.')
         else:
             cab = 'Кабінет пацієнта'
             if settingsvar.kabinetitem == "likar" or settingsvar.kabinetitem == 'likarinterwiev':
@@ -858,7 +862,7 @@ def accountuser(request):
                 }
                 settingsvar.html = 'diagnoz/pacientprofil.html'
 
-            case 'interwiev' | 'likarinterwiev':
+            case 'interwiev':
                 iduser = funciduser()
                 settingsvar.html = 'diagnoz/receptinterwiev.html'
                 api = rest_api('api/ApiControllerComplaint/', '', 'GET')
@@ -888,8 +892,59 @@ def accountuser(request):
                     'next': settingsvar.readprofil
                 }
                 settingsvar.html = 'diagnoz/likarprofil.html'
+            case 'likarinterwiev':
+                if len(settingsvar.pacient) > 0:
+                    settingsvar.readprofil = True
+                    iduser = funciduser()
+                    formpacient = PacientForm(initial=settingsvar.pacient)
+                    settingsvar.nextstepdata = {
+                        'form': formpacient,
+                        'next': settingsvar.readprofil
+                    }
+                    settingsvar.html = 'diagnoz/pacientprofil.html'
+                else:
+                    settingsvar.search = True
+                    search_pacient()
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- пошуку даних пацієнта
+def funcsearchpacient(formsearch):
+    if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) > 0 and len(
+            formsearch.data['telefon']) > 0:
+        json = "0/0/" + formsearch.data['name'] + "/" + formsearch.data['surname'] + '/' + formsearch.data[
+            'telefon']
+    if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) > 0 and len(
+            formsearch.data['telefon']) == 0:
+        json = "0/0/" + formsearch.data['name'] + "/" + formsearch.data['surname'] + '/0'
+    if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) == 0 and len(
+            formsearch.data['telefon']) == 0:
+        json = "0/0/" + formsearch.data['name'] + '/0/0'
+    if len(formsearch.data['name']) == 0 and len(formsearch.data['surname']) == 0 and len(
+            formsearch.data['telefon']) > 0:
+        json = "0/0/0/0/" + formsearch.data['telefon']
+    if len(formsearch.data['name']) == 0 and len(formsearch.data['surname']) > 0 and len(
+            formsearch.data['telefon']) > 0:
+        json = "0/0/0/" + formsearch.data['surname'] + '/' + formsearch.data['telefon']
+    settingsvar.pacient = rest_api('api/PacientController/' + json, '', 'GET')
+    if len(settingsvar.pacient) > 0:
+        settingsvar.setpostlikar = True
+        settingsvar.readprofil = True
+        settingsvar.search = True
+        settingsvar.html = 'diagnoz/pacientprofil.html'
+        iduser = funciduser()
+        formpacient = PacientForm(initial=settingsvar.pacient)
+        settingsvar.nextstepdata = {
+            'form': formpacient,
+            'next': settingsvar.readprofil
+        }
+    else:
+        errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
+
+    return
+
+
 
 def kabinetpacient(request):
     settingsvar.html = 'diagnoz/pacientprofil.html'
@@ -1151,16 +1206,7 @@ def pacientlistinterwiev(request):  # httpRequest
                 'backurl': backurl
             }
         else:
-
-            settingsvar.html = 'diagnoz/savediagnoz.html'
-            backurl = funcbakurl()
-            iduser = funciduser()
-            settingsvar.nextstepdata = {
-                'iduser': iduser,
-                'compl': 'Шановний користувач! За вашим запитом відсутні проведені опитування.',
-                'backurl': backurl
-            }
-
+            errorprofil('Шановний користувач! За вашим запитом відсутні проведені опитування.')
     return render(request, settingsvar.html, settingsvar.nextstepdata )
 
 
@@ -1216,39 +1262,16 @@ def likarinterweiv(request):  # httpRequest
     settingsvar.kabinetitem = 'likarinterwiev'
     if settingsvar.setpostlikar == False:
         accountuser(request)
+
     else:
         # --- пошук даних пацієнта для проведення опитування
-        if len(settingsvar.pacient) == 0:
-            if request.method == 'POST':
+        if settingsvar.search == False:
+            if request.method == 'POST' and settingsvar.setpost == False:
                 formsearch = SearchPacient(request.POST)
-
-                if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) > 0 and len(
-                        formsearch.data['telefon']) > 0:
-                    json = "0/0/" + formsearch.data['name'] + "/" + formsearch.data['surname'] + '/' + formsearch.data[
-                        'telefon']
-                if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) > 0 and len(
-                        formsearch.data['telefon']) == 0:
-                    json = "0/0/" + formsearch.data['name'] + "/" + formsearch.data['surname'] + '/0'
-                if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) == 0 and len(
-                        formsearch.data['telefon']) == 0:
-                    json = "0/0/" + formsearch.data['name'] + '/0/0'
-                if len(formsearch.data['name']) == 0 and len(formsearch.data['surname']) == 0 and len(
-                        formsearch.data['telefon']) > 0:
-                    json = "0/0/0/0/" + formsearch.data['telefon']
-                if len(formsearch.data['name']) == 0 and len(formsearch.data['surname']) > 0 and len(
-                        formsearch.data['telefon']) > 0:
-                    json = "0/0/0/" + formsearch.data['surname'] + '/' + formsearch.data['telefon']
-                settingsvar.pacient = rest_api('api/PacientController/' + json, '', 'GET')
-                if len(settingsvar.pacient) > 0:
-                    settingsvar.readprofil = True
-                    iduser = funciduser()
-                    formpacient = PacientForm(initial=settingsvar.pacient)
-                    settingsvar.nextstepdata = {
-                        'form': formpacient,
-                        'next': settingsvar.readprofil
-                    }
+                funcsearchpacient(formsearch)
 
             else:
+                settingsvar.setpost = False
                 search_pacient()
         else:
             iduser = funciduser()
