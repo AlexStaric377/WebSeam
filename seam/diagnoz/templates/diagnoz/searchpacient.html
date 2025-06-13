@@ -4,13 +4,25 @@
 
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
-        <h4>{{reestrinput}}</h4>
+        <p>{{medzaklad}}</p>
+        <p>{{reestrinput}}</p>
+        <p>Введіть будь-яку комбінацію нижче наведених реквізитів для пошуку пацієнта в БД,</p>
+        <p>або зареєструйте його профіль</p>
     </div>
 
 </nav>
 <form class="needs-validation" method="POST" novalidate="">
     {% csrf_token %}
     <div class="row g-3">
+        <div class="col-md-2">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{ form.telefon.label }}</font></font></label>
+            {{form.telefon}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вимагається дійсний номер.</font></font>
+            </div>
+        </div>
+        <p></p>
         <div class="col-md-2">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.name.label }}</font></font>
@@ -20,21 +32,12 @@
                     style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
             </div>
         </div>
-        <p></p>
         <div class="col-md-2">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
             {{form.surname}}
             <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">Вимагається дійсне прізвище.</font></font>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <label class="form-label"><font style="vertical-align: inherit;"><font
-                    style="vertical-align: inherit;">{{ form.telefon.label }}</font></font></label>
-            {{form.telefon}}
-            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                    style="vertical-align: inherit;">Вимагається дійсний номер.</font></font>
             </div>
         </div>
     </div>

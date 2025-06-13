@@ -10,16 +10,16 @@ class PacientForm(forms.Form):
     surname = forms.CharField(max_length=37, min_length=3, label="Прізвище",
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     gender = forms.ChoiceField(choices=Typegender, label="Стать", widget=forms.Select(attrs={'class': 'form-control'}))
-    age = forms.IntegerField(max_value=120, min_value=5, label="Вік",
+    age = forms.IntegerField(max_value=120, min_value=5, label="Вік(р.)",
                              widget=forms.NumberInput(attrs={'class': 'form-control'}))
     profession = forms.CharField(max_length=70, label="Професія", required=False,
                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
-    weight = forms.IntegerField(max_value=250, min_value=15, label="Вага", required=False,
+    weight = forms.IntegerField(max_value=250, min_value=15, label="Вага(кг.)", required=False,
                                 widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    growth = forms.IntegerField(max_value=230, min_value=115, label="Зріст", required=False,
+    growth = forms.IntegerField(max_value=230, min_value=115, label="Зріст(см.)", required=False,
                                      widget=forms.NumberInput(attrs={'class': 'form-control'}))
     pind = forms.CharField(max_length=5, min_length=5, label="Поштовий індекс",
-                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "03146"}))
+                           widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "xxxxx"}))
     tel = forms.CharField(label="Телефон", widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
     email = forms.EmailField(label="Электронна пошта (Email)", required=False,

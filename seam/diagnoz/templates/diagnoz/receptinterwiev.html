@@ -3,11 +3,15 @@
 {% block content %}
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
-        <h4>{{iduser}}</h4>
+
         {% if likar %}
+        <p>{{medzaklad}}</p>
+        <p>{{piblikar}}</p>
         <p>{{pacient}}</p>
         <p>{{age_weight_growth}}</p>
         <p> {{tel_email_pind}}</p>
+        {% else %}
+        <h4>{{iduser}}</h4>
         {% endif %}
     </div>
     <div class="navbar-nav">

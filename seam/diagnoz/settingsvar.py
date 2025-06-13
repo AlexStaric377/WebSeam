@@ -54,3 +54,4 @@ setpostlikar = False
 likar = {}
 search = False
 formsearch = {}
+addprofilpacient = {}

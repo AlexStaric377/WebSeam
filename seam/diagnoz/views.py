@@ -608,19 +608,33 @@ def saveselectlikar(json):
     iduser = funciduser()
     if settingsvar.setintertview == True:
         settingsvar.html = 'diagnoz/finishreception.html'
-        if backurl == 'pacient' or backurl == 'likar':
+        if backurl == 'pacient' or backurl == 'likar' or bakurl == 'likarinterweiv':
             settingsvar.html = 'diagnoz/finishinterviewpacient.html'
-            settingsvar.nextstepdata = {
-            'iduser': iduser,
+            if backurl == 'likar' or bakurl == 'likarinterweiv':
+                settingsvar.nawpage = 'receptprofillmedzaklad'
+                settingsvar.nextstepdata = {
+                    'iduser': iduser,
+                    'pacient': 'Увага! сформовано попередній діаноз на прийомі у лікаря.',
+                    'shapka': 'Пацієнт: ' + pacient['name'] + " " + pacient['surname'],
+                    'medzaklad': settingsvar.namemedzaklad,
+                    'likar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+                    'datereception': 'Дата прийому: ' + settingsvar.datereception,
+                    'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
+                    'podval': 'Ви підтверджуєте збереження опитування?',
+                    'backurl': backurl
+                }
+            else:
+                settingsvar.nextstepdata = {
+                    'iduser': iduser,
                 'pacient': 'Увага! ' + pacient['name'] + " " + pacient['surname'],
-            'shapka': 'Ви сформували запит на прийом до лікаря.',
-            'medzaklad': settingsvar.namemedzaklad,
-            'likar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
-            'datereception': 'Дата прийому: ' + settingsvar.datereception,
-            'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
-            'podval': 'Ви підтверджуєте свій вибір?',
-            'backurl': backurl
-            }
+                    'shapka': 'Ви сформували запит на прийом до лікаря.',
+                    'medzaklad': settingsvar.namemedzaklad,
+                    'likar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+                    'datereception': 'Дата прийому: ' + settingsvar.datereception,
+                    'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
+                    'podval': 'Ви підтверджуєте свій вибір?',
+                    'backurl': backurl
+                }
     else:
         settingsvar.html = 'diagnoz/savediagnoz.html'
         settingsvar.nextstepdata = {
@@ -829,10 +843,17 @@ def accountuser(request):
                                 settingsvar.setpost = True
                                 settingsvar.readprofil = True
                                 settingsvar.setpostlikar = True
+                                medzaklad = rest_api(
+                                    '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
+                                    'GET')
+                                settingsvar.namemedzaklad = medzaklad['name']
+                                settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
+                                settingsvar.mobtellikar = settingsvar.likar['telefon']
                                 formlikar = LikarForm(initial=settingsvar.likar)
                                 settingsvar.nextstepdata = {
                                 'form': formlikar,
-                                'next': settingsvar.readprofil
+                                    'next': settingsvar.readprofil,
+                                    'medzaklad': settingsvar.namemedzaklad
                                 }
                                 settingsvar.html = 'diagnoz/likarprofil.html'
                             else:
@@ -935,38 +956,11 @@ def funcsearchpacient(formsearch):
         profilpacient = {}
         profilpacient = settingsvar.pacient[0]
         settingsvar.kodPacienta = profilpacient['kodPacient']
-        settingsvar.setpostlikar = True
-        settingsvar.readprofil = True
-        settingsvar.search = True
-        iduser = funciduser()
-        backurl = funcbakurl()
-        api = rest_api('api/ApiControllerComplaint/', '', 'GET')
-        settingsvar.html = 'diagnoz/receptinterwiev.html'
-        tel = ''
-        mail = ''
-        pind = ''
-        if profilpacient['tel'] != None: tel = profilpacient['tel']
-        if profilpacient['email'] != None: mail = profilpacient['email']
-        if profilpacient['pind'] != None: pind = profilpacient['pind']
-        tel_email_pind = 'Тел.: ' + tel + ' Ел.Пошта: ' + mail + ' Пошт.індекс: ' + pind
-        settingsvar.nextstepdata = {
-            'complaintlist': api,
-            'likar': settingsvar.setpostlikar,
-            'iduser': iduser,
-            'pacient': 'Пацієнт:' + profilpacient['profession'] + ' ' + profilpacient['name'] + " " + profilpacient[
-                'surname'],
-            'age_weight_growth': 'Вік: ' + str(profilpacient['age']) + 'р. Вага: ' + str(
-                profilpacient['weight']) + 'кг. Зріст: ' + str(profilpacient['growth']) + 'см.',
-            'tel_email_pind': tel_email_pind,
-            'backurl': backurl
-        }
-
-
+        shablonlikar(profilpacient)
     else:
         errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
 
     return
-
 
 
 def kabinetpacient(request):
@@ -1016,7 +1010,8 @@ def Pacientinitial():
 def pacientprofil(request):  # httpRequest
 
     settingsvar.html = 'diagnoz/pacientprofil.html'
-    settingsvar.kabinetitem = 'profil'
+    if settingsvar.kabinetitem != 'likarinterwiev': settingsvar.kabinetitem = 'profil'
+
     if request.method == 'POST':
         form = PacientForm(request.POST)
         #       if form.is_valid():
@@ -1036,15 +1031,19 @@ def pacientprofil(request):  # httpRequest
                 }
 
         # --- записати в Бд введенний профіль
-        saveprofil = rest_api('/api/PacientController/', json, 'POST')
-        if len(saveprofil) > 0:
+        settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
+        if len(settingsvar.pacient) > 0:
             if settingsvar.readprofil != False:
-                saveselectlikar(saveprofil)
+                saveselectlikar(settingsvar.pacient)
             else:
                 saveaccount = rest_api('/api/AccountUserController/', settingsvar.jsonstroka, 'POST')
                 if len(saveaccount) > 0:
-                    settingsvar.setpost = True
-                    errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
+                    if settingsvar.kabinetitem != 'likarinterwiev':
+                        shablonlikar(settingsvar.pacient)
+
+                    else:
+                        settingsvar.setpost = True
+                        errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
                 else:
                     errorprofil('Шановний користувач! Похибка на серевері. Ваш профіль не збережено.')
         else:
@@ -1058,6 +1057,39 @@ def pacientprofil(request):  # httpRequest
             'next': False
         }
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- Функція формування реквізитів профілю пацієнта для відображення на вебсайті
+def shablonlikar(profilpacient):
+    settingsvar.setpostlikar = True
+    settingsvar.readprofil = True
+    settingsvar.search = True
+
+    iduser = funciduser()
+    backurl = funcbakurl()
+    api = rest_api('api/ApiControllerComplaint/', '', 'GET')
+    settingsvar.html = 'diagnoz/receptinterwiev.html'
+    tel = ''
+    mail = ''
+    pind = ''
+    if profilpacient['tel'] != None: tel = profilpacient['tel']
+    if profilpacient['email'] != None: mail = profilpacient['email']
+    if profilpacient['pind'] != None: pind = profilpacient['pind']
+    tel_email_pind = 'Тел.: ' + tel + ' Ел.Пошта: ' + mail + ' Пошт.індекс: ' + pind
+    settingsvar.nextstepdata = {
+        'complaintlist': api,
+        'likar': settingsvar.setpostlikar,
+        'iduser': iduser,
+        'backurl': backurl,
+        'pacient': 'Пацієнт: ' + profilpacient['profession'] + ' ' + profilpacient['name'] + " " + profilpacient[
+            'surname'],
+        'age_weight_growth': 'Вік: ' + str(profilpacient['age']) + 'р. Вага: ' + str(
+            profilpacient['weight']) + 'кг. Зріст: ' + str(profilpacient['growth']) + 'см.',
+        'tel_email_pind': tel_email_pind,
+        'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+        'medzaklad': settingsvar.namemedzaklad
+    }
+    return
 
 
 # ----- Функция виведення діагностичного повідомлення
@@ -1090,7 +1122,7 @@ def addReceptionPacient():
 # ---  Збереження запису до лікаря протоколу опитування пацієнта
 def addReceptionLikar():
     json = {'id': 0,
-            'KodPacient': settingsvar.kodPacient,
+            'KodPacient': settingsvar.kodPacienta,
             'KodDoctor': settingsvar.koddoctora,
             'DateDoctor': settingsvar.datereception,
             'DateInterview': settingsvar.dateInterview,
@@ -1271,8 +1303,9 @@ def search_pacient():
     formsearch = SearchPacient()
     settingsvar.nextstepdata = {
         'form': formsearch,
-        'compl': 'Зареєструватися',
-        'reestrinput': 'Кабінет лікаря'
+        'compl': 'Зареєструвати пацієнта',
+        'reestrinput': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+        'medzaklad': settingsvar.namemedzaklad
     }
     settingsvar.html = 'diagnoz/searchpacient.html'
     return
