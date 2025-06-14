@@ -16,7 +16,17 @@
         </ul>
     </div>
 </nav>
+<div class="container-fluid">
+    <h6>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</h6>
+    {% block list %}
+    {% for item in complaintlist %}
+    <a aria-current="page" class="nav-link" href="{% url 'profilinterview' item.kodProtokola   %}"><font
+            style="vertical-align: inherit;"> {{ item.dateInterview }} : {{ item.nameInterview }}</font></a>
+    {% endfor %}
+    {% endblock %}
 
+    <a href="{{backurl}}">Далі</a>
+</div>
 {% endblock %}
 
 

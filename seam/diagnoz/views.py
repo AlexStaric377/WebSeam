@@ -518,7 +518,7 @@ def receptprofillmedzaklad(request):
         settingsvar.namemedzaklad = medzaklad['name']
         settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
         settingsvar.mobtellikar = settingsvar.likar['telefon']
-        saveselectlikar(settingsvar.pacient)
+        saveselectlikar(settingsvar.pacient[0])
     else:
         selectmedzaklad('5')
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -573,6 +573,8 @@ def funcbakurl():
             bakurl = 'likar'
         case 'likarinterwiev':
             bakurl = 'likarinterweiv'
+        case 'likarlistinterwiev':
+            bakurl = 'likarlistinterwiev'
     return bakurl
 
 
@@ -600,10 +602,9 @@ def funcbackpage():
         case "likar":
             backpage = settingsvar.nawpage
     return backpage
-# --- функція формування запиту на підтвердження збереження вибору лікаря
 
-def saveselectlikar(json):
-    pacient = json[0]
+# --- функція формування запиту на підтвердження збереження вибору лікаря
+def saveselectlikar(pacient):
     backurl = funcbakurl()
     iduser = funciduser()
     if settingsvar.setintertview == True:
@@ -649,7 +650,7 @@ def saveselectlikar(json):
 def inputprofilpacient(request, selected_doctor):
     settingsvar.namelikar = ""
     settingsvar.mobtellikar = ""
-    settingsvar.koddoctora = selected_doctor
+    settingsvar.kodDoctor = selected_doctor
     settingsvar.setintertview = True
     CmdStroka = rest_api('/api/ApiControllerDoctor/' + selected_doctor + "/0/0", '', 'GET')
     if len(CmdStroka) > 0:
@@ -711,7 +712,7 @@ def addColectionInterview():
     for item in settingsvar.spisokselectDetailing:
         details = details + item + ';'
     json = {'id': 0,
-            'kodDoctor': settingsvar.koddoctora,
+            'kodDoctor': settingsvar.kodDoctor,
             'kodPacient': settingsvar.kodpacienta,
             'dateInterview': settingsvar.dateInterview,
             'DateDoctor': settingsvar.datedoctor,
@@ -740,6 +741,19 @@ def savediagnoz(request):
 #-------------------------------------------------------------------------
 # ---------  Кабінет Пациента
 
+# ---- Функція формування облікового запису  при реєстрації нового користувача (пацієнт або лікар)
+def funcaddaccount(login, password):
+    details = 'false'
+    settingsvar.dateInterview = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    settingsvar.jsonstroka = {'Id': 0,
+                              'IdUser': newpacientprofil(),
+                              'IdStatus': '2',
+                              'Login': login,
+                              'Password': password,
+                              'AccountCreatDate': settingsvar.dateInterview,
+                              'Subscription': details,
+                              }
+    return
 # --------------------------
 # Реєстрація входу до кабінету пацієнта
 
@@ -750,8 +764,6 @@ def reestraccountuser(request):
     if request.method == 'POST':
         if settingsvar.setReestrAccount == False:
             formaccount = ReestrAccountUserForm(request.POST)
-            #        login = formaccount.data['login']
-            #        pas = formaccount.data['password']
             if formaccount.data['password'] != formaccount.data['dwpassword']:
                 settingsvar.setReestrAccount = False
                 errorprofil('Шановний користувач! Введені паролі не співпадають')
@@ -763,19 +775,8 @@ def reestraccountuser(request):
                     settingsvar.setReestrAccount = False
                     errorprofil('Шановний користувач! Введені паролі не співпадають')
                 else:
-                    details = 'false'
-                    settingsvar.dateInterview = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-                    json = {'Id': 0,
-                            'IdUser': newpacientprofil(),
-                            'IdStatus': '2',
-                            'Login': formaccount.data['login'],
-                            'Password': formaccount.data['password'],
-                            'AccountCreatDate': settingsvar.dateInterview,
-                            'Subscription': details,
-                            }
-                    settingsvar.jsonstroka = json
+                    funcaddaccount(formaccount.data['login'], formaccount.data['password'])
                     settingsvar.setReestrAccount = True
-
                     settingsvar.html = 'diagnoz/pacientprofil.html'
                     form = PacientForm()
                     settingsvar.html == 'diagnoz/pacientprofil.html'
@@ -783,8 +784,6 @@ def reestraccountuser(request):
                         'form': form,
                         'next': settingsvar.readprofil
                     }
-
-
         else:
             pacientprofil(request)
 
@@ -807,8 +806,9 @@ def accountuser(request):
     settingsvar.html = 'diagnoz/accountuser.html'
     if settingsvar.setpost == False:
         if request.method == 'POST':
-            if settingsvar.search == True:
-                settingsvar.formsearch = SearchPacient(request.POST)
+            if settingsvar.searchaccount == True:
+                form = SearchPacient(request.POST)
+                settingsvar.formsearch = form.data
                 funcsearchpacient(settingsvar.formsearch)
             else:
                 formaccount = AccountUserForm(request.POST)
@@ -834,28 +834,25 @@ def accountuser(request):
                             else:
                                 errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль пацієнта не знайдено.')
-                        case "likar" | 'likarinterwiev':
+                        case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
                             settingsvar.kodLikar = Stroka['idUser']
                             settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
-                                                         '',
-                                                     'GET')
+                                                         '', 'GET')
                             if len(settingsvar.likar) > 0:
                                 settingsvar.setpost = True
                                 settingsvar.readprofil = True
                                 settingsvar.setpostlikar = True
+                                settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
                                 medzaklad = rest_api(
                                     '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
                                     'GET')
                                 settingsvar.namemedzaklad = medzaklad['name']
                                 settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
                                 settingsvar.mobtellikar = settingsvar.likar['telefon']
-                                formlikar = LikarForm(initial=settingsvar.likar)
-                                settingsvar.nextstepdata = {
-                                'form': formlikar,
-                                    'next': settingsvar.readprofil,
-                                    'medzaklad': settingsvar.namemedzaklad
-                                }
-                                settingsvar.html = 'diagnoz/likarprofil.html'
+                                if settingsvar.kabinetitem != 'likarlistinterwiev':
+                                    search_pacient()
+                                else:
+                                    listlikar()
                             else:
                                 errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль лікаря не знайдено.')
@@ -917,39 +914,34 @@ def accountuser(request):
                 settingsvar.html = 'diagnoz/likarprofil.html'
             case 'likarinterwiev':
                 if len(settingsvar.pacient) > 0:
-                    settingsvar.readprofil = True
-                    iduser = funciduser()
-                    formpacient = PacientForm(initial=settingsvar.pacient)
-                    settingsvar.nextstepdata = {
-                        'form': formpacient,
-                        'next': settingsvar.readprofil
-                    }
-                    settingsvar.html = 'diagnoz/pacientprofil.html'
+                    shablonlikar(settingsvar.pacient[0])
                 else:
-                    settingsvar.search = True
+                    settingsvar.searchaccount = True
                     search_pacient()
+            case 'likarlistinterwiev':
+                listlikar()
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 # --- пошуку даних пацієнта
 def funcsearchpacient(formsearch):
-    if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) > 0 and len(
-            formsearch.data['telefon']) > 0:
-        json = "0/0/" + formsearch.data['name'] + "/" + formsearch.data['surname'] + '/' + formsearch.data[
+    if len(formsearch['name']) > 0 and len(formsearch['surname']) > 0 and len(
+            formsearch['telefon']) > 0:
+        json = "0/0/" + formsearch['name'] + "/" + formsearch['surname'] + '/' + formsearch[
             'telefon']
-    if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) > 0 and len(
-            formsearch.data['telefon']) == 0:
-        json = "0/0/" + formsearch.data['name'] + "/" + formsearch.data['surname'] + '/0'
-    if len(formsearch.data['name']) > 0 and len(formsearch.data['surname']) == 0 and len(
-            formsearch.data['telefon']) == 0:
-        json = "0/0/" + formsearch.data['name'] + '/0/0'
-    if len(formsearch.data['name']) == 0 and len(formsearch.data['surname']) == 0 and len(
-            formsearch.data['telefon']) > 0:
-        json = "0/0/0/0/" + formsearch.data['telefon']
-    if len(formsearch.data['name']) == 0 and len(formsearch.data['surname']) > 0 and len(
-            formsearch.data['telefon']) > 0:
-        json = "0/0/0/" + formsearch.data['surname'] + '/' + formsearch.data['telefon']
+    if len(formsearch['name']) > 0 and len(formsearch['surname']) > 0 and len(
+            formsearch['telefon']) == 0:
+        json = "0/0/" + formsearch['name'] + "/" + formsearch['surname'] + '/0'
+    if len(formsearch['name']) > 0 and len(formsearch['surname']) == 0 and len(
+            formsearch['telefon']) == 0:
+        json = "0/0/" + formsearch['name'] + '/0/0'
+    if len(formsearch['name']) == 0 and len(formsearch['surname']) == 0 and len(
+            formsearch['telefon']) > 0:
+        json = "0/0/0/0/" + formsearch['telefon']
+    if len(formsearch['name']) == 0 and len(formsearch['surname']) > 0 and len(
+            formsearch['telefon']) > 0:
+        json = "0/0/0/" + formsearch['surname'] + '/' + formsearch['telefon']
     settingsvar.pacient = rest_api('api/PacientController/' + json, '', 'GET')
 
     if len(settingsvar.pacient) > 0:
@@ -1036,16 +1028,11 @@ def pacientprofil(request):  # httpRequest
             if settingsvar.readprofil != False:
                 saveselectlikar(settingsvar.pacient)
             else:
-                saveaccount = rest_api('/api/AccountUserController/', settingsvar.jsonstroka, 'POST')
-                if len(saveaccount) > 0:
-                    if settingsvar.kabinetitem != 'likarinterwiev':
-                        shablonlikar(settingsvar.pacient)
-
-                    else:
-                        settingsvar.setpost = True
-                        errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
+                if settingsvar.kabinetitem == 'likarinterwiev':
+                    shablonlikar(settingsvar.pacient)
                 else:
-                    errorprofil('Шановний користувач! Похибка на серевері. Ваш профіль не збережено.')
+                    settingsvar.setpost = True
+                    errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
         else:
             errorprofil('Шановний користувач! Похибка на серевері. Ваш профіль не збережено.')
     else:
@@ -1063,7 +1050,6 @@ def pacientprofil(request):  # httpRequest
 def shablonlikar(profilpacient):
     settingsvar.setpostlikar = True
     settingsvar.readprofil = True
-    settingsvar.search = True
 
     iduser = funciduser()
     backurl = funcbakurl()
@@ -1108,7 +1094,7 @@ def errorprofil(compl):
 def addReceptionPacient():
     json = {'id': 0,
             'KodPacient': settingsvar.kodPacienta,
-            'KodDoctor': settingsvar.koddoctora,
+            'KodDoctor': settingsvar.kodDoctor,
             'DateInterview': settingsvar.dateInterview,
             'KodComplInterv': settingsvar.kodComplInterv,
             'KodProtokola': settingsvar.kodProtokola,
@@ -1123,7 +1109,7 @@ def addReceptionPacient():
 def addReceptionLikar():
     json = {'id': 0,
             'KodPacient': settingsvar.kodPacienta,
-            'KodDoctor': settingsvar.koddoctora,
+            'KodDoctor': settingsvar.kodDoctor,
             'DateDoctor': settingsvar.datereception,
             'DateInterview': settingsvar.dateInterview,
             'KodComplInterv': settingsvar.kodComplInterv,
@@ -1240,7 +1226,6 @@ def profilinterview(request, selected_protokol):  # httpRequest
 #--- Перегляд проведених інтервью
 
 def pacientlistinterwiev(request):  # httpRequest
-    # --- {{item.nameInterview}}
     cleanvars()
     settingsvar.readprofil = False
     backurl = funcbakurl()
@@ -1318,14 +1303,14 @@ def likarinterweiv(request):  # httpRequest
     settingsvar.kabinetitem = 'likarinterwiev'
     if settingsvar.setpostlikar == False:
         accountuser(request)
-
     else:
         # --- пошук даних пацієнта для проведення опитування
         if settingsvar.search == False:
-            if request.method == 'POST' and settingsvar.setpost == False:
-                settingsvar.formsearch = SearchPacient(request.POST)
+            if request.method == 'POST':
+                form = SearchPacient(request.POST)
+                settingsvar.formsearch = form.data
                 funcsearchpacient(settingsvar.formsearch)
-
+                settingsvar.search = True
             else:
                 settingsvar.setpost = False
                 search_pacient()
@@ -1334,8 +1319,32 @@ def likarinterweiv(request):  # httpRequest
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+def listlikar():
+    iduser = funciduser()
+    backurl = funcbakurl()
+    settingsvar.html = 'diagnoz/likarlistinterweiv.html'
+    settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/' + settingsvar.kodDoctor + '/0', '', 'GET')
+    if len(settingsvar.listapi) > 0:
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'complaintlist': settingsvar.listapi,
+            'backurl': backurl
+        }
+    else:
+        errorprofil('Шановний користувач! За вашим запитом відсутні проведені опитування.')
+    return
+
 def likarlistinterweiv(request):  # httpRequest
-    return render(request, 'diagnoz/likarlistinterweiv.html')
+    cleanvars()
+    settingsvar.readprofil = False
+    backurl = funcbakurl()
+    settingsvar.nawpage = 'likarlistinterwiev'
+    settingsvar.kabinetitem = 'likarlistinterwiev'
+    if settingsvar.setpost == False:
+        accountuser(request)
+    else:
+        listlikar()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 def likarreceptionpacient(request):  # httpRequest

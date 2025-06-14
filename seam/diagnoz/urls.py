@@ -57,7 +57,7 @@ urlpatterns = [
     path('profilinterview/<str:selected_protokol>', views.profilinterview, name='profilinterview'),
     path('profilpacient', views.profilpacient, name='profilpacient'),
     path('reestraccountuser', views.reestraccountuser, name='reestraccountuser'),
-    #    path('searchpacient', views.search_pacient(), name='searchpacient'),
+    path('likarlistinterweiv', views.likarlistinterweiv, name='likarlistinterweiv'),
 ]
 
 urlpatterns += [
