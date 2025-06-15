@@ -6,17 +6,9 @@
     <div class="col">
         <h4>{{iduser}}</h4>
     </div>
-    <!---   <div class="navbar-nav">
-           <ul class="navbar-nav mr-auto flex-column">
-               <li class="nav-item active">
-                   <a aria-current="page" class="nav-link" href="{% url 'contentinterwiev' %}"><font
-                           style="vertical-align: inherit;"><font style="vertical-align: inherit;">Зміст опитування</font></font></a>
-               </li>
-           </ul>
-       </div>--->
 </nav>
 <div class="container-fluid">
-    <h5> Зміст опитування {{compl}} </h5>
+    <h5> {{compl}} </h5>
     {% block detalinglist %}
     {% for item in detalinglist %}
     <a aria-current="page" class="nav-link" href=""><font
@@ -25,7 +17,7 @@
     {% endblock %}
 
 
-    <a href="{{backpage}}">Вийти</a>
+    <a href="{{backurl}}">>Вийти</a>
 </div>
 
 {% endblock %}

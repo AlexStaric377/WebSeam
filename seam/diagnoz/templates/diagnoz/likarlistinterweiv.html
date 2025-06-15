@@ -4,16 +4,9 @@
 
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
-        <h6>Кабінет лікаря</h6>
-    </div>
-    <div class="navbar-nav">
-        <ul class="navbar-nav mr-auto flex-column">
-            <li class="nav-item active">
-                <a aria-current="page" class="nav-link" href="{% url 'contentinterwiev' %}"><font
-                        style="vertical-align: inherit;"><font style="vertical-align: inherit; font-size: 20px;">Перегляд
-                    проведених опитуваннь</font></font></a>
-            </li>
-        </ul>
+        <p>{{medzaklad}}</p>
+        <p>{{piblikar}}</p>
+        <p>Перегляд проведених опитувань</p>
     </div>
 </nav>
 <div class="container-fluid">
@@ -24,9 +17,12 @@
             style="vertical-align: inherit;"> {{ item.dateInterview }} : {{ item.nameInterview }}</font></a>
     {% endfor %}
     {% endblock %}
-
-    <a href="{{backurl}}">Далі</a>
 </div>
+<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+    <div class="col">
+        <a href="{{backurl}}">Далі</a>
+    </div>
+</nav>
 {% endblock %}
 
 
