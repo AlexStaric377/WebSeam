@@ -21,8 +21,8 @@ urlpatterns = [
     path('pacientreceptionlikar', views.pacientreceptionlikar, name='pacientreceptionlikar'),
     path('pacientstanhealth', views.pacientstanhealth, name='pacientstanhealth'),
     path('likarprofil', views.likarprofil, name='likarprofil'),
-    path('likarinterweiv', views.likarinterweiv, name='likarinterweiv'),
-    path('likarlistinterweiv', views.likarlistinterweiv, name='likarlistinterweiv'),
+    path('likarinterwiev', views.likarinterwiev, name='likarinterwiev'),
+    path('likarlistinterwiev', views.likarlistinterwiev, name='likarlistinterwiev'),
     path('likarreceptionpacient', views.likarreceptionpacient, name='likarreceptionpacient'),
     path('likarvisitngdays', views.likarvisitngdays, name='likarvisitngdays'),
     path('likarworkdiagnoz', views.likarworkdiagnoz, name='likarworkdiagnoz'),
@@ -57,7 +57,7 @@ urlpatterns = [
     path('profilinterview/<str:selected_protokol>', views.profilinterview, name='profilinterview'),
     path('profilpacient', views.profilpacient, name='profilpacient'),
     path('reestraccountuser', views.reestraccountuser, name='reestraccountuser'),
-    path('likarlistinterweiv', views.likarlistinterweiv, name='likarlistinterweiv'),
+    path('exitkabinet', views.exitkabinet, name='exitkabinet'),
 ]
 
 urlpatterns += [

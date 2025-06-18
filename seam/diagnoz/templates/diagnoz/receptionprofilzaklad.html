@@ -4,7 +4,12 @@
 
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
+        {% if likar %}
+        <p>{{piblikar}}</p>
+        <p>{{pacient}}</p>
+        {% else %}
         <h4>{{iduser}}</h4>
+        {% endif %}
     </div>
     <div class="navbar-nav">
         <ul class="navbar-nav mr-auto flex-column">

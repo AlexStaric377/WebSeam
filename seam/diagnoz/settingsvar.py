@@ -34,7 +34,7 @@ kodComplInterv = ""
 resultDiagnoz = ""
 datedoctor = ""
 kodDoctor = ""
-kodpacienta = 'Гість'
+
 setintertview = False
 kabinet = 'guest'
 namelikar = ""
@@ -58,3 +58,4 @@ addprofilpacient = {}
 searchaccount = False
 backurl = ""
 bakurlitem = ''
+kodPacienta = 'Гість'
