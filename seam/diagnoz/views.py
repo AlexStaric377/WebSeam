@@ -570,7 +570,7 @@ def receptprofillmedzaklad(request):
         settingsvar.namemedzaklad = medzaklad['name']
         settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
         settingsvar.mobtellikar = settingsvar.likar['telefon']
-        saveselectlikar(settingsvar.pacient[0])
+        saveselectlikar(settingsvar.pacient)
     else:
         selectmedzaklad('5')
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -635,7 +635,7 @@ def funcbakurl():
         case "likar":
             bakurl = 'likar'
         case 'likarinterwiev':
-            bakurl = 'likarinterweiv'
+            bakurl = 'likarinterwiev'
         case 'likarlistinterwiev':
             bakurl = 'likarlistinterwiev'
     return bakurl
@@ -676,7 +676,7 @@ def saveselectlikar(pacient):
         if settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
             settingsvar.html = 'diagnoz/finishinterviewpacient.html'
             if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
-                settingsvar.nawpage = 'finishinterviewpacient'
+                settingsvar.nawpage = 'inputprofilpacient'
                 settingsvar.nextstepdata = {
                     'iduser': iduser,
                     'pacient': 'Увага! сформовано попередній діаноз на прийомі у лікаря.',
@@ -1023,6 +1023,7 @@ def funcsearchpacient(formsearch):
     if len(settingsvar.pacient) > 0:
         profilpacient = {}
         profilpacient = settingsvar.pacient[0]
+        settingsvar.pacient = profilpacient
         settingsvar.kodPacienta = profilpacient['kodPacient']
         shablonlikar(profilpacient)
     else:
@@ -1420,6 +1421,7 @@ def likarinterwiev(request):  # httpRequest
         settingsvar.readprofil = False
         settingsvar.nawpage = 'likarinterwiev'
         settingsvar.kabinetitem = 'likarinterwiev'
+        settingsvar.kabinet = 'likarinterwiev'
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
@@ -1466,6 +1468,7 @@ def likarlistinterwiev(request):  # httpRequest
         backurl = funcbakurl()
         settingsvar.nawpage = 'profilinterview'
         settingsvar.kabinetitem = 'likarlistinterwiev'
+        settingsvar.kabinet = 'likarlistinterwiev'
         if settingsvar.setpost == False:
             accountuser(request)
         else:
