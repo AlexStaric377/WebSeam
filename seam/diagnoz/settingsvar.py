@@ -34,7 +34,7 @@ kodComplInterv = ""
 resultDiagnoz = ""
 datedoctor = ""
 kodDoctor = ""
-
+keyFeature = ''
 setintertview = False
 kabinet = 'guest'
 namelikar = ""

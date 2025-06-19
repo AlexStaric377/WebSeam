@@ -32,6 +32,7 @@ urlpatterns = [
     path(
         'featurespisok/<str:featurespisok_keyComplaint>,  <str:featurespisok_keyFeature>,  <str:featurespisok_nameFeature>',
         views.featurespisok, name='featurespisok'),
+    path('backfeature', views.backfeature, name='backfeature'),
     path('nextfeature/<str:nextfeature_keyComplaint>,  <str:nextfeature_name>', views.nextfeature, name='nextfeature'),
     path('glavmeny', views.glavmeny, name='glavmeny'),
     path('nextgrdetaling', views.nextgrdetaling, name='nextgrdetaling'),
@@ -58,6 +59,7 @@ urlpatterns = [
     path('profilpacient', views.profilpacient, name='profilpacient'),
     path('reestraccountuser', views.reestraccountuser, name='reestraccountuser'),
     path('exitkabinet', views.exitkabinet, name='exitkabinet'),
+    path('backfromcontent', views.backfromcontent, name='backfromcontent'),
 ]
 
 urlpatterns += [
