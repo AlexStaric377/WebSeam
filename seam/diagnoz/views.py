@@ -53,7 +53,9 @@ def reception(request):  # httpRequest
 
 
 def pacient(request):  # httpRequest
-    if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev':
+    if (
+            settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev') and len(
+            settingsvar.likar) > 0:
         errorprofil('Шановний користувач! Активний кабінет пацієнта. Вхід до кабінету лікаря неможливий.')
     else:
         settingsvar.kabinet = 'pacient'
@@ -68,12 +70,16 @@ def exitkabinet(request):
     cleanvars()
     settingsvar.kabinet = ''
     settingsvar.kabinetitem = ''
+    settingsvar.likar = {}
+    settingsvar.pacient = {}
     settingsvar.html = 'diagnoz/glavmeny.html'
     settingsvar.nextstepdata = {}
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def likar(request):  # httpRequest
-    if settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listinterwiev':
+    if (
+            settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listinterwiev') and len(
+            settingsvar.pacient) > 0:
         errorprofil('Для входу до кабінету лікаря необхідно вийти з кабінету пацієнта.')
     else:
         settingsvar.kabinet = 'likar'
@@ -322,7 +328,8 @@ def nextstepgrdetaling():
             keyfeature = ""
         if len(keyfeature) == 0 and len(settingsvar.spisokkeyfeature) > 0: del settingsvar.spisokkeyfeature[0]
         return
-    if len(settingsvar.DiagnozRecomendaciya) == 0:
+    else:
+        settingsvar.DiagnozRecomendaciya = []
         cleanvars()
         iduser = funciduser()
         settingsvar.nextstepdata = {
@@ -330,7 +337,6 @@ def nextstepgrdetaling():
             'iduser': iduser
         }
         settingsvar.html = 'diagnoz/receptinterwiev.html'
-
     return
 
 
@@ -574,9 +580,11 @@ def selectmedzaklad(statuszaklad):
                         settingsvar.grupmedzaklad.append(medzaklad)
     settingsvar.nawpage = 'receptprofillmedzaklad'
     iduser = funciduser()
+    backurl = funcbakurl()
     settingsvar.html = 'diagnoz/receptionprofilzaklad.html'
     settingsvar.nextstepdata = {
         'iduser': iduser,
+        'backurl': backurl,
         'compl': 'Перелік профільних медзакладів',
         'detalinglist': settingsvar.grupmedzaklad,
         'piblikar': '',
@@ -614,13 +622,13 @@ def receptfamilylikar(request):
 
 # --- Вибір лікаря у профільному мед закладі
 def selectdprofillikar(request, selected_edrpou, selected_idstatus, selected_name):
-    gruplikar = []
+    settingsvar.gruplikar = []
     settingsvar.namemedzaklad = selected_name
     Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_edrpou + "/0", '', 'GET')
     for item in Grupproflikar:
         match selected_idstatus:
             case "2":
-                gruplikar.append(item)
+                settingsvar.gruplikar.append(item)
             case "5":
                 likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '', 'GET')
                 for icdgrdiagnoz in settingsvar.grupDiagnoz:
@@ -628,16 +636,21 @@ def selectdprofillikar(request, selected_edrpou, selected_idstatus, selected_nam
                         if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_edrpou in \
                                 icdgrdiagnoz[
                                     'edrpou']:
-                            gruplikar.append(item)
+                            settingsvar.gruplikar.append(item)
                             break
                     break
-    settingsvar.nawpage = 'selectedprofillikar'
+    shablonlistlikar()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def shablonlistlikar():
+    settingsvar.nawpage = 'backlistlikar'
     settingsvar.html = 'diagnoz/selectedprofillikar.html'
     iduser = funciduser()
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': 'Перелік профільних лікарів',
-        'detalinglist': gruplikar,
+        'detalinglist': settingsvar.gruplikar,
         'piblikar': '',
         'pacient': ''
     }
@@ -650,8 +663,13 @@ def selectdprofillikar(request, selected_edrpou, selected_idstatus, selected_nam
         settingsvar.nextstepdata['piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
         settingsvar.nextstepdata['likar'] = True
 
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+    return
 
+
+# --- Поверненнф до списку лікарів
+def backlistlikar(request):
+    shablonlistlikar()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # --- Функція повернення до початку опитування
 def funcbakurl():
@@ -662,7 +680,9 @@ def funcbakurl():
         case "pacient":
             bakurl = 'pacient'
         case 'interwiev':
-            bakurl = 'reception'
+            bakurl = 'pacient'
+        case 'likarinterwiev':
+            bakurl = 'likarinterwiev'
         case "likar":
             bakurl = 'likar'
         case 'likarinterwiev':
@@ -703,11 +723,10 @@ def saveselectlikar(pacient):
     backurl = funcbakurl()
     iduser = funciduser()
     if settingsvar.setintertview == True:
-        settingsvar.html = 'diagnoz/finishreception.html'
-        #        if settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
         settingsvar.html = 'diagnoz/finishinterviewpacient.html'
+        settingsvar.nawpage = 'backshablonselect'
         if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
-                settingsvar.nawpage = 'inputprofilpacient'
+
                 settingsvar.nextstepdata = {
                     'iduser': iduser,
                     'pacient': 'Увага! сформовано попередній діаноз на прийомі у лікаря.',
@@ -751,6 +770,11 @@ def inputprofilpacient(request, selected_doctor):
     if len(CmdStroka) > 0:
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         settingsvar.mobtellikar = CmdStroka['telefon']
+    shablonselect()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def shablonselect():
     match settingsvar.kabinet:
         case "guest":
             settingsvar.html = 'diagnoz/pacientprofil.html'
@@ -764,7 +788,11 @@ def inputprofilpacient(request, selected_doctor):
 
         case "likar" | 'likarinterwiev':
             saveselectlikar(settingsvar.pacient)
+    return
 
+
+def backshablonselect(request):
+    shablonselect()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -921,7 +949,7 @@ def accountuser(request):
                             if len(settingsvar.pacient) > 0:
                                 settingsvar.setpost = True
                                 settingsvar.readprofil = True
-
+                                settingsvar.setpostlikar = True
                                 formpacient = PacientForm(initial=settingsvar.pacient)
                                 settingsvar.nextstepdata = {
                                 'form': formpacient,
@@ -939,6 +967,7 @@ def accountuser(request):
                             if len(settingsvar.likar) > 0:
                                 settingsvar.setpost = True
                                 settingsvar.readprofil = True
+                                settingsvar.setpostlikar = True
                                 settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
                                 medzaklad = rest_api(
                                     '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
@@ -1155,10 +1184,12 @@ def pacientprofil(request):  # httpRequest
 # --- Функція формування реквізитів профілю пацієнта для відображення на вебсайті
 def shablonlikar(profilpacient):
     settingsvar.readprofil = True
+    backurl = funcbakurl()
     api = rest_api('api/ApiControllerComplaint/', '', 'GET')
     settingsvar.html = 'diagnoz/receptinterwiev.html'
     shablonpacient(profilpacient)
     settingsvar.nextstepdata['complaintlist'] = api
+    settingsvar.nextstepdata['backurl'] = backurl
     return
 
 
@@ -1263,11 +1294,15 @@ def profilpacient(request):  # httpRequest
     settingsvar.kabinetitem = 'profil'
     if settingsvar.setpost == False:
         accountuser(request)
+        settingsvar.initialprofil = True
     else:
         settingsvar.html = 'diagnoz/pacientprofil.html'
-        if settingsvar.readprofil == True:
+        if settingsvar.initialprofil == True:
+
             settingsvar.html = 'diagnoz/pacient.html'
-        settingsvar.readprofil = True
+            settingsvar.initialprofil = False
+        else:
+            settingsvar.initialprofil = True
         iduser = funciduser()
         formpacient = PacientForm(initial=settingsvar.pacient)
         settingsvar.nextstepdata = {
@@ -1297,11 +1332,17 @@ def pacientinterwiev(request):  # httpRequest
 
 # --- Профіль проведеного інтервью
 def profilinterview(request, selected_protokol):  # httpRequest
+    settingsvar.protokol = selected_protokol
+    nextprofilinterview()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def nextprofilinterview(request):
     likarName = ""
     PacientName = ""
     dateint = ""
     select_dateDoctor = ""
-    match selected_protokol:
+    match settingsvar.kabinet:
         case 'pacient':
             settingsvar.html = 'diagnoz/pacient.html'
             settingsvar.nextstepdata = {}
@@ -1319,15 +1360,15 @@ def profilinterview(request, selected_protokol):  # httpRequest
             return render(request, settingsvar.html, context=settingsvar.nextstepdata)
     match settingsvar.kabinetitem:
         case "profil" | "pacient" | "interwiev" | 'listinterwiev':
-            settingsvar.nawpage = 'profilinterview'
+            settingsvar.nawpage = 'backprofilinterview'
             backurl = 'pacientlistinterwiev'
         case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
             settingsvar.nawpage = 'likarlistinterwiev'
             backurl = 'likarlistinterwiev'
-    settingsvar.kodProtokola = selected_protokol
+    settingsvar.kodProtokola = settingsvar.protokol
     iduser = funciduser()
     for item in settingsvar.listapi:
-        if selected_protokol == item['kodProtokola']:
+        if settingsvar.protokol == item['kodProtokola']:
             if (item['dateDoctor'] != None):
                 select_dateDoctor = item['dateDoctor']
             dateint = item['dateInterview']
@@ -1343,22 +1384,25 @@ def profilinterview(request, selected_protokol):  # httpRequest
                         PacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
                     likarName = settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
             break
-    depend = rest_api('api/DependencyDiagnozController/' + '0/' + selected_protokol + '/0', '', 'GET')
+    depend = rest_api('api/DependencyDiagnozController/' + '0/' + settingsvar.protokol + '/0', '', 'GET')
     recommend = rest_api('api/RecommendationController/' + depend['kodRecommend'] + '/0', '', 'GET')
     diagnoz = rest_api('api/DiagnozController/' + depend['kodDiagnoz'] + '/0/0', '', 'GET')
     settingsvar.html = 'diagnoz/profilinterview.html'
-    settingsvar.nextstepdata = {
-        'pacient': 'Пацієнт:        ' + PacientName,
-        'likar': 'Лікар:          ' + likarName,
-        'dateinterv': 'Дата опитування: ' + dateint,
-        'datereception': 'Дата прийому:   ' + select_dateDoctor,
-        'diagnoz': 'Попередній діагноз: ' + diagnoz['nameDiagnoza'],
-        'recomendaciya': 'Рекомендації:   ' + recommend['contentRecommendation'],
-        'urlinet': 'Опис в інтернеті:   ' + diagnoz['uriDiagnoza'],
-        'iduser': iduser,
-        'backurl': backurl
+    shablonpacient(settingsvar.pacient)
+    settingsvar.nextstepdata['namepacient'] = 'Пацієнт:        ' + PacientName
+    settingsvar.nextstepdata['namelikar'] = 'Лікар:          ' + likarName
+    settingsvar.nextstepdata['dateinterv'] = 'Дата опитування: ' + dateint
+    settingsvar.nextstepdata['datereception'] = 'Дата прийому:   ' + select_dateDoctor
+    settingsvar.nextstepdata['diagnoz'] = 'Попередній діагноз: ' + diagnoz['nameDiagnoza']
+    settingsvar.nextstepdata['recomendaciya'] = 'Рекомендації:   ' + recommend['contentRecommendation']
+    settingsvar.nextstepdata['urlinet'] = 'Опис в інтернеті:   ' + diagnoz['uriDiagnoza']
+    settingsvar.nextstepdata['backurl'] = backurl
 
-    }
+    return
+
+
+def backprofilinterview(request):
+    nextprofilinterview()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1367,13 +1411,11 @@ def profilinterview(request, selected_protokol):  # httpRequest
 def funcshablonlistpacient():
     iduser = funciduser()
     settingsvar.html = 'diagnoz/pacientlistinterwiev.html'
-    settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacient, '', 'GET')
+    shablonpacient(settingsvar.pacient)
+    settingsvar.nextstepdata['backurl'] = settingsvar.backurl
+    settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacienta, '', 'GET')
     if len(settingsvar.listapi) > 0:
-        settingsvar.nextstepdata = {
-            'iduser': iduser,
-            'complaintlist': settingsvar.listapi,
-            'backurl': settingsvar.backurl
-        }
+        settingsvar.nextstepdata['complaintlist'] = settingsvar.listapi
     else:
         errorprofil('Шановний користувач! За вашим запитом відсутні проведені опитування.')
     return
@@ -1387,6 +1429,7 @@ def pacientlistinterwiev(request):  # httpRequest
         settingsvar.readprofil = False
         settingsvar.backurl = funcbakurl()
         settingsvar.nawpage = 'listinterwiev'
+        settingsvar.kabinet = 'listinterwiev'
         settingsvar.kabinetitem = 'listinterwiev'
         if settingsvar.setpost == False:
             accountuser(request)
@@ -1421,7 +1464,7 @@ def likarprofil(request):  # httpRequest
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
-            settingsvar.setpostlikar = False
+            settingsvar.setpostlikar = True
             settingsvar.html = 'diagnoz/likar.html'
             settingsvar.readprofil = True
             iduser = funciduser()

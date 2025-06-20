@@ -59,3 +59,6 @@ searchaccount = False
 backurl = ""
 bakurlitem = ''
 kodPacienta = 'Гість'
+gruplikar = ''
+initialprofil = False
+protokol = ""

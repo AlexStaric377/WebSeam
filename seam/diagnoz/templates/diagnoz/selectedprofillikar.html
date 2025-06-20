@@ -23,7 +23,7 @@
         {{item.name}} {{item.surname}} {{item.specialnoct}} {{item.telefon}}</font></a>
     {% endfor %}
     {% endblock %}
-    <a href="{% url 'reception' %}">Далі</a>
+    <a href="{{backurl}}">Далі</a>
 </div>
 
 {% endblock %}
