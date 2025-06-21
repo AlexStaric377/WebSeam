@@ -1303,9 +1303,9 @@ def profilpacient(request):  # httpRequest
         else:
             settingsvar.readprofil = True
             iduser = funciduser()
-            formlikar = LikarForm(initial=settingsvar.likar)
+            formpacient = LikarForm(initial=settingsvar.pacient)
             settingsvar.nextstepdata = {
-                'form': formlikar,
+                'form': formpacient,
                 'next': settingsvar.readprofil,
                 'backurl': 'likar'
             }
@@ -1334,11 +1334,19 @@ def pacientinterwiev(request):  # httpRequest
 # --- Профіль проведеного інтервью
 def profilinterview(request, selected_protokol):  # httpRequest
     if selected_protokol.find('PRT.') < 0:
-        if selected_protokol == 'pacient':
-            settingsvar.html = 'diagnoz/pacient.html'
-            settingsvar.nextstepdata = {}
-        else:
-            funcshablonlistpacient()
+        match selected_protokol:
+            case 'pacient':
+                settingsvar.html = 'diagnoz/pacient.html'
+                settingsvar.nextstepdata = {}
+            case 'pacientlistinterwiev':
+                pacientlistinterwiev(request)
+            case 'likar':
+                settingsvar.html = 'diagnoz/likar.html'
+                settingsvar.nextstepdata = {}
+            case 'likarlistinterwiev':
+                likarlistinterwiev(request)
+            case 'interwiev' | 'listinterwiev' | 'likarinterwiev':
+                funcshablonlistpacient()
     else:
         settingsvar.protokol = selected_protokol
         nextprofilinterview()
@@ -1545,7 +1553,6 @@ def likarlistinterwiev(request):  # httpRequest
     else:
         cleanvars()
         settingsvar.readprofil = False
-        backurl = funcbakurl()
         settingsvar.nawpage = 'profilinterview'
         settingsvar.kabinetitem = 'likarlistinterwiev'
         settingsvar.kabinet = 'likarlistinterwiev'
