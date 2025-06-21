@@ -5,8 +5,8 @@
     <h6>{{medzaklad}}</h6>
 </div>
 <div class="col-md-7 col-lg-8">
-    <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
-        лікаря</font></font></h4>
+    <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль лікаря</font></font>
+    </h4>
     <form action="" method="POST">
         {% csrf_token %}
         <div class="row g-3">
@@ -89,4 +89,6 @@
         </div>
     </form>
 </div>
+<a href="{{backurl}}">
+    <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20"></a>
 {% endblock %}
