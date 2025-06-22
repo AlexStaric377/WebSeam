@@ -879,6 +879,7 @@ def funcaddaccount(login, password):
                               'AccountCreatDate': settingsvar.dateInterview,
                               'Subscription': details,
                               }
+    saveaccount = rest_api('/api/AccountUserController/', json, 'POST')
     return
 # --------------------------
 # Реєстрація входу до кабінету пацієнта
@@ -889,19 +890,20 @@ def reestraccountuser(request):
 
     if request.method == 'POST':
         if settingsvar.setReestrAccount == False:
-            formaccount = ReestrAccountUserForm(request.POST)
-            if formaccount.data['password'] != formaccount.data['dwpassword']:
+            form = ReestrAccountUserForm(request.POST)
+            settingsvar.formaccount = form.data
+            if settingsvar.formaccount['password'] != settingsvar.formaccount['dwpassword']:
                 settingsvar.setReestrAccount = False
                 errorprofil('Шановний користувач! Введені паролі не співпадають')
             else:
 
-                json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
+                json = "0/" + settingsvar.formaccount['login'] + "/" + settingsvar.formaccount['password'] + '/0'
                 Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
                 if len(Stroka) > 0:
                     settingsvar.setReestrAccount = False
                     errorprofil('Шановний користувач! Введені паролі не співпадають')
                 else:
-                    funcaddaccount(formaccount.data['login'], formaccount.data['password'])
+
                     settingsvar.setReestrAccount = True
                     settingsvar.setpostlikar = True
                     settingsvar.html = 'diagnoz/pacientprofil.html'
@@ -1162,7 +1164,8 @@ def pacientprofil(request):  # httpRequest
                 'Profession': form.data['profession']
                 }
 
-            # --- записати в Бд введенний профіль
+            # --- записати в Бд введенний профіль та оюліковий запис
+            funcaddaccount(settingsvar.formaccount.data['login'], settingsvar.formaccount.data['password'])
             settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
             if len(settingsvar.pacient) > 0:
                 if settingsvar.readprofil != False:
