@@ -72,10 +72,12 @@ def exitkabinet(request):
     settingsvar.kabinetitem = ''
     settingsvar.likar = {}
     settingsvar.pacient = {}
+    settingsvar.formsearch = {}
     settingsvar.html = 'diagnoz/glavmeny.html'
     settingsvar.nextstepdata = {}
     settingsvar.setpostlikar = False
     settingsvar.setpost = False
+    settingsvar.searchaccount = False
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def likar(request):  # httpRequest
@@ -892,38 +894,45 @@ def reestraccountuser(request):
         if settingsvar.setReestrAccount == False:
             form = ReestrAccountUserForm(request.POST)
             settingsvar.formaccount = form.data
-            if settingsvar.formaccount['password'] != settingsvar.formaccount['dwpassword']:
+            if len(settingsvar.formaccount['dwpassword']) == 0:
                 settingsvar.setReestrAccount = False
-                errorprofil('Шановний користувач! Введені паролі не співпадають')
+                errorprofil('Шановний користувач! Облікові дані не корректно введені')
             else:
-
-                json = "0/" + settingsvar.formaccount['login'] + "/" + settingsvar.formaccount['password'] + '/0'
-                Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
-                if len(Stroka) > 0:
+                if settingsvar.formaccount['password'] != settingsvar.formaccount['dwpassword']:
                     settingsvar.setReestrAccount = False
                     errorprofil('Шановний користувач! Введені паролі не співпадають')
                 else:
-
-                    settingsvar.setReestrAccount = True
-                    settingsvar.setpostlikar = True
-                    settingsvar.html = 'diagnoz/pacientprofil.html'
-                    form = PacientForm()
-                    settingsvar.html == 'diagnoz/pacientprofil.html'
-                    settingsvar.nextstepdata = {
-                        'form': form,
-                        'next': settingsvar.readprofil
-                    }
+                    json = "0/" + settingsvar.formaccount['login'] + "/" + settingsvar.formaccount['password'] + '/0'
+                    Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+                    if len(Stroka) > 0:
+                        settingsvar.setReestrAccount = False
+                        errorprofil('Шановний користувач! Обліковий запис за введеними даними вже існує')
+                    else:
+                        backurl = funcbakurl()
+                        settingsvar.setReestrAccount = True
+                        settingsvar.setpostlikar = True
+                        settingsvar.html = 'diagnoz/pacientprofil.html'
+                        form = PacientForm()
+                        settingsvar.html == 'diagnoz/pacientprofil.html'
+                        settingsvar.nextstepdata = {
+                            'form': form,
+                            'next': settingsvar.readprofil,
+                            'backurl': backurl,
+                        }
         else:
             pacientprofil(request)
 
     else:
+        reestr = 'Реєстрація в кабінеті пацієнта'
+        if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev':
+            reestr = ''
         if settingsvar.setReestrAccount == False:
             settingsvar.readprofil = False
             formreestraccount = ReestrAccountUserForm()
             settingsvar.nextstepdata = {
                 'form': formreestraccount,
-                'backurl': 'kabinetpacient',
-                'reestrinput': 'Реєстрація в кабінеті пацієнта',
+                'backurl': 'accountuser',
+                'reestrinput': reestr,
             }
         else:
             pacientprofil(request)
@@ -939,6 +948,9 @@ def accountuser(request):
                 form = SearchPacient(request.POST)
                 settingsvar.formsearch = form.data
                 funcsearchpacient(settingsvar.formsearch)
+                settingsvar.setpost = True
+                settingsvar.readprofil = True
+
             else:
                 formaccount = AccountUserForm(request.POST)
                 json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
@@ -970,9 +982,6 @@ def accountuser(request):
                             settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
                                                          '', 'GET')
                             if len(settingsvar.likar) > 0:
-                                settingsvar.setpost = True
-                                settingsvar.readprofil = True
-                                settingsvar.setpostlikar = True
                                 settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
                                 medzaklad = rest_api(
                                     '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
@@ -980,9 +989,12 @@ def accountuser(request):
                                 settingsvar.namemedzaklad = medzaklad['name']
                                 settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
                                 settingsvar.mobtellikar = settingsvar.likar['telefon']
-                                if settingsvar.kabinetitem == 'interwiev':
+                                settingsvar.setpostlikar = True
+                                if settingsvar.kabinetitem == 'likarinterwiev':
                                     search_pacient()
+                                    settingsvar.searchaccount = True
                                 else:
+                                    settingsvar.setpost = True
                                     settingsvar.readprofil = True
                                     iduser = funciduser()
                                     formlikar = LikarForm(initial=settingsvar.likar)
@@ -1001,15 +1013,17 @@ def accountuser(request):
         else:
             cab = 'Кабінет пацієнта'
             backurl = 'pacient'
+            compl = 'Зареєструватися'
             if settingsvar.kabinetitem == "likar" or settingsvar.kabinetitem == 'likarinterwiev' \
                     or settingsvar.kabinetitem == 'likarlistinterwiev':
                 cab = 'Кабінет лікаря'
                 backurl = 'likar'
+                compl = ''
             settingsvar.readprofil = False
             formaccount = AccountUserForm()
             settingsvar.nextstepdata = {
                 'form': formaccount,
-                'compl': 'Зареєструватися',
+                'compl': compl,
                 'reestrinput': cab,
                 'backurl': backurl
             }
@@ -1197,6 +1211,7 @@ def shablonlikar(profilpacient):
     shablonpacient(profilpacient)
     settingsvar.nextstepdata['complaintlist'] = api
     settingsvar.nextstepdata['backurl'] = backurl
+    settingsvar.nextstepdata['likar'] = settingsvar.readprofil = True
     return
 
 
@@ -1305,14 +1320,14 @@ def profilpacient(request):  # httpRequest
             settingsvar.initialprofil = False
         else:
             settingsvar.readprofil = True
+            settingsvar.initialprofil = True
             iduser = funciduser()
-            formpacient = LikarForm(initial=settingsvar.pacient)
+            formpacient = PacientForm(initial=settingsvar.pacient)
             settingsvar.nextstepdata = {
                 'form': formpacient,
                 'next': settingsvar.readprofil,
-                'backurl': 'likar'
+                'backurl': 'pacient'
             }
-            settingsvar.html = 'diagnoz/likarprofil.html'
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -1481,7 +1496,7 @@ def likarprofil(request):  # httpRequest
                 settingsvar.initialprofil = False
             else:
                 settingsvar.initialprofil = True
-                formlikar = PacientForm(initial=settingsvar.likar)
+                formlikar = LikarForm(initial=settingsvar.likar)
                 settingsvar.nextstepdata = {
                     'form': formlikar,
                     'next': settingsvar.readprofil,
@@ -1517,6 +1532,7 @@ def likarinterwiev(request):  # httpRequest
             accountuser(request)
         else:
             # --- пошук даних пацієнта для проведення опитування
+            backurl = 'likar'
             if settingsvar.search == False:
                 if request.method == 'POST':
                     form = SearchPacient(request.POST)
@@ -1528,6 +1544,7 @@ def likarinterwiev(request):  # httpRequest
                     search_pacient()
             else:
                 funcsearchpacient(settingsvar.formsearch)
+            settingsvar.nextstepdata['backurl'] = backurl
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1559,7 +1576,7 @@ def likarlistinterwiev(request):  # httpRequest
         settingsvar.nawpage = 'profilinterview'
         settingsvar.kabinetitem = 'likarlistinterwiev'
         settingsvar.kabinet = 'likarlistinterwiev'
-        if settingsvar.setpost == False:
+        if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
             listlikar()

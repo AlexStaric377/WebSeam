@@ -21,9 +21,8 @@
         </div>
         <p></p>
         <div class="col-md-2">
-            <label class="form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{
-                form.password.label }}
-            </font></font></label>
+            <label class="form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{form.password.label
+                }}</font></font></label>
             {{form.password}}
             <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">Вимагається дійсний пароль.</font></font>
@@ -31,9 +30,7 @@
         </div>
         <p></p>
         <div class="col-md-2">
-            <label class="form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{form.dwpassword.label
-                }}
-            </font></font></label>
+            <label class="form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{form.dwpassword.label}}</font></font></label>
             {{form.dwpassword}}
             <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">Вимагається дійсний пароль.</font></font>
@@ -44,5 +41,6 @@
     <button class="w-40 h-20 btn btn-primary btn-lg" type="submit"><font style="vertical-align: inherit;"><font
             style="vertical-align: inherit;">Підтвердити</font></font></button>
 </form>
-
+<a href="{{backurl}}">
+    <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20"></a>
 {% endblock %}
