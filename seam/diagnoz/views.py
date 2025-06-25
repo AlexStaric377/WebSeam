@@ -47,9 +47,13 @@ def glavmeny(request):
     return render(request, 'diagnoz/glavmeny.html')
 
 def reception(request):  # httpRequest
-    settingsvar.kabinet = 'guest'
-    settingsvar.nawpage = ''
-    return render(request, 'diagnoz/reception.html')
+    if settingsvar.kabinet == 'guest' and settingsvar.html != 'diagnoz/glavmeny.html':
+        settingsvar.nawpage = ''
+        settingsvar.html = 'diagnoz/glavmeny.html'
+    else:
+        settingsvar.kabinet = 'guest'
+        interwievcomplaint(request)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 def pacient(request):  # httpRequest
@@ -144,12 +148,14 @@ def interwievcomplaint(request):
         match settingsvar.kabinet:
             case 'guest':
                 settingsvar.setpostlikar = False
+                iduser = 'Реєстратура: ' + funciduser()
             case 'pacient' | 'interwiev' | 'likar' | 'likarinterwiev':
                 settingsvar.setpostlikar = True
+                iduser = funciduser()
         settingsvar.nawpage = 'receptinterwiev'
         settingsvar.html = 'diagnoz/receptinterwiev.html'
         api = rest_api('api/ApiControllerComplaint/', '', 'GET')
-        iduser = funciduser()
+
         settingsvar.nextstepdata = {
         'complaintlist': api,
         'iduser': iduser,
@@ -774,16 +780,16 @@ def inputprofilpacient(request, selected_doctor):
     if len(CmdStroka) > 0:
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         settingsvar.mobtellikar = CmdStroka['telefon']
-    shablonselect()
+    shablonselect(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
-def shablonselect():
+def shablonselect(request):
     match settingsvar.kabinet:
         case "guest":
             settingsvar.html = 'diagnoz/pacientprofil.html'
             settingsvar.readprofil = True
-            pacientprofil(request)
+            getpostpacientprofil(request)
             form = PacientForm()
             if settingsvar.html == 'diagnoz/pacientprofil.html':
                 settingsvar.nextstepdata = {'form': form}
@@ -952,8 +958,9 @@ def accountuser(request):
                 settingsvar.readprofil = True
 
             else:
-                formaccount = AccountUserForm(request.POST)
-                json = "0/" + formaccount.data['login'] + "/" + formaccount.data['password'] + '/0'
+                settingsvar.formaccount = AccountUserForm(request.POST)
+                json = "0/" + settingsvar.formaccount.data['login'] + "/" + settingsvar.formaccount.data[
+                    'password'] + '/0'
                 Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
                 if len(Stroka) > 0:
                     match settingsvar.kabinetitem:
@@ -1020,9 +1027,9 @@ def accountuser(request):
                 backurl = 'likar'
                 compl = ''
             settingsvar.readprofil = False
-            formaccount = AccountUserForm()
+            settingsvar.formaccount = AccountUserForm()
             settingsvar.nextstepdata = {
-                'form': formaccount,
+                'form': settingsvar.formaccount,
                 'compl': compl,
                 'reestrinput': cab,
                 'backurl': backurl
@@ -1155,15 +1162,12 @@ def Pacientinitial():
     return json
 
 
-def pacientprofil(request):  # httpRequest
-    if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev':
-        errorprofil('Шановний користувач! Активний кабінет пацієнта. Вхід до кабінету лікаря неможливий.')
-    else:
-        settingsvar.html = 'diagnoz/pacientprofil.html'
-        if settingsvar.kabinetitem != 'likarinterwiev': settingsvar.kabinetitem = 'profil'
-        if request.method == 'POST':
-            form = PacientForm(request.POST)
-            json = {'id': 0,
+def getpostpacientprofil(request):
+    settingsvar.html = 'diagnoz/pacientprofil.html'
+    if settingsvar.kabinetitem != 'likarinterwiev': settingsvar.kabinetitem = 'profil'
+    if request.method == 'POST':
+        form = PacientForm(request.POST)
+        json = {'id': 0,
                 'KodPacient': newpacientprofil(),
                 'KodKabinet': "",
                 'Age': form.data['age'],
@@ -1178,27 +1182,36 @@ def pacientprofil(request):  # httpRequest
                 'Profession': form.data['profession']
                 }
 
-            # --- записати в Бд введенний профіль та оюліковий запис
+        # --- записати в Бд облікові дані
+        if settingsvar.kabinet != 'guest':
             funcaddaccount(settingsvar.formaccount.data['login'], settingsvar.formaccount.data['password'])
-            settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
-            if len(settingsvar.pacient) > 0:
-                if settingsvar.readprofil != False:
-                    saveselectlikar(settingsvar.pacient)
-                else:
-                    if settingsvar.kabinetitem == 'likarinterwiev':
-                        shablonlikar(settingsvar.pacient)
-                    else:
-                        settingsvar.setpost = True
-                        settingsvar.setpostlikar = True
-                        errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
+        # --- записати в Бд введенний профіль
+        settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
+        if len(settingsvar.pacient) > 0:
+            if settingsvar.readprofil != False:
+                saveselectlikar(settingsvar.pacient)
             else:
-                errorprofil('Шановний користувач! Похибка на серевері. Ваш профіль не збережено.')
+                if settingsvar.kabinetitem == 'likarinterwiev':
+                    shablonlikar(settingsvar.pacient)
+                else:
+                    settingsvar.setpost = True
+                    settingsvar.setpostlikar = True
+                    errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
         else:
-            form = PacientForm()
-            settingsvar.nextstepdata = {
+            errorprofil('Шановний користувач! Похибка на серевері. Ваш профіль не збережено.')
+    else:
+        form = PacientForm()
+        settingsvar.nextstepdata = {
             'form': form,
             'next': False
-            }
+        }
+    return
+
+def pacientprofil(request):  # httpRequest
+    if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev':
+        errorprofil('Шановний користувач! Активний кабінет пацієнта. Вхід до кабінету лікаря неможливий.')
+    else:
+        getpostpacientprofil()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
