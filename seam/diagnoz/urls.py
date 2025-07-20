@@ -48,7 +48,7 @@ urlpatterns = [
     path('savediagnoz', views.savediagnoz, name='savediagnoz'),
     path('backdiagnoz', views.backdiagnoz, name='backdiagnoz'),
     path('receptprofillmedzaklad', views.receptprofillmedzaklad, name='receptprofillmedzaklad'),
-    path('selectdprofillikar/<str:selected_edrpou>  <str:selected_idstatus>  <str:selected_name>',
+    path('selectdprofillikar/<str:selected_edrpou>,  <str:selected_idstatus>,  <str:selected_name>',
          views.selectdprofillikar, name='selectdprofillikar'),
     path('backlistlikar', views.backlistlikar, name='backlistlikar'),
     path('backshablonselect', views.backshablonselect, name='backshablonselect'),
@@ -62,8 +62,10 @@ urlpatterns = [
     path('reestraccountuser', views.reestraccountuser, name='reestraccountuser'),
     path('exitkabinet', views.exitkabinet, name='exitkabinet'),
     path('backfromcontent', views.backfromcontent, name='backfromcontent'),
+    path('selectvisitingdays/<str:selected_timevizita>,  <str:selected_datevizita>, <str:selected_daysoftheweek>',
+         views.selectvisitingdays, name='selectvisitingdays')
 ]
-
+#
 urlpatterns += [
     path("api-auth/", include('rest_framework.urls', namespace="rest_framework")),
 ]

@@ -1,0 +1,33 @@
+{% extends 'diagnoz/shablonpage.html' %}
+
+{% block content %}
+
+<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+    <div class="col">
+        {% if likar %}
+        <p>{{piblikar}}</p>
+        {% else %}
+        <h6>{{iduser}}</h6>
+        {% endif %}
+        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
+    </div>
+</nav>
+<div class="container-fluid">
+    <h6>Для вибору дати та часу співбесіди з лікарем натисніть на відповідний рядок</h6>
+    {% block list %}
+    {% for item in complaintlist %}
+    {% if item.onOff == "Так" %}
+    <a aria-current="page" class="nav-link"
+       href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
+            style="vertical-align: inherit;"> {{ item.daysOfTheWeek }} : {{ item.dateVizita }} : {{ item.timeVizita
+        }}</font></a>
+    {% endif %}
+    {% endfor %}
+    {% endblock %}
+</div>
+<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+    <div class="col">
+        <a href="{{backurl}}">Далі</a>
+    </div>
+</nav>
+{% endblock %}

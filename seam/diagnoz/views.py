@@ -52,6 +52,10 @@ def reception(request):  # httpRequest
         settingsvar.html = 'diagnoz/glavmeny.html'
     else:
         settingsvar.kabinet = 'guest'
+        settingsvar.likar = {}
+        settingsvar.pacient = {}
+        settingsvar.setintertview = False
+        settingsvar.kabinetitem = 'guest'
         interwievcomplaint(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -66,6 +70,8 @@ def pacient(request):  # httpRequest
         settingsvar.setintertview = False
         settingsvar.html = 'diagnoz/pacient.html'
         settingsvar.nextstepdata = {}
+        settingsvar.likar = {}
+        settingsvar.setpost = False
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -85,15 +91,17 @@ def exitkabinet(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def likar(request):  # httpRequest
-    if (
-            settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listinterwiev') and len(
-            settingsvar.pacient) > 0:
+    if ((
+            settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listinterwiev')
+            and len(settingsvar.pacient) > 0):
         errorprofil('Для входу до кабінету лікаря необхідно вийти з кабінету пацієнта.')
     else:
         settingsvar.kabinet = 'likar'
         settingsvar.html = 'diagnoz/likar.html'
         settingsvar.setintertview = False
         settingsvar.nextstepdata = {}
+        settingsvar.pacient = {}
+        settingsvar.setpost = False
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -657,12 +665,14 @@ def shablonlistlikar():
     settingsvar.nawpage = 'backlistlikar'
     settingsvar.html = 'diagnoz/selectedprofillikar.html'
     iduser = funciduser()
+    bakurl = funcbakurl()
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': 'Перелік профільних лікарів',
         'detalinglist': settingsvar.gruplikar,
         'piblikar': '',
-        'pacient': ''
+        'pacient': '',
+        'bakurl': bakurl
     }
     if len(settingsvar.pacient) > 0:
         settingsvar.nextstepdata['likar'] = True
@@ -780,10 +790,14 @@ def inputprofilpacient(request, selected_doctor):
     if len(CmdStroka) > 0:
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         settingsvar.mobtellikar = CmdStroka['telefon']
-    shablonselect(request)
+        settingsvar.likar = CmdStroka
+        dateregistrationappointment(request)
+    else:
+        shablonselect(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# --- функція встановлення відповідного шаблону результатів опитування для гостя пацієнта або лікаря
 def shablonselect(request):
     match settingsvar.kabinet:
         case "guest":
@@ -805,6 +819,31 @@ def backshablonselect(request):
     shablonselect()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
+
+# --- функція вибору дати та часу прийому у лікаря
+def dateregistrationappointment(request):
+    visitinglist = []
+    CmdStroka = rest_api('/api/VisitingDaysController/' + settingsvar.kodDoctor + "/0", '', 'GET')
+    if len(CmdStroka) > 0:
+        settingsvar.html = 'diagnoz/likarappointments.html'
+        backurl = funcbakurl()
+        iduser = funciduser()
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'likar': settingsvar.setpostlikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'complaintlist': CmdStroka,
+            'backurl': backurl
+        }
+    else:
+        shablonselect(request)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def selectvisitingdays(request, selected_timevizita, selected_datevizita, selected_daysoftheweek):
+    settingsvar.datereception = selected_daysoftheweek + ' ' + selected_datevizita + ' ' + selected_timevizita
+    shablonselect(request)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # -----------------------------------------------------------------------
 # --- Зберегти протокол опитування
@@ -1076,7 +1115,7 @@ def accountuser(request):
                 settingsvar.html = 'diagnoz/likarprofil.html'
             case 'likarinterwiev':
                 if len(settingsvar.pacient) > 0:
-                    shablonlikar(settingsvar.pacient[0])
+                    shablonlikar(settingsvar.pacient)
                 else:
                     settingsvar.searchaccount = True
                     search_pacient()
@@ -1113,6 +1152,7 @@ def funcsearchpacient(formsearch):
         settingsvar.kodPacienta = profilpacient['kodPacient']
         shablonlikar(profilpacient)
     else:
+        settingsvar.search = False
         errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
 
     return

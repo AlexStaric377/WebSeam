@@ -4,10 +4,6 @@ from pathlib import Path
 
 import environ
 
-# from django.conf.global_settings import MEDIA_URL
-
-global kodDetailing
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
