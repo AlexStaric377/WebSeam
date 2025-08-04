@@ -63,7 +63,8 @@ urlpatterns = [
     path('exitkabinet', views.exitkabinet, name='exitkabinet'),
     path('backfromcontent', views.backfromcontent, name='backfromcontent'),
     path('selectvisitingdays/<str:selected_timevizita>,  <str:selected_datevizita>, <str:selected_daysoftheweek>',
-         views.selectvisitingdays, name='selectvisitingdays')
+         views.selectvisitingdays, name='selectvisitingdays'),
+    path('proseam', views.proseam, name='proseam')
 ]
 #
 urlpatterns += [

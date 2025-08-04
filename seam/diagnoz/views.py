@@ -47,9 +47,9 @@ def glavmeny(request):
     return render(request, 'diagnoz/glavmeny.html')
 
 def reception(request):  # httpRequest
-    if settingsvar.kabinet == 'guest' and settingsvar.html != 'diagnoz/glavmeny.html':
+    if settingsvar.kabinet == 'guest' and settingsvar.html != 'diagnoz/index.html':
         settingsvar.nawpage = ''
-        settingsvar.html = 'diagnoz/glavmeny.html'
+        settingsvar.html = 'diagnoz/index.html'
     else:
         settingsvar.kabinet = 'guest'
         settingsvar.likar = {}
@@ -83,7 +83,7 @@ def exitkabinet(request):
     settingsvar.likar = {}
     settingsvar.pacient = {}
     settingsvar.formsearch = {}
-    settingsvar.html = 'diagnoz/glavmeny.html'
+    settingsvar.html = 'diagnoz/index.html'
     settingsvar.nextstepdata = {}
     settingsvar.setpostlikar = False
     settingsvar.setpost = False
@@ -108,6 +108,9 @@ def likar(request):  # httpRequest
 def setings(request):  # httpRequest
     return render(request, 'diagnoz/setings.html')
 
+
+def proseam(request):
+    return render(request, 'diagnoz/proseam.html')
 
 # --- Блок Опитування і встановлення діагнозу
 # --- 1. Де або яке нездужання
@@ -707,7 +710,7 @@ def funcbakurl():
             bakurl = 'likar'
         case 'likarinterwiev':
             bakurl = 'likar'
-        case 'likarlistinterwiev':
+        case 'likarlistinterwiev' | 'likarreceptionpacient':
             bakurl = 'likar'
     return bakurl
 
@@ -720,7 +723,7 @@ def funciduser():
             iduser = 'Анонімний відвідувач'
         case "pacient" | 'interwiev' | 'likarinterwiev':
             iduser = 'Кабінет пацієнта'
-        case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
+        case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient':
             iduser = 'Кабінет лікаря'
 
     return iduser
@@ -1023,7 +1026,7 @@ def accountuser(request):
                             else:
                                 errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль пацієнта не знайдено.')
-                        case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
+                        case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient':
                             settingsvar.kodLikar = Stroka['idUser']
                             settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
                                                          '', 'GET')
@@ -1121,6 +1124,9 @@ def accountuser(request):
                     search_pacient()
             case 'likarlistinterwiev':
                 listlikar()
+            case 'likarreceptionpacient':
+                listreceptionpacient()
+
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -1516,22 +1522,30 @@ def pacientlistinterwiev(request):  # httpRequest
     return render(request, settingsvar.html, settingsvar.nextstepdata )
 
 
+# --- Запис на обстеження до  лікаря
+
 def pacientreceptionlikar(request):  # httpRequest
     return render(request, 'diagnoz/pacientreceptionlikar.html')
 
 
+# --- Тиск, пульс, аналізи
 def pacientstanhealth(request):  # httpRequest
     return render(request, 'diagnoz/pacientstanhealth.html')
 
 
-def receptprofillikar(request):
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 # --------- Лікар
 # --- Реєстрація до кабінету лікаря
 # ---------   Профіль лікаря
 
+# --- Реєстрація профіля лікаря
+
+def receptprofillikar(request):
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- Вхід до кабінету
 def likarprofil(request):  # httpRequest
     if settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listinterwiev':
         errorprofil('Для входу до кабінету лікаря необхідно вийти з кабінету пацієнта.')
@@ -1601,6 +1615,8 @@ def likarinterwiev(request):  # httpRequest
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# ---Блок функцій забезпечующих виведення переліку проведених опитувань пацієнтів
+# 2. Запит до БД за заданим кодом лікаря
 def listlikar():
     iduser = funciduser()
     backurl = funcbakurl()
@@ -1620,6 +1636,7 @@ def listlikar():
     return
 
 
+# 1. Вхід до кабінету та запит на виведення переліку проведених опитувань пацієнтів
 def likarlistinterwiev(request):  # httpRequest
     if settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listinterwiev':
         errorprofil('Для входу до кабінету лікаря необхідно вийти з кабінету пацієнта.')
@@ -1636,18 +1653,74 @@ def likarlistinterwiev(request):  # httpRequest
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# --- Розклад обстеження  пацієнтів
 def likarreceptionpacient(request):  # httpRequest
-    return render(request, 'diagnoz/likarreceptionpacient.html')
+    if settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listinterwiev':
+        errorprofil('Для входу до кабінету лікаря необхідно вийти з кабінету пацієнта.')
+    else:
+        cleanvars()
+        settingsvar.readprofil = False
+        settingsvar.nawpage = 'profilinterview'
+        settingsvar.kabinetitem = 'likarreceptionpacient'
+        settingsvar.kabinet = 'likarreceptionpacient'
+        if settingsvar.setpostlikar == False:
+            accountuser(request)
+        else:
+            listreceptionpacient()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+def listreceptionpacient():
+    iduser = funciduser()
+    backurl = funcbakurl()
+    strreception = {}
+    listreception = []
+    settingsvar.listprofpacient = []
+    settingsvar.nawpage = 'likarreceptionpacient'
+    settingsvar.html = 'diagnoz/likarreceptionpacient.html'
+    settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + '0/' + settingsvar.kodDoctor + '/0/0', '',
+                                   'GET')
+    if len(settingsvar.listapi) > 0:
+        for item in settingsvar.listapi:
+            profpacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
+            if len() > 0:
+                settingsvar.listprofpacient.append(profpacient)
+                profdiagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
+                nameDiagnoza = ''
+                if len() > 0: nameDiagnoza = profdiagnoz['nameDiagnoza']
+                strreception = {'kodDoctor': item['kodDoctor'],
+                                'kodPacient': item['kodPacient'],
+                                'namePacient': profpacient['name'] + ' ' + profpacient['surname'],
+                                'dateVizita': item['dateVizita'],
+                                'dateInterview': item['dateInterviewa'],
+                                'kodProtokola': item['kodProtokola'],
+                                'kodDiagnoz': item['kodDiagnoz'],
+                                'nameDiagnoza': nameDiagnoza
+                                }
+                listreception.append(strreception)
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'complaintlist': listreception,
+            'backurl': backurl,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'medzaklad': settingsvar.namemedzaklad
+        }
+    else:
+        errorprofil('Шановний користувач! За вашим запитом немає пацієнтів записаних для обстеження  .')
+    return
+
+
+# --- Розклад роботи
 def likarvisitngdays(request):  # httpRequest
     return render(request, 'diagnoz/likarvisitngdays.html')
 
 
+# --- Робочі напрямки
 def likarworkdiagnoz(request):  # httpRequest
     return render(request, 'diagnoz/likarworkdiagnoz.html')
 
 
+# --- Загальна бібліотека напрямків
 def likarlibdiagnoz(request):  # httpRequest
     return render(request, 'diagnoz/likarlibdiagnoz.html')
 

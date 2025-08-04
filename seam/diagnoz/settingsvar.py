@@ -63,3 +63,4 @@ gruplikar = ''
 initialprofil = False
 protokol = ""
 formaccount = ''
+listprofpacient = []
