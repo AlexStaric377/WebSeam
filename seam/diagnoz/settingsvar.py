@@ -64,3 +64,4 @@ initialprofil = False
 protokol = ""
 formaccount = ''
 listprofpacient = []
+datevizita = ""

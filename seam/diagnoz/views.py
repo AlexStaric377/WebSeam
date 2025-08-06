@@ -1409,7 +1409,8 @@ def pacientinterwiev(request):  # httpRequest
 
 
 # --- Профіль проведеного інтервью
-def profilinterview(request, selected_protokol):  # httpRequest
+def profilinterview(request, selected_protokol, selected_datevizita):  # httpRequest
+    settingsvar.datevizita = selected_datevizita
     if selected_protokol.find('PRT.') < 0:
         match selected_protokol:
             case 'pacient':
@@ -1422,7 +1423,7 @@ def profilinterview(request, selected_protokol):  # httpRequest
                 settingsvar.nextstepdata = {}
             case 'likarlistinterwiev':
                 likarlistinterwiev(request)
-            case 'interwiev' | 'listinterwiev' | 'likarinterwiev':
+            case 'interwiev' | 'listinterwiev' | 'likarinterwiev' | 'likarreceptionpacient':
                 funcshablonlistpacient()
     else:
         settingsvar.protokol = selected_protokol
@@ -1448,26 +1449,39 @@ def nextprofilinterview():
         case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
             settingsvar.nawpage = 'backprofilinterview'
             backurl = 'likarlistinterwiev'
+        case 'likarreceptionpacient':
+            settingsvar.nawpage = 'backprofilinterview'
+            backurl = 'likarreceptionpacient'
     settingsvar.kodProtokola = settingsvar.protokol
     iduser = funciduser()
     for item in settingsvar.listapi:
-        if settingsvar.protokol == item['kodProtokola']:
-            if (item['dateDoctor'] != None):
-                select_dateDoctor = item['dateDoctor']
-            dateint = item['dateInterview']
-            match settingsvar.kabinetitem:
-                case "profil" | "pacient" | "interwiev" | 'listinterwiev':
-                    if item['kodDoctor'] != None and len(item['kodDoctor']) > 0:
-                        doc = rest_api('api/ApiControllerDoctor/' + item['kodDoctor'] + '/0/0', '', 'GET')
-                        likarName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['telefon']
-                    PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
-                case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
-                    if item['kodPacient'] != None and len(item['kodPacient']) > 0:
-                        doc = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
-                        PacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
-                    likarName = settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
-                    settingsvar.pacient = doc
-            break
+
+        booldatevizita = False
+        if settingsvar.kabinetitem == 'likarreceptionpacient':
+            if item['dateDoctor'] == settingsvar.datevizita:
+                booldatevizita = True
+        else:
+            booldatevizita = True
+        if booldatevizita == True:
+            if settingsvar.protokol == item['kodProtokola']:
+                if (item['dateDoctor'] != None):
+                    select_dateDoctor = item['dateDoctor']
+                dateint = item['dateInterview']
+                match settingsvar.kabinetitem:
+                    case "profil" | "pacient" | "interwiev" | 'listinterwiev':
+                        if item['kodDoctor'] != None and len(item['kodDoctor']) > 0:
+                            doc = rest_api('api/ApiControllerDoctor/' + item['kodDoctor'] + '/0/0', '', 'GET')
+                            likarName = ''
+                            if len(doc) > 0:
+                                likarName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['telefon']
+                        PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
+                    case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient':
+                        if item['kodPacient'] != None and len(item['kodPacient']) > 0:
+                            doc = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
+                            PacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
+                        likarName = settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+                        settingsvar.pacient = doc
+                break
     depend = rest_api('api/DependencyDiagnozController/' + '0/' + settingsvar.protokol + '/0', '', 'GET')
     recommend = rest_api('api/RecommendationController/' + depend['kodRecommend'] + '/0', '', 'GET')
     diagnoz = rest_api('api/DiagnozController/' + depend['kodDiagnoz'] + '/0/0', '', 'GET')
@@ -1678,26 +1692,28 @@ def listreceptionpacient():
     settingsvar.listprofpacient = []
     settingsvar.nawpage = 'likarreceptionpacient'
     settingsvar.html = 'diagnoz/likarreceptionpacient.html'
-    settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + '0/' + settingsvar.kodDoctor + '/0/0', '',
+    settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + '0/' + settingsvar.kodDoctor, '',
                                    'GET')
     if len(settingsvar.listapi) > 0:
         for item in settingsvar.listapi:
-            profpacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
-            if len() > 0:
-                settingsvar.listprofpacient.append(profpacient)
-                profdiagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
-                nameDiagnoza = ''
-                if len() > 0: nameDiagnoza = profdiagnoz['nameDiagnoza']
-                strreception = {'kodDoctor': item['kodDoctor'],
+
+            if len(item['dateDoctor']) > 0:
+                profpacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
+                if len(profpacient) > 0:
+                    settingsvar.listprofpacient.append(profpacient)
+                    profdiagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
+                    nameDiagnoza = ''
+                    if len(profdiagnoz) > 0: nameDiagnoza = profdiagnoz['nameDiagnoza']
+                    strreception = {'kodDoctor': item['kodDoctor'],
                                 'kodPacient': item['kodPacient'],
                                 'namePacient': profpacient['name'] + ' ' + profpacient['surname'],
-                                'dateVizita': item['dateVizita'],
-                                'dateInterview': item['dateInterviewa'],
+                                    'dateVizita': item['dateDoctor'],
+                                    'dateInterview': item['dateInterview'],
                                 'kodProtokola': item['kodProtokola'],
                                 'kodDiagnoz': item['kodDiagnoz'],
                                 'nameDiagnoza': nameDiagnoza
                                 }
-                listreception.append(strreception)
+                    listreception.append(strreception)
         settingsvar.nextstepdata = {
             'iduser': iduser,
             'complaintlist': listreception,

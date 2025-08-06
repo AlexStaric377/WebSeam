@@ -13,7 +13,7 @@
     <h6>Для перегляду деталей обстеження необхідного пацієнта натисніть на відповідний рядок</h6>
     {% block list %}
     {% for item in complaintlist %}
-    <a aria-current="page" class="nav-link" href="{% url 'profilinterview' item.kodProtokola   %}"><font
+    <a aria-current="page" class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  %}"><font
             style="vertical-align: inherit;">Дата візиту: {{ item.dateVizita }} Пацієнт: {{ item.namePacient }}
         Попередній діагноз: {{ item.nameDiagnoza }} </font></a>
     {% endfor %}
