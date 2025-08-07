@@ -1,0 +1,27 @@
+{% extends 'diagnoz/shablonpage.html' %}
+
+{% block content %}
+
+<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+    <div class="col">
+        <p>{{medzaklad}}</p>
+        <p>{{piblikar}}</p>
+    </div>
+</nav>
+<div class="container-fluid">
+    <p>Бібліотека робочих напрямків</p>
+    <h6>Для перегляду переліку діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
+    {% block list %}
+    {% for item in complaintlist %}
+    <a aria-current="page" class="nav-link" href="{% url 'libdiagnoz'  item.icdGrDiagnoz  %}"><font
+            style="vertical-align: inherit;"> {{ item.icdGrDiagnoz }} </font></a>
+
+    {% endfor %}
+    {% endblock %}
+</div>
+<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+    <div class="col">
+        <a href="{{backurl}}">Далі</a>
+    </div>
+</nav>
+{% endblock %}

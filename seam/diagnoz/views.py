@@ -1019,7 +1019,7 @@ def accountuser(request):
                             else:
                                 errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль пацієнта не знайдено.')
-                        case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz':
+                        case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarlibdiagnoz' | 'likarlibdiagnoz':
                             settingsvar.kodLikar = Stroka['idUser']
                             settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
                                                          '', 'GET')
@@ -1057,7 +1057,9 @@ def accountuser(request):
             backurl = 'pacient'
             compl = 'Зареєструватися'
             if settingsvar.kabinetitem == "likar" or settingsvar.kabinetitem == 'likarinterwiev' \
-                    or settingsvar.kabinetitem == 'likarlistinterwiev':
+                    or settingsvar.kabinetitem == 'likarlistinterwiev' or settingsvar.kabinetitem == 'likarlibdiagnoz' \
+                    or settingsvar.kabinetitem == 'likarreceptionpacient' \
+                    or settingsvar.kabinetitem == 'likarworkdiagnoz':
                 cab = 'Кабінет лікаря'
                 backurl = 'likar'
                 compl = ''
@@ -1121,7 +1123,8 @@ def accountuser(request):
                 listreceptionpacient()
             case 'likarworkdiagnoz':
                 listworkdiagnoz()
-
+            case 'likarlibdiagnoz':
+                listlibdiagnoz()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1789,7 +1792,68 @@ def workdiagnozlikar(request, select_kodDoctor, select_icdGrDiagnoz):
 
 # --- Загальна бібліотека напрямків
 def likarlibdiagnoz(request):  # httpRequest
-    return render(request, 'diagnoz/likarlibdiagnoz.html')
+    if settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listinterwiev':
+        errorprofil('Для входу до кабінету лікаря необхідно вийти з кабінету пацієнта.')
+    else:
+        cleanvars()
+        settingsvar.readprofil = False
+        settingsvar.nawpage = 'likarworkdiagnoz'
+        settingsvar.kabinetitem = 'likarworkdiagnoz'
+        settingsvar.kabinet = 'likarworkdiagnoz'
+        if settingsvar.setpostlikar == False:
+            accountuser(request)
+        else:
+            listlibdiagnoz()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+#    return render(request, 'diagnoz/likarlibdiagnoz.html')
+def listlibdiagnoz():
+    iduser = funciduser()
+    backurl = funcbakurl()
+    settingsvar.html = 'diagnoz/listlibdiagnoz.html'
+    libdiagnoz = rest_api('api/DiagnozController/', '', 'GET')
+    if len(libdiagnoz) > 0:
+        grdiagnoz = ""
+        listgrdiagnoz = []
+        for item in libdiagnoz:
+            if grdiagnoz != item['icdGrDiagnoz']:
+                listgrdiagnoz.append(item)
+                grdiagnoz = item['icdGrDiagnoz']
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'complaintlist': listgrdiagnoz,
+            'backurl': backurl,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'medzaklad': settingsvar.namemedzaklad
+        }
+    else:
+        errorprofil('Шановний користувач! За вашим запитом бібліотека не містить робочі напрямки   .')
+    return
+
+
+def libdiagnoz(request, select_icdGrDiagnoz):
+    iduser = funciduser()
+    backurl = 'likarlibdiagnoz'
+    settingsvar.nawpage = 'listlibdiagnoz'
+    settingsvar.html = 'diagnoz/libdiagnoz.html'
+    point = select_icdGrDiagnoz.index('.')
+    icdGrDiagnoz = select_icdGrDiagnoz[0:point]
+    listworkdiagnoz = rest_api('api/DiagnozController/' + '0/' + icdGrDiagnoz + '/0', '',
+                               'GET')
+    if len(listworkdiagnoz) > 0:
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'complaintlist': listworkdiagnoz,
+            'backurl': backurl,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'medzaklad': settingsvar.namemedzaklad,
+            'icdgrup': select_icdGrDiagnoz
+        }
+    else:
+        errorprofil('Шановний користувач! За вашим запитом немає робочих діагнозів за ' + select_icdGrDiagnoz)
+        settingsvar.nextstepdata['backurl'] = 'listlibdiagnoz'
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 def adminlanguage(request):  # httpRequest
