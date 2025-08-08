@@ -65,3 +65,4 @@ protokol = ""
 formaccount = ''
 listprofpacient = []
 datevizita = ""
+kodDiagnoz = ''

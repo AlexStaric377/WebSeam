@@ -56,6 +56,7 @@ def reception(request):  # httpRequest
         settingsvar.pacient = {}
         settingsvar.setintertview = False
         settingsvar.kabinetitem = 'guest'
+        settingsvar.datereception = 'не встановлено'
         interwievcomplaint(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -71,7 +72,7 @@ def pacient(request):  # httpRequest
         settingsvar.html = 'diagnoz/pacient.html'
         settingsvar.nextstepdata = {}
         settingsvar.likar = {}
-        settingsvar.setpost = False
+        settingsvar.datereception = 'не встановлено'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -101,7 +102,7 @@ def likar(request):  # httpRequest
         settingsvar.setintertview = False
         settingsvar.nextstepdata = {}
         settingsvar.pacient = {}
-        settingsvar.setpost = False
+        settingsvar.datereception = 'не встановлено'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -487,17 +488,21 @@ def writediagnoz():
 
     for item in settingsvar.diagnozStroka:
         if settingsvar.kodProtokola == item['kodProtokola']:
+            contentRecommendation = ''
             api = rest_api('/api/DependencyDiagnozController/' + "0/" + item['kodProtokola'] + "/0", '', 'GET')
-            apiicd = rest_api('/api/DiagnozController/' + api['kodDiagnoz'] + "/0/0", '', 'GET')
-            settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
-            api = rest_api('/api/RecommendationController/' + api['kodRecommend'] + "/0", '', 'GET')
+            if len(api) > 0:
+                settingsvar.kodDiagnoz = api['kodDiagnoz']
+                apiicd = rest_api('/api/DiagnozController/' + api['kodDiagnoz'] + "/0/0", '', 'GET')
+                settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
+                api = rest_api('/api/RecommendationController/' + api['kodRecommend'] + "/0", '', 'GET')
+                contentRecommendation = api['contentRecommendation']
             settingsvar.nawpage = 'backfromcontent'
             settingsvar.html = 'diagnoz/versiyadiagnoza.html'
             iduser = funciduser()
             settingsvar.nextstepdata = {
                 'opis': item['opistInterview'],
                 'http': item['uriInterview'],
-                'rekomendaciya': api['contentRecommendation'],
+                'rekomendaciya': contentRecommendation,
                 'compl': settingsvar.nametInterview,
                 'detalinglist': settingsvar.diagnozStroka,
                 'iduser': iduser,
@@ -837,6 +842,7 @@ def dateregistrationappointment(request):
 
 
 def selectvisitingdays(request, selected_timevizita, selected_datevizita, selected_daysoftheweek):
+
     settingsvar.datereception = selected_daysoftheweek + ' ' + selected_datevizita + ' ' + selected_timevizita
     shablonselect(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -1336,13 +1342,27 @@ def addReceptionLikar():
             'KodComplInterv': settingsvar.kodComplInterv,
             'KodProtokola': settingsvar.kodProtokola,
             'TopictVizita': 'Підтвердження попереднього діагнозу, призначення плану лікування.',
+            'KodDiagnoz': settingsvar.kodDiagnoz
             }
-
     # --- записати в Бд
     saveprofil = rest_api('/api/RegistrationAppointmentController/', json, 'POST')
     return
 
 
+def addAdmissionPatientsLikar():
+    json = {'id': 0,
+            'KodDoctor': settingsvar.kodDoctor,
+            'KodPacient': settingsvar.kodPacienta,
+            'DateVizita': settingsvar.datereception,
+            'DateInterview': settingsvar.dateInterview,
+            'KodComplInterv': settingsvar.kodComplInterv,
+            'KodProtokola': settingsvar.kodProtokola,
+            'TopictVizita': 'Підтвердження попереднього діагнозу, призначення плану лікування.',
+            'KodDiagnoz': settingsvar.kodDiagnoz
+            }
+    # --- записати в Бд
+    saveprofil = rest_api('/api/ControllerAdmissionPatients/', json, 'POST')
+    return
 # --- Збереження протоколу опитування та запису до лікаря
 def saveraceptionlikar(request):  # httpRequest
     # --- додати проткол опитування
@@ -1353,6 +1373,9 @@ def saveraceptionlikar(request):  # httpRequest
     addReceptionPacient()
     # ---  Додати запис до лікаря протоколу опитування пацієнта
     addReceptionLikar()
+    # ---  Додати запис до лікаря в розклад прийому лікаря
+    addAdmissionPatientsLikar()
+
     shablonpacient(settingsvar.pacient)
     settingsvar.nawpage = 'saveraceptionlikar'
     settingsvar.nextstepdata[
@@ -1455,14 +1478,20 @@ def nextprofilinterview():
 
         booldatevizita = False
         if settingsvar.kabinetitem == 'likarreceptionpacient':
-            if item['dateDoctor'] == settingsvar.datevizita:
+            if item['dateVizita'] == settingsvar.datevizita:
                 booldatevizita = True
         else:
             booldatevizita = True
         if booldatevizita == True:
             if settingsvar.protokol == item['kodProtokola']:
-                if (item['dateDoctor'] != None):
-                    select_dateDoctor = item['dateDoctor']
+                select_dateDoctor = 'не встановлено'
+                match settingsvar.kabinetitem:
+                    case 'likarreceptionpacient':
+                        if item['dateVizita'] != None:
+                            select_dateDoctor = item['dateVizita']
+                    case "profil" | "pacient" | "interwiev" | 'listinterwiev' | "likar" | 'likarinterwiev' | 'likarlistinterwiev':
+                        if (item['dateDoctor'] != None):
+                            select_dateDoctor = item['dateDoctor']
                 dateint = item['dateInterview']
                 match settingsvar.kabinetitem:
                     case "profil" | "pacient" | "interwiev" | 'listinterwiev':
@@ -1689,25 +1718,29 @@ def listreceptionpacient():
     settingsvar.listprofpacient = []
     settingsvar.nawpage = 'likarreceptionpacient'
     settingsvar.html = 'diagnoz/likarreceptionpacient.html'
-    settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + '0/' + settingsvar.kodDoctor, '',
+    settingsvar.listapi = rest_api('api/ControllerAdmissionPatients/' + '0/' + settingsvar.kodDoctor + '/0/0', '',
                                    'GET')
     if len(settingsvar.listapi) > 0:
         for item in settingsvar.listapi:
 
-            if len(item['dateDoctor']) > 0:
+            if len(item['dateVizita']) > 0:
                 profpacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
                 if len(profpacient) > 0:
                     settingsvar.listprofpacient.append(profpacient)
-                    profdiagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
-                    nameDiagnoza = ''
-                    if len(profdiagnoz) > 0: nameDiagnoza = profdiagnoz['nameDiagnoza']
+                    kodDiagnoz = ''
+                    if item['kodDiagnoz'] != None and len(item['kodDiagnoz']) > 0:
+                        profdiagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
+                        nameDiagnoza = ''
+                        if len(profdiagnoz) > 0:
+                            nameDiagnoza = profdiagnoz['nameDiagnoza']
+                            kodDiagnoz = item['kodDiagnoz']
                     strreception = {'kodDoctor': item['kodDoctor'],
                                 'kodPacient': item['kodPacient'],
                                 'namePacient': profpacient['name'] + ' ' + profpacient['surname'],
-                                    'dateVizita': item['dateDoctor'],
+                                    'dateVizita': item['dateVizita'],
                                     'dateInterview': item['dateInterview'],
                                 'kodProtokola': item['kodProtokola'],
-                                'kodDiagnoz': item['kodDiagnoz'],
+                                    'kodDiagnoz': kodDiagnoz,
                                 'nameDiagnoza': nameDiagnoza
                                 }
                     listreception.append(strreception)

@@ -19,8 +19,8 @@
     {% if item.onOff == "Так" %}
     <a aria-current="page" class="nav-link"
        href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
-            style="vertical-align: inherit;"> {{ item.daysOfTheWeek }} : {{ item.dateVizita }} : {{ item.timeVizita
-        }}</font></a>
+            style="vertical-align: inherit;"> {{ item.daysOfTheWeek }} : {{ item.dateVizita }} :
+        {{item.timeVizita}}</font></a>
     {% endif %}
     {% endfor %}
     {% endblock %}
