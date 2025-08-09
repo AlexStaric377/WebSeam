@@ -14,7 +14,8 @@
     {% block list %}
     {% for item in complaintlist %}
 
-    <a aria-current="page" class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor %}"><font
+    <a aria-current="page" class="nav-link"
+       href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}"><font
             style="vertical-align: inherit;"> {{ item.dateInterview }} : {{ item.nameInterview }}</font></a>
     {% endfor %}
     {% endblock %}

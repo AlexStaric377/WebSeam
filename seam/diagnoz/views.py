@@ -57,6 +57,7 @@ def reception(request):  # httpRequest
         settingsvar.setintertview = False
         settingsvar.kabinetitem = 'guest'
         settingsvar.datereception = 'не встановлено'
+        settingsvar.datedoctor = 'не встановлено'
         interwievcomplaint(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -73,6 +74,7 @@ def pacient(request):  # httpRequest
         settingsvar.nextstepdata = {}
         settingsvar.likar = {}
         settingsvar.datereception = 'не встановлено'
+        settingsvar.datedoctor = 'не встановлено'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -103,6 +105,7 @@ def likar(request):  # httpRequest
         settingsvar.nextstepdata = {}
         settingsvar.pacient = {}
         settingsvar.datereception = 'не встановлено'
+        settingsvar.datedoctor = 'не встановлено'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -890,7 +893,7 @@ def addColectionInterview():
             'kodDoctor': settingsvar.kodDoctor,
             'kodPacient': settingsvar.kodPacienta,
             'dateInterview': settingsvar.dateInterview,
-            'DateDoctor': settingsvar.datedoctor,
+            'DateDoctor': settingsvar.datereception,
             'kodProtokola': settingsvar.kodProtokola,
             'detailsInterview': details,
             'resultDiagnoz': settingsvar.resultDiagnoz,
@@ -1429,8 +1432,10 @@ def pacientinterwiev(request):  # httpRequest
 
 
 # --- Профіль проведеного інтервью
-def profilinterview(request, selected_protokol, selected_datevizita):  # httpRequest
+def profilinterview(request, selected_protokol, selected_datevizita, selected_dateInterview):  # httpRequest
     settingsvar.datevizita = selected_datevizita
+    settingsvar.dateInterview = selected_dateInterview
+    settingsvar.protokol = selected_protokol
     if selected_protokol.find('PRT.') < 0:
         match selected_protokol:
             case 'pacient':
@@ -1446,7 +1451,6 @@ def profilinterview(request, selected_protokol, selected_datevizita):  # httpReq
             case 'interwiev' | 'listinterwiev' | 'likarinterwiev' | 'likarreceptionpacient':
                 funcshablonlistpacient()
     else:
-        settingsvar.protokol = selected_protokol
         nextprofilinterview()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -1455,7 +1459,7 @@ def nextprofilinterview():
     likarName = ""
     PacientName = ""
     dateint = ""
-    select_dateDoctor = ""
+    select_dateDoctor = " не встановлено"
     match settingsvar.kabinet:
         case 'listinterwiev':
             settingsvar.backurl = funcbakurl()
@@ -1483,8 +1487,7 @@ def nextprofilinterview():
         else:
             booldatevizita = True
         if booldatevizita == True:
-            if settingsvar.protokol == item['kodProtokola']:
-                select_dateDoctor = 'не встановлено'
+            if settingsvar.protokol == item['kodProtokola'] and settingsvar.dateInterview == item['dateInterview']:
                 match settingsvar.kabinetitem:
                     case 'likarreceptionpacient':
                         if item['dateVizita'] != None:
@@ -1531,19 +1534,6 @@ def backprofilinterview(request):
 
 
 #--- Перегляд проведених інтервью
-# --- Функція формування шаблону для списку опитувань
-def funcshablonlistpacient():
-    iduser = funciduser()
-    settingsvar.html = 'diagnoz/pacientlistinterwiev.html'
-    shablonpacient(settingsvar.pacient)
-    settingsvar.nextstepdata['backurl'] = settingsvar.backurl
-    settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacienta, '', 'GET')
-    if len(settingsvar.listapi) > 0:
-        settingsvar.nextstepdata['complaintlist'] = settingsvar.listapi
-    else:
-        errorprofil('Шановний користувач! За вашим запитом відсутні проведені опитування.')
-    return
-
 
 def pacientlistinterwiev(request):  # httpRequest
     if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev':
@@ -1561,6 +1551,19 @@ def pacientlistinterwiev(request):  # httpRequest
             funcshablonlistpacient()
     return render(request, settingsvar.html, settingsvar.nextstepdata )
 
+
+# --- Функція формування шаблону для списку опитувань
+def funcshablonlistpacient():
+    iduser = funciduser()
+    settingsvar.html = 'diagnoz/pacientlistinterwiev.html'
+    shablonpacient(settingsvar.pacient)
+    settingsvar.nextstepdata['backurl'] = settingsvar.backurl
+    settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacienta, '', 'GET')
+    if len(settingsvar.listapi) > 0:
+        settingsvar.nextstepdata['complaintlist'] = settingsvar.listapi
+    else:
+        errorprofil('Шановний користувач! За вашим запитом відсутні проведені опитування.')
+    return
 
 # --- Запис на обстеження до  лікаря
 
