@@ -1,30 +1,42 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
         <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
         <p>Перегляд проведених опитувань</p>
     </div>
-</nav>
+
 <div class="container-fluid">
     <h6>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</h6>
-    {% block list %}
-    {% for item in complaintlist %}
-
-    <a aria-current="page" class="nav-link"
-       href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}"><font
-            style="vertical-align: inherit;"> {{ item.dateInterview }} : {{ item.nameInterview }}</font></a>
-    {% endfor %}
-    {% endblock %}
+    <table>
+        <thead>
+        <tr>
+            <th>Дата опитування</th>
+            <th>Пацієнт</th>
+            <th>Попередній діагноз</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in complaintlist %}
+        <tr>
+            <td><a class="nav-link"
+                   href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{
+                item.dateInterview }}</a></td>
+            <td><a class="nav-link"
+                   href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{
+                item.resultDiagnoz }}</td>
+            <td><a class="nav-link"
+                   href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{
+                item.nameInterview }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
         <a href="{{backurl}}">Далі</a>
     </div>
-</nav>
 {% endblock %}
 
 

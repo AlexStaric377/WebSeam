@@ -2,27 +2,42 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
+<div class="col">
         <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
         <p>Перегляд проведених опитувань</p>
-    </div>
-</nav>
+</div>
+
 <div class="container-fluid">
     <h6>Для перегляду деталей обстеження необхідного пацієнта натисніть на відповідний рядок</h6>
-    {% block list %}
+    <table>
+        <thead>
+        <tr>
+            <th>Дата візиту</th>
+            <th>Пацієнт</th>
+            <th>Попередній діагноз</th>
+        </tr>
+        </thead>
+        <tbody>
     {% for item in complaintlist %}
-    <a aria-current="page" class="nav-link"
-       href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}"><font
-            style="vertical-align: inherit;">Дата візиту: {{ item.dateVizita }} Пацієнт: {{ item.namePacient }}
-        Попередній діагноз: {{ item.nameDiagnoza }} </font></a>
+    <tr>
+        <td><a class="nav-link"
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{
+            item.dateVizita }}</a></td>
+        <td><a class="nav-link"
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{
+            item.namePacient }}</td>
+        <td><a class="nav-link"
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{
+            item.nameDiagnoza }}</td>
+
+    </tr>
     {% endfor %}
-    {% endblock %}
+        </tbody>
+    </table>
 </div>
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<!--- <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light"> --->
     <div class="col">
         <a href="{{backurl}}">Далі</a>
     </div>
-</nav>
 {% endblock %}

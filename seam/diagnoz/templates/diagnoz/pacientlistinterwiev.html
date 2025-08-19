@@ -13,14 +13,26 @@
 
 <div class="container-fluid">
     <h6>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</h6>
-    {% block list %}
-    {% for item in complaintlist %}
-    <a aria-current="page" class="nav-link"
-       href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}"><font
-            style="vertical-align: inherit;"> {{ item.dateInterview }} : {{ item.nameInterview }}</font></a>
-    {% endfor %}
-    {% endblock %}
-
+    <table>
+        <thead>
+        <tr>
+            <th>Дата опитування</th>
+            <th>Попередній діагноз</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in complaintlist %}
+        <tr>
+            <td><a class="nav-link"
+                   href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{
+                item.dateInterview }}</a></td>
+            <td><a class="nav-link"
+                   href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{
+                item.nameInterview }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
     <a class="text-decoration-none" href="{{backurl}}">Далі</a>
 </div>
 {% endblock %}
