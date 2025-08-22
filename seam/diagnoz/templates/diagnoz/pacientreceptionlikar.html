@@ -20,14 +20,14 @@
     <tbody>
     {% for item in complaintlist %}
     <tr>
-      <td><a class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.namelikar
-        }}</a></td>
-      <td><a class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.dateDoctor
-        }}</a></td>
-      <td><a class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.dateInterview
-        }}</a></td>
-      <td><a class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.diagnoz
-        }}</a></td>
+      <td><a class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.namelikar}}</a>
+      </td>
+      <td><a class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.dateDoctor}}</a>
+      </td>
+      <td><a class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.dateInterview}}</a>
+      </td>
+      <td><a class="nav-link" href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.diagnoz}}</a>
+      </td>
 
     </tr>
     {% endfor %}

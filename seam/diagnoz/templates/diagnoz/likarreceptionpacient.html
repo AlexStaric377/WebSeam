@@ -22,14 +22,14 @@
     {% for item in complaintlist %}
     <tr>
         <td><a class="nav-link"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{
-            item.dateVizita }}</a></td>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{item.dateVizita
+            }}</a></td>
         <td><a class="nav-link"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{
-            item.namePacient }}</td>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{item.namePacient
+            }}</a></td>
         <td><a class="nav-link"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{
-            item.nameDiagnoza }}</td>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{item.nameDiagnoza
+            }}</a></td>
 
     </tr>
     {% endfor %}

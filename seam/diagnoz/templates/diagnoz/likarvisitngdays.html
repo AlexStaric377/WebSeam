@@ -1,14 +1,35 @@
 {% extends 'diagnoz/shablonpage.html' %}
-
 {% block content %}
-
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
+<div class="col">
         <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
-        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
-    </div>
+    <p>Розклад приймання пацієнтів для обстеження</p>
+</div>
 
-</nav>
-
+<div class="container-fluid">
+    <table>
+        <thead>
+        <tr>
+            <th>День неділі</th>
+            <th>Дата прийому</th>
+            <th>Час прийому</th>
+            <th>Прийом дійсний</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in complaintlist %}
+        <tr>
+            <td><a class="nav-link" href="">{{item.daysOfTheWeek }}</a></td>
+            <td><a class="nav-link" href="">{{item.dateVizita }}</a></td>
+            <td><a class="nav-link" href="">{{item.timeVizita }}</a></td>
+            <td><a class="nav-link" href="">{{item.onOff }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="col">
+    <a href="{{backurl}}">Далі</a>
+</div>
 {% endblock %}
+
