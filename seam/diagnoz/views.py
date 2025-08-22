@@ -190,6 +190,7 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     settingsvar.feature_name = nextfeature_name
     settingsvar.listfeature = {}
     settingsvar.diagnozStroka = []
+    settingsvar.dictfeature = []
     if len(settingsvar.listfeature) <= 0:
         settingsvar.listfeature = rest_api('api/FeatureController/' + "0/" + nextfeature_keyComplaint + "/0/", '',
                                            'GET')
@@ -216,6 +217,7 @@ def featurespisok(request, featurespisok_keyComplaint, featurespisok_keyFeature,
     settingsvar.spselectnameDetailing.append(featurespisok_nameFeature)
     settingsvar.spisokselectDetailing.append(featurespisok_keyFeature)
     settingsvar.keyFeature = featurespisok_keyFeature
+    settingsvar.keyComplaint = featurespisok_keyComplaint
     funcfeature()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -227,23 +229,50 @@ def backfeature(request):
 
 def funcfeature():
     index = 0
+    indexfeature = 0
+    iduser = funciduser()
     settingsvar.nextstepdata = {}
+    tmplist = []
     settingsvar.html = 'diagnoz/errorfeature.html'
-    if len(settingsvar.listfeature) > 0:
+    if len(settingsvar.dictfeature) == 0:
+        listkeyFeature = settingsvar.keyComplaint + ";" + settingsvar.keyFeature + ";";
+        settingsvar.dictfeature = rest_api('api/InterviewController/' + "0/0/0/0/" + listkeyFeature, '', 'GET')
+    if len(settingsvar.dictfeature) > 0:
         for item in settingsvar.listfeature:
-            if settingsvar.keyFeature == item['keyFeature']:
-                del settingsvar.listfeature[index]
-                iduser = funciduser()
-                settingsvar.nawpage = 'backfeature'
-                if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
-                settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
-                settingsvar.nextstepdata['next'] = '  Далі '
-                settingsvar.nextstepdata['compl'] = settingsvar.feature_name
-                settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
-                settingsvar.nextstepdata['iduser'] = iduser
-                settingsvar.html = 'diagnoz/nextfeature.html'
-                break
-            index = index + 1
+
+            for itemfeature in settingsvar.dictfeature:
+                if item['keyFeature'] in itemfeature['grDetail']:
+                    tmplist.append(item);
+                    if settingsvar.keyFeature == item['keyFeature']:
+                        indexfeature = index
+                    index = index + 1
+                    break;
+
+        settingsvar.listfeature = tmplist
+    else:
+        settingsvar.listfeature = []
+        settingsvar.nawpage = 'receptinterwiev'
+        settingsvar.html = 'diagnoz/receptinterwiev.html'
+        api = rest_api('api/ApiControllerComplaint/', '', 'GET')
+        settingsvar.nextstepdata = {
+            'complaintlist': api,
+            'iduser': iduser,
+            'backurl': 'reception'
+        }
+
+    if len(settingsvar.listfeature) > 1:
+        settingsvar.nawpage = 'backfeature'
+        settingsvar.html = 'diagnoz/nextfeature.html'
+        del settingsvar.listfeature[indexfeature]
+        if len(settingsvar.pacient) > 0:
+            shablonpacient(settingsvar.pacient)
+        settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
+        settingsvar.nextstepdata['next'] = '  Далі '
+        settingsvar.nextstepdata['compl'] = settingsvar.feature_name
+        settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
+        settingsvar.nextstepdata['iduser'] = iduser
+    if len(settingsvar.listfeature) == 1:
+        nextstepgrdetaling()
     return
 
 
@@ -315,8 +344,8 @@ def nextstepgrdetaling():
                 settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
                 settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
                 iduser = funciduser()
-
-                shablonpacient(settingsvar.pacient)
+                if len(settingsvar.pacient) > 0:
+                    shablonpacient(settingsvar.pacient)
                 settingsvar.nextstepdata['detalinglist'] = settingsvar.spisoklistdetaling
                 settingsvar.nextstepdata['compl'] = settingsvar.feature_name + ", " + settingsvar.detaling_feature_name
                 settingsvar.nextstepdata['next'] = '  Далі '
@@ -465,7 +494,8 @@ def enddetaling(request):
 
 def shablondetaling():
     iduser = funciduser()
-    shablonpacient(settingsvar.pacient)
+    if len(settingsvar.pacient) > 0:
+        shablonpacient(settingsvar.pacient)
     settingsvar.nextstepdata['detalinglist'] = settingsvar.spisoklistdetaling
     settingsvar.nextstepdata['compl'] = settingsvar.feature_name + ", " + settingsvar.detaling_feature_name
     settingsvar.nextstepdata['next'] = '  Далі '
