@@ -7,7 +7,7 @@
 <div class="col-md-7 col-lg-8">
     <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
         пацієнта</font></font></h4>
-    <form action="" method="POST">
+    <form class="needs-validation" method="POST" novalidate="">
         {% csrf_token %}
         <div class="row g-3">
             <div class="col-sm-4">
@@ -116,7 +116,6 @@
     </form>
 </div>
 <div style="display: inline-block">
-    <a class="text-decoration-none text-reset" href="{% url 'pacient' %}">
-        <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20"></a>
+    <a class="text-decoration-none text-reset" href="{% url 'pacient' %}">Анулювати запит</a>
 </div>
 {% endblock %}

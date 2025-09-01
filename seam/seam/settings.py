@@ -71,7 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'seam.wsgi.application'
-
+# CSRF_TRUSTED_ORIGINS = ['https://myserver.tld']
 
 DATABASES = {
     'default': {
