@@ -25,7 +25,7 @@
     {% block detalinglist %}
     {% for item in detalinglist %}
     <a aria-current="page" class="nav-link"
-       href="{% url 'selectdetaling' item.kodDetailing item.nameDetailing  %}"><font
+       href="{% url 'selectdetaling' item.kodDetailing%}"><font
             style="vertical-align: inherit;">{{item.nameDetailing}}</font></a>
 
     {% endfor %}

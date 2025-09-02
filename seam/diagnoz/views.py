@@ -395,10 +395,11 @@ def nextstepgrdetaling():
 
 
 # ---  вибір деталізації симптому нездужання
-def selectdetaling(request, select_kodDetailing, select_nameDetailing):
+def selectdetaling(request, select_kodDetailing):
     settingsvar.spisokkeyinterview.append(select_kodDetailing + ";")
     settingsvar.spisokselectDetailing.append(select_kodDetailing)
-    settingsvar.spselectnameDetailing.append(select_nameDetailing)
+
+    select_nameDetailing = ""
     index = 0
     settingsvar.nawpage = 'receptinterwiev'
     if len(settingsvar.spisoklistdetaling) > 0:
@@ -419,6 +420,7 @@ def selectdetaling(request, select_kodDetailing, select_nameDetailing):
                         lstDiagnoz.append(lst)
             settingsvar.DiagnozRecomendaciya = lstDiagnoz
             if select_kodDetailing == item['kodDetailing']:
+                settingsvar.spselectnameDetailing.append(item['nameDetailing'])
                 del settingsvar.spisoklistdetaling[index]
 
             index = index + 1
@@ -432,21 +434,22 @@ def selectdetaling(request, select_kodDetailing, select_nameDetailing):
 
 
 # ---  вибір деталізації симптому нездужання
-def selectgrdetaling(request, select_kodDetailing, select_nameGrDetailing):
+def selectgrdetaling(request, select_kodDetailing):   
     settingsvar.DiagnozRecomendaciya.append(select_kodDetailing + ";")
     settingsvar.spisokkeyinterview.append(select_kodDetailing + ";")
     settingsvar.spisokselectDetailing.append(select_kodDetailing)
-    settingsvar.spselectnameDetailing.append(select_nameGrDetailing)
-    index = 0
+
+    tmplist = []
+
     if len(settingsvar.rest_apiGrDetaling) > 0:
         for item in settingsvar.rest_apiGrDetaling:
-            if select_kodDetailing == item['kodDetailing']:
-                settingsvar.nawpage = 'receptinterwiev'
-
-                del settingsvar.rest_apiGrDetaling[index]
-                shablongrdetaling()
-                break
-            index = index + 1
+            if select_kodDetailing != item['kodDetailing']:
+                tmplist.append(item)
+            else:
+                settingsvar.spselectnameDetailing.append(item['nameGrDetailing'])
+        settingsvar.rest_apiGrDetaling = tmplist
+        settingsvar.nawpage = 'receptinterwiev'
+        shablongrdetaling()
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -685,10 +688,10 @@ def receptfamilylikar(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # --- Вибір лікаря у профільному мед закладі
-def selectdprofillikar(request, selected_edrpou, selected_idstatus, selected_name):
+def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_name):
     settingsvar.gruplikar = []
     settingsvar.namemedzaklad = selected_name
-    Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_edrpou + "/0", '', 'GET')
+    Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_kodzaklad + "/0", '', 'GET')
     for item in Grupproflikar:
         match selected_idstatus:
             case "2":
@@ -697,9 +700,8 @@ def selectdprofillikar(request, selected_edrpou, selected_idstatus, selected_nam
                 likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '', 'GET')
                 for icdgrdiagnoz in settingsvar.grupDiagnoz:
                     for likargrdz in likarGrupDiagnoz:
-                        if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_edrpou in \
-                                icdgrdiagnoz[
-                                    'edrpou']:
+                        if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_kodzaklad in \
+                                icdgrdiagnoz['kodZaklad']:
                             settingsvar.gruplikar.append(item)
                             break
                     break

@@ -17,7 +17,7 @@
     <h5> {{ compl }} </h5>
     {% block detalinglist %}
     {% for item in detalinglist %}
-    <a aria-current="page" class="nav-link" href="{% url 'selectgrdetaling' item.kodDetailing  item.nameGrDetailing %}"><font
+    <a aria-current="page" class="nav-link" href="{% url 'selectgrdetaling' item.kodDetailing%}"><font
             style="vertical-align: inherit;">{{item.nameGrDetailing}}</font></a>
 
     {% endfor %}
