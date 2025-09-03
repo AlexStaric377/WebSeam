@@ -68,3 +68,4 @@ formaccount = ''
 listprofpacient = []
 datevizita = ""
 kodDiagnoz = ''
+editprofil = False
