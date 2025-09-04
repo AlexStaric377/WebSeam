@@ -700,11 +700,11 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
                 likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '', 'GET')
                 for icdgrdiagnoz in settingsvar.grupDiagnoz:
                     for likargrdz in likarGrupDiagnoz:
-                        if likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and selected_kodzaklad in \
-                                icdgrdiagnoz['kodZaklad']:
+                        if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
+                                selected_kodzaklad in icdgrdiagnoz['kodZaklad']):
                             settingsvar.gruplikar.append(item)
                             break
-                    break
+
     shablonlistlikar()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -713,14 +713,14 @@ def shablonlistlikar():
     settingsvar.nawpage = 'backlistlikar'
     settingsvar.html = 'diagnoz/selectedprofillikar.html'
     iduser = funciduser()
-    bakurl = funcbakurl()
+    backurl = funcbakurl()
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': 'Перелік профільних лікарів',
         'detalinglist': settingsvar.gruplikar,
         'piblikar': '',
         'pacient': '',
-        'bakurl': bakurl
+        'backurl': backurl
     }
     if len(settingsvar.pacient) > 0:
         settingsvar.nextstepdata['likar'] = True
