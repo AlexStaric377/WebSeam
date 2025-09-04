@@ -67,7 +67,8 @@ urlpatterns = [
     path('proseam', views.proseam, name='proseam'),
     path('workdiagnozlikar/<str:select_kodDoctor>,  <str:select_icdGrDiagnoz>', views.workdiagnozlikar,
          name='workdiagnozlikar'),
-    path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz')
+    path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz'),
+    path('likarnapryamok', views.likarnapryamok, name='likarnapryamok')
 ]
 #
 urlpatterns += [

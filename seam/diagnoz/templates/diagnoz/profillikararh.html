@@ -1,0 +1,81 @@
+<form action="" method="POST">
+    {% csrf_token %}
+    <div class="row g-3">
+        <div class="col-sm-4">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{ form.name.label }}</font></font>
+            </label>
+            {{form.name}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
+            {{form.surname}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
+            </div>
+        </div>
+        <p>
+        <div class="col-md-4">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{form.specialnoct.label}}</font></font></label>
+            {{form.specialnoct}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вимагається назва професії.</font></font>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{form.napryamok.label}}</font></font>
+            </label>
+            {{form.napryamok}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вкажіть допустимий вік.</font></font>
+            </div>
+        </div>
+        <p>
+        <div class="col-md-2">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{form.uriwebDoctor.label}}</font></font></label>
+            {{form.uriwebDoctor}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вкажіть допустиму вагу.</font></font>
+            </div>
+        </div>
+        <p>
+
+        <div class="col-md-2">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{form.telefon.label}}</font></font>
+            </label>
+            {{form.telefon}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">Вимагається допустимий номер.</font></font>
+            </div>
+        </div>
+
+        <div class="col-5">
+            <label class="form-label"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">{{form.email.label}} </font></font></label>
+            {{form.email}}
+            <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                    style="vertical-align: inherit;">
+                Ввеіть дійсну адресу электронної пошти для отримання повідомлення про підтвердження реєстрації.
+            </font></font></div>
+        </div>
+        <p>
+            {% if next %}
+            <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
+                    style="vertical-align: inherit;"><font style="vertical-align: inherit;">Далі</font></font>
+            </button>
+            {% else %}
+            <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
+                    style="vertical-align: inherit;"><font style="vertical-align: inherit;">Зберегти</font></font>
+            </button>
+            {% endif %}
+        </p>
+    </div>
+</form>

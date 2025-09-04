@@ -22,22 +22,18 @@
     {% for item in complaintlist %}
     <tr>
         <td><a class="nav-link"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{item.dateVizita
-            }}</a></td>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">
+            {{item.dateVizita}}</a></td>
         <td><a class="nav-link"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{item.namePacient
-            }}</a></td>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">
+            {{item.namePacient}}</a></td>
         <td><a class="nav-link"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">{{item.nameDiagnoza
-            }}</a></td>
-
+               href="{% url 'profilinterview' item.kodProtokola  item.dateVizita  item.dateInterview %}">
+            {{item.nameDiagnoza}}</a></td>
     </tr>
     {% endfor %}
         </tbody>
     </table>
 </div>
-<!--- <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light"> --->
-    <div class="col">
-        <a href="{{backurl}}">Далі</a>
-    </div>
+<a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 {% endblock %}

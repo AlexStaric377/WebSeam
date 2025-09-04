@@ -7,7 +7,7 @@ import requests
 from django.shortcuts import render
 
 from diagnoz import settingsvar
-from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, LikarForm, SearchPacient
+from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient
 
 
 def rest_api(api_url, data, method):
@@ -1027,22 +1027,6 @@ def reestraccountuser(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
-def testaccountuser(request):
-    settingsvar.html = 'diagnoz/pacientprofil.html'
-    if request.method == 'POST':
-        form = PacientForm(request.POST)
-        formpacient = form.data
-        settingsvar.nextstepdata['form'] = formpacient
-    else:
-        formpacient = PacientForm()
-        settingsvar.nextstepdata = {
-            'form': formpacient,
-            'next': settingsvar.readprofil,
-            'backurl': 'pacient'
-        }
-
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-
 def accountuser(request):
 
     settingsvar.html = 'diagnoz/accountuser.html'
@@ -1088,6 +1072,7 @@ def accountuser(request):
                                 settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
                                 settingsvar.mobtellikar = settingsvar.likar['telefon']
                                 settingsvar.setpostlikar = True
+
                                 if settingsvar.kabinetitem == 'likarinterwiev':
                                     search_pacient()
                                     settingsvar.searchaccount = True
@@ -1095,14 +1080,7 @@ def accountuser(request):
                                     settingsvar.setpost = True
                                     settingsvar.readprofil = True
                                     iduser = funciduser()
-                                    formlikar = LikarForm(request.GET, initial=settingsvar.likar)
-                                    settingsvar.nextstepdata = {
-                                        'form': formlikar,
-                                        'next': settingsvar.readprofil,
-                                        'backurl': 'likar'
-                                    }
-                                    settingsvar.html = 'diagnoz/likarprofil.html'
-
+                                    caseprofil()
                             else:
                                 errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль лікаря не знайдено.')
@@ -1153,13 +1131,7 @@ def caseprofil():
         case 'likar':
             settingsvar.readprofil = True
             iduser = funciduser()
-            formlikar = LikarForm(initial=settingsvar.likar)
-            settingsvar.nextstepdata = {
-                'form': formlikar,
-                'next': settingsvar.readprofil,
-                'backurl': 'likar'
-            }
-            settingsvar.html = 'diagnoz/likarprofil.html'
+            likarinfoprofil()
         case 'likarinterwiev':
             if len(settingsvar.pacient) > 0:
                 shablonlikar(settingsvar.pacient)
@@ -1838,14 +1810,38 @@ def likarprofil(request):  # httpRequest
                 settingsvar.initialprofil = False
             else:
                 settingsvar.initialprofil = True
-                formlikar = LikarForm(initial=settingsvar.likar)
-                settingsvar.nextstepdata = {
-                    'form': formlikar,
-                    'next': settingsvar.readprofil,
-                    'backurl': 'likar'
-                }
+                likarinfoprofil()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
+
+def likarinfoprofil():
+    settingsvar.nextstepdata = {
+        'medzaklad': settingsvar.namemedzaklad,
+        'name': "Ім'я, прівище :" + settingsvar.likar['name'] + " " + settingsvar.likar['surname'],
+        'specialnoct': "Спеціальність :" + settingsvar.likar['specialnoct'],
+        'telefon': "Телефон :" + settingsvar.likar['telefon'],
+        'email': "Поштовий електронніий адрес :" + settingsvar.likar['email'],
+        'uriwebDoctor': "Сторінка в інтенеті :" + settingsvar.likar['uriwebDoctor'],
+        'napryamok': "Напрямок роботи",
+
+    }
+    settingsvar.html = 'diagnoz/likarprofil.html'
+    return
+
+
+# напрямки діяльності лікаря по захворюванням
+def likarnapryamok(request):
+    settingsvar.html = 'diagnoz/likarworknapryamok.html'
+    listnapryamok = rest_api('api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + '/0', '', 'GET')
+    if len(listnapryamok) > 0:
+        settingsvar.nextstepdata = {
+            'listwork': listnapryamok,
+            'medzaklad': settingsvar.namemedzaklad,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+        }
+    else:
+        errorprofil('Шановний користувач! За вашим запитом відсутні напрямки роботи лікаря.')
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # --- Функція пошуку пацієнта в БД для проведення опитування
 def search_pacient():
