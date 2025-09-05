@@ -786,9 +786,10 @@ def saveselectlikar(pacient):
     if settingsvar.setintertview == True:
         settingsvar.html = 'diagnoz/finishinterviewpacient.html'
         settingsvar.nawpage = 'backshablonselect'
-        if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
 
-                settingsvar.nextstepdata = {
+        if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
+            settingsvar.datereception = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            settingsvar.nextstepdata = {
                     'iduser': iduser,
                     'pacient': 'Увага! сформовано попередній діаноз на прийомі у лікаря.',
                     'shapka': 'Пацієнт: ' + pacient['name'] + " " + pacient['surname'],
@@ -1829,19 +1830,6 @@ def likarinfoprofil():
     return
 
 
-# напрямки діяльності лікаря по захворюванням
-def likarnapryamok(request):
-    settingsvar.html = 'diagnoz/likarworknapryamok.html'
-    listnapryamok = rest_api('api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + '/0', '', 'GET')
-    if len(listnapryamok) > 0:
-        settingsvar.nextstepdata = {
-            'listwork': listnapryamok,
-            'medzaklad': settingsvar.namemedzaklad,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
-        }
-    else:
-        errorprofil('Шановний користувач! За вашим запитом відсутні напрямки роботи лікаря.')
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # --- Функція пошуку пацієнта в БД для проведення опитування
 def search_pacient():
@@ -2063,13 +2051,13 @@ def workdiagnozlikar(request, select_kodDoctor, select_icdGrDiagnoz):
     settingsvar.html = 'diagnoz/workdiagnozlikar.html'
     point = select_icdGrDiagnoz.index('.')
     icdGrDiagnoz = select_icdGrDiagnoz[0:point]
-    listworkdiagnoz = rest_api('api/DiagnozController/' + '0/' + icdGrDiagnoz + '/0', '',
+    settingsvar.listworkdiagnoz = rest_api('api/DiagnozController/' + '0/' + icdGrDiagnoz + '/0', '',
                                'GET')
-    if len(listworkdiagnoz) > 0:
+    if len(settingsvar.listworkdiagnoz) > 0:
 
         settingsvar.nextstepdata = {
             'iduser': iduser,
-            'complaintlist': listworkdiagnoz,
+            'complaintlist': settingsvar.listworkdiagnoz,
             'backurl': backurl,
             'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad,
@@ -2079,6 +2067,36 @@ def workdiagnozlikar(request, select_kodDoctor, select_icdGrDiagnoz):
         errorprofil('Шановний користувач! За вашим запитом немає робочих діагнозів за ' + select_icdGrDiagnoz)
         settingsvar.nextstepdata['backurl'] = 'likarworkdiagnoz'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# формування та виведення  переліку діагнозів за вказаним напрямком
+def contentinterview(request, select_kodDiagnoza):
+    namediagnoz = ""
+    backurl = 'likarworkdiagnoz'
+    settingsvar.html = 'diagnoz/contentinterview.html'
+    protokol = rest_api('api/DependencyDiagnozController/' + select_kodDiagnoza + "/0/0", '', 'GET')
+    if len(protokol) > 0:
+        workdiagnoz = rest_api('api/ContentInterviewController/' + protokol['kodProtokola'], '', 'GET')
+        if len(workdiagnoz) > 0:
+            for item in settingsvar.listworkdiagnoz:
+                if select_kodDiagnoza == item['kodDiagnoza']: namediagnoz = item['nameDiagnoza']
+            settingsvar.nextstepdata = {
+                'listwork': workdiagnoz,
+                'medzaklad': settingsvar.namemedzaklad,
+                'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+                'workdiagnoz': namediagnoz,
+                'backurl': backurl
+            }
+        else:
+            errorprofil('Шановний користувач! За поточним протоколом відсутній зміст опитування.')
+    else:
+        errorprofil(
+            'Шановний користувач! За поточним кодом діагнозу :' + select_kodDiagnoza + ' відсутній протокол опитування.')
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+
+
 
 # --- Загальна бібліотека напрямків
 def likarlibdiagnoz(request):  # httpRequest

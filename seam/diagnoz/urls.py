@@ -68,7 +68,7 @@ urlpatterns = [
     path('workdiagnozlikar/<str:select_kodDoctor>,  <str:select_icdGrDiagnoz>', views.workdiagnozlikar,
          name='workdiagnozlikar'),
     path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz'),
-    path('likarnapryamok', views.likarnapryamok, name='likarnapryamok')
+    path('contentinterview/<str:select_kodDiagnoza>', views.contentinterview, name='contentinterview'),
 ]
 #
 urlpatterns += [

@@ -1,0 +1,23 @@
+{% extends 'diagnoz/shablonpage.html' %}
+{% block content %}
+
+<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+    <div class="col">
+        <p>{{medzaklad}}</p>
+        <p>{{piblikar}}</p>
+    </div>
+</nav>
+<div class="container-fluid">
+    <p>Поточний діагноз : {{workdiagnoz}}</p>
+    <p>Перелік питань належної симптоматики, які визначають попередній діагноз</p>
+    {% block list %}
+    {% for item in listwork %}
+    <a aria-current="page" class="nav-link" href=""><font
+            style="vertical-align: inherit;">{{item.detailsInterview}} </font></a>
+    {% endfor %}
+    {% endblock %}
+</div>
+
+<a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
+
+{% endblock %}

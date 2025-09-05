@@ -69,3 +69,4 @@ listprofpacient = []
 datevizita = ""
 kodDiagnoz = ''
 editprofil = False
+listworkdiagnoz = []
