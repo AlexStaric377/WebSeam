@@ -30,8 +30,8 @@ urlpatterns = [
     path('adminlanguage', views.adminlanguage, name='adminlanguage'),
     path('contentinterwiev', views.contentinterwiev, name='contentinterwiev'),
     path(
-        'featurespisok/<str:featurespisok_keyComplaint>,  <str:featurespisok_keyFeature>,  <str:featurespisok_nameFeature>',
-        views.featurespisok, name='featurespisok'),
+        'featurespisok/<str:featurespisok_keyComplaint>,  <str:featurespisok_keyFeature>', views.featurespisok,
+        name='featurespisok'),
     path('backfeature', views.backfeature, name='backfeature'),
     path('nextfeature/<str:nextfeature_keyComplaint>,  <str:nextfeature_name>', views.nextfeature, name='nextfeature'),
     path('glavmeny', views.glavmeny, name='glavmeny'),

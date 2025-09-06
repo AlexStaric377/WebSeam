@@ -208,13 +208,11 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
-def featurespisok(request, featurespisok_keyComplaint, featurespisok_keyFeature, featurespisok_nameFeature):
+def featurespisok(request, featurespisok_keyComplaint, featurespisok_keyFeature):
 
     settingsvar.DiagnozRecomendaciya.append(featurespisok_keyFeature + ";")
     settingsvar.spisokkeyinterview.append(featurespisok_keyFeature + ";")
     settingsvar.spisokkeyfeature.append(featurespisok_keyFeature)
-    settingsvar.spisoknamefeature.append(featurespisok_nameFeature)
-    settingsvar.spselectnameDetailing.append(featurespisok_nameFeature)
     settingsvar.spisokselectDetailing.append(featurespisok_keyFeature)
     settingsvar.keyFeature = featurespisok_keyFeature
     settingsvar.keyComplaint = featurespisok_keyComplaint
@@ -245,6 +243,8 @@ def funcfeature():
                     tmplist.append(item);
                     if settingsvar.keyFeature == item['keyFeature']:
                         indexfeature = index
+                        settingsvar.spisoknamefeature.append(item['name'])
+                        settingsvar.spselectnameDetailing.append(item['name'])
                     index = index + 1
                     break;
 
@@ -702,7 +702,16 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
                     for likargrdz in likarGrupDiagnoz:
                         if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
                                 selected_kodzaklad in icdgrdiagnoz['kodZaklad']):
-                            settingsvar.gruplikar.append(item)
+                            if len(settingsvar.gruplikar) > 0:
+                                apptru = False
+                                for itemgruplikar in settingsvar.gruplikar:
+                                    if itemgruplikar['kodDoctor'] != likargrdz['kodDoctor']:
+                                        apptru = False
+                                    else:
+                                        apptru = True
+                                if apptru == False: settingsvar.gruplikar.append(item)
+                            else:
+                                settingsvar.gruplikar.append(item)
                             break
 
     shablonlistlikar()

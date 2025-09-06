@@ -19,7 +19,7 @@
     {% block featurelist %}
     {% for item in featurelist %}
     <a aria-current="page" class="nav-link"
-       href="{% url 'featurespisok' item.keyComplaint item.keyFeature  item.name %}"><font
+       href="{% url 'featurespisok' item.keyComplaint item.keyFeature %}"><font
             style="vertical-align: inherit;">{{item.name}}</font></a>
 
     {% endfor %}
