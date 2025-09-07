@@ -69,6 +69,7 @@ urlpatterns = [
          name='workdiagnozlikar'),
     path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz'),
     path('contentinterview/<str:select_kodDiagnoza>', views.contentinterview, name='contentinterview'),
+    path('directiondiagnoz', views.directiondiagnoz, name='directiondiagnoz'),
 ]
 #
 urlpatterns += [

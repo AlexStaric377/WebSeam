@@ -4,19 +4,31 @@
 
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
+        {% if directdiagnoz %}
+        <p></p>
+        {% else %}
         <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
+        {% endif %}
     </div>
 </nav>
 <div class="container-fluid">
-    <p>Перелік робочих діагнозів за напрямком {{icdgrup}}</p>
+    <p>Перелік робочих діагнозів захворювань за напрямком {{icdgrup}}</p>
+    {% if directdiagnoz %}
+    <p></p>
+    {% else %}
     <h6>Для перегляду змісту опитування, яке визначає попередній діагноз необхідно натиснути на відповідний рядок</h6>
+    {% endif %}
+
     {% block list %}
     {% for item in complaintlist %}
-    <a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodDiagnoza %} "><font
-            style="vertical-align: inherit;">
+    {% if directdiagnoz %}
+    <a aria-current="page" class="nav-link" href=""><font style="vertical-align: inherit;">
         {{item.nameDiagnoza}} </font></a>
-
+    {% else %}
+    <a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodDiagnoza %} "><font
+            style="vertical-align: inherit;"> {{item.nameDiagnoza}} </font></a>
+    {% endif %}
     {% endfor %}
     {% endblock %}
 </div>
