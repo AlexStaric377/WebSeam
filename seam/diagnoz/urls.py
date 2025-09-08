@@ -29,8 +29,7 @@ urlpatterns = [
     path('likarlibdiagnoz', views.likarlibdiagnoz, name='likarlibdiagnoz'),
     path('adminlanguage', views.adminlanguage, name='adminlanguage'),
     path('contentinterwiev', views.contentinterwiev, name='contentinterwiev'),
-    path(
-        'featurespisok/<str:featurespisok_keyComplaint>,  <str:featurespisok_keyFeature>', views.featurespisok,
+    path('featurespisok/<str:featurespisok_keyComplaint>,  <str:featurespisok_keyFeature>', views.featurespisok,
         name='featurespisok'),
     path('backfeature', views.backfeature, name='backfeature'),
     path('nextfeature/<str:nextfeature_keyComplaint>,  <str:nextfeature_name>', views.nextfeature, name='nextfeature'),
@@ -70,6 +69,8 @@ urlpatterns = [
     path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz'),
     path('contentinterview/<str:select_kodDiagnoza>', views.contentinterview, name='contentinterview'),
     path('directiondiagnoz', views.directiondiagnoz, name='directiondiagnoz'),
+    path('likarnapryamok', views.likarnapryamok, name='likarnapryamok'),
+    path('profillikarform', views.profillikarform, name='profillikarform')
 ]
 #
 urlpatterns += [

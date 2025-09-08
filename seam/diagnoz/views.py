@@ -7,7 +7,7 @@ import requests
 from django.shortcuts import render
 
 from diagnoz import settingsvar
-from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient
+from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient, LikarForm
 
 
 def rest_api(api_url, data, method):
@@ -1512,7 +1512,6 @@ def profilpacient(request):  # httpRequest
     settingsvar.kabinetitem = 'profil'
     if settingsvar.setpost == False:
         accountuser(request)
-        #        testaccountuser(request)
         settingsvar.initialprofil = True
     else:
         settingsvar.html = 'diagnoz/pacientprofil.html'
@@ -1850,10 +1849,79 @@ def likarinfoprofil():
         'telefon': "Телефон :" + settingsvar.likar['telefon'],
         'email': "Поштовий електронніий адрес :" + settingsvar.likar['email'],
         'uriwebDoctor': "Сторінка в інтенеті :" + settingsvar.likar['uriwebDoctor'],
-        'napryamok': "Напрямок роботи",
+        'napryamok': "Робочі напрямки",
 
     }
     settingsvar.html = 'diagnoz/likarprofil.html'
+    return
+
+
+# Робочі напрямки лікаря щодо діагностування захворювання пацієнта
+def likarnapryamok(request):
+    settingsvar.directdiagnoz = False
+    listworkdiagnoz()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# форма для коригування профілю лікаря
+def profillikarform(request):
+    settingsvar.editprofil = True
+    getpostlikarprofil(request)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def getpostlikarprofil(request):
+    settingsvar.html = 'diagnoz/profillikarform.html'
+    settingsvar.kabinetitem = 'likarprofil'
+    if request.method == 'POST':
+        form = LikarForm(request.POST)
+        json = {'id': 0,
+                'KodDoctor': '',
+                'Name': form.data['name'],
+                'Surname': form.data['surname'],
+                'Telefon': form.data['telefon'],
+                'Email': form.data['email'],
+                'Edrpou': '',
+                'Specialnoct': form.data['specialnoct'],
+                'Napryamok': '',
+                'UriwebDoctor': form.data['uriwebDoctor'],
+                }
+
+        if settingsvar.editprofil == False:
+            # --- записати в Бд облікові дані
+            if settingsvar.kabinet == 'pacient':
+                funcaddaccount(settingsvar.formaccount.data['login'], settingsvar.formaccount.data['password'])
+            # --- записати в Бд введенний профіль
+            settingsvar.pacient = rest_api('/api/ApiControllerDoctor/', json, 'POST')
+        else:
+            json['id'] = settingsvar.likar['id']
+            json['KodDoctor'] = settingsvar.likar['kodDoctor']
+            json['Edrpou'] = settingsvar.likar['edrpou']
+            settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
+            settingsvar.likar = rest_api('/api/ApiControllerDoctor/', json, 'PUT')
+        if len(settingsvar.likar) > 0:
+            settingsvar.setpost = True
+            settingsvar.setpostlikar = True
+            errorprofil('Шановний користувач!  Ваш профіль збережено.')
+        else:
+            errorprofil('Шановний користувач! Похибка на серевері. Ваш профіль не збережено.')
+    else:
+        if len(settingsvar.likar) > 0:
+            settingsvar.readprofil = False
+            settingsvar.editprofil = True
+            iduser = funciduser()
+            form = LikarForm(initial=settingsvar.likar)
+            settingsvar.nextstepdata = {
+                'form': form,
+                'next': settingsvar.readprofil,
+                'backurl': 'likar'
+            }
+        else:
+            form = LikarForm()
+            settingsvar.nextstepdata = {
+                'form': form,
+                'next': False
+            }
     return
 
 
