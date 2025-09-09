@@ -1365,6 +1365,9 @@ def getpostpacientprofil(request):
         else:
             errorprofil('Шановний користувач! Похибка на серевері. Ваш профіль не збережено.')
     else:
+        backurl = 'pacient'
+        if settingsvar.kabinetitem == 'likarinterwiev': backurl = 'likar'
+
         if len(settingsvar.pacient) > 0:
             settingsvar.readprofil = False
             settingsvar.editprofil = True
@@ -1379,7 +1382,9 @@ def getpostpacientprofil(request):
             form = PacientForm()
             settingsvar.nextstepdata = {
                 'form': form,
-                'next': False
+                'next': False,
+                'backurl': backurl
+
             }
     return
 
