@@ -51,6 +51,9 @@ def reception(request):  # httpRequest
         settingsvar.nawpage = ''
         settingsvar.html = 'diagnoz/index.html'
     else:
+        json = 'IdUser: guest,' + 'dateseanse :' + datetime.datetime.now().strftime(
+            "%d-%m-%Y %H:%M:%S") + ', procedura: reception'
+        unloadlog(json)
         settingsvar.kabinet = 'guest'
         settingsvar.likar = {}
         settingsvar.pacient = {}
@@ -68,6 +71,9 @@ def pacient(request):  # httpRequest
             settingsvar.likar) > 0:
         errorprofil('Шановний користувач! Активний кабінет пацієнта. Вхід до кабінету лікаря неможливий.')
     else:
+        json = 'IdUser: pacient,' + 'dateseanse :' + datetime.datetime.now().strftime(
+            "%d-%m-%Y %H:%M:%S") + ', procedura: pacient'
+        unloadlog(json)
         settingsvar.kabinet = 'pacient'
         settingsvar.setintertview = False
         settingsvar.html = 'diagnoz/pacient.html'
@@ -99,6 +105,9 @@ def likar(request):  # httpRequest
             and len(settingsvar.pacient) > 0):
         errorprofil('Для входу до кабінету лікаря необхідно вийти з кабінету пацієнта.')
     else:
+        json = 'IdUser: likar,' + 'dateseanse :' + datetime.datetime.now().strftime(
+            "%d-%m-%Y %H:%M:%S") + ', procedura: likar'
+        unloadlog(json)
         settingsvar.kabinet = 'likar'
         settingsvar.html = 'diagnoz/likar.html'
         settingsvar.setintertview = False
@@ -114,10 +123,16 @@ def setings(request):  # httpRequest
 
 
 def proseam(request):
+    json = 'IdUser: proseam,' + 'dateseanse :' + datetime.datetime.now().strftime(
+        "%d-%m-%Y %H:%M:%S") + ', procedura: proseam'
+    unloadlog(json)
     return render(request, 'diagnoz/proseam.html')
 
 
 def directiondiagnoz(request):
+    json = 'IdUser: directiondiagnoz,' + 'dateseanse :' + datetime.datetime.now().strftime(
+        "%d-%m-%Y %H:%M:%S") + ', procedura: directiondiagnoz'
+    unloadlog(json)
     settingsvar.directdiagnoz = True
     listworkdiagnoz()
     settingsvar.nextstepdata['piblikar'] = ""
@@ -126,6 +141,9 @@ def directiondiagnoz(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+def unloadlog(json):
+    Stroka = rest_api('api/UnloadController/' + "loguser/" + json + "/0", '', 'GET')
+    return
 
 # --- Блок Опитування і встановлення діагнозу
 # --- 1. Де або яке нездужання
