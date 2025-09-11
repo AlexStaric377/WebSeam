@@ -64,7 +64,7 @@ urlpatterns = [
     path('selectvisitingdays/<str:selected_timevizita>,  <str:selected_datevizita>, <str:selected_daysoftheweek>',
          views.selectvisitingdays, name='selectvisitingdays'),
     path('proseam', views.proseam, name='proseam'),
-    path('workdiagnozlikar/<str:select_kodDoctor>,  <str:select_icdGrDiagnoz>', views.workdiagnozlikar,
+    path('workdiagnozlikar/<str:select_kodDoctor>,  <str:select_icd>', views.workdiagnozlikar,
          name='workdiagnozlikar'),
     path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz'),
     path('contentinterview/<str:select_kodDiagnoza>', views.contentinterview, name='contentinterview'),

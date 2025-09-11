@@ -51,8 +51,8 @@ def reception(request):  # httpRequest
         settingsvar.nawpage = ''
         settingsvar.html = 'diagnoz/index.html'
     else:
-        json = 'IdUser: guest,' + 'dateseanse :' + datetime.datetime.now().strftime(
-            "%d-%m-%Y %H:%M:%S") + ', procedura: reception'
+        json = ('IdUser: guest,' + 'dateseanse :' +
+                datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: reception')
         unloadlog(json)
         settingsvar.kabinet = 'guest'
         settingsvar.likar = {}
@@ -71,8 +71,8 @@ def pacient(request):  # httpRequest
             settingsvar.likar) > 0:
         errorprofil('Шановний користувач! Активний кабінет пацієнта. Вхід до кабінету лікаря неможливий.')
     else:
-        json = 'IdUser: pacient,' + 'dateseanse :' + datetime.datetime.now().strftime(
-            "%d-%m-%Y %H:%M:%S") + ', procedura: pacient'
+        json = ('IdUser: pacient,' + 'dateseanse :' +
+                datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacient')
         unloadlog(json)
         settingsvar.kabinet = 'pacient'
         settingsvar.setintertview = False
@@ -105,8 +105,8 @@ def likar(request):  # httpRequest
             and len(settingsvar.pacient) > 0):
         errorprofil('Для входу до кабінету лікаря необхідно вийти з кабінету пацієнта.')
     else:
-        json = 'IdUser: likar,' + 'dateseanse :' + datetime.datetime.now().strftime(
-            "%d-%m-%Y %H:%M:%S") + ', procedura: likar'
+        json = ('IdUser: likar,' + 'dateseanse :' +
+                datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likar')
         unloadlog(json)
         settingsvar.kabinet = 'likar'
         settingsvar.html = 'diagnoz/likar.html'
@@ -123,15 +123,15 @@ def setings(request):  # httpRequest
 
 
 def proseam(request):
-    json = 'IdUser: proseam,' + 'dateseanse :' + datetime.datetime.now().strftime(
-        "%d-%m-%Y %H:%M:%S") + ', procedura: proseam'
+    json = ('IdUser: proseam,' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: proseam')
     unloadlog(json)
     return render(request, 'diagnoz/proseam.html')
 
 
 def directiondiagnoz(request):
-    json = 'IdUser: directiondiagnoz,' + 'dateseanse :' + datetime.datetime.now().strftime(
-        "%d-%m-%Y %H:%M:%S") + ', procedura: directiondiagnoz'
+    json = ('IdUser: directiondiagnoz,' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: directiondiagnoz')
     unloadlog(json)
     settingsvar.directdiagnoz = True
     listworkdiagnoz()
@@ -654,6 +654,7 @@ def backdiagnoz(request):
 
 def selectmedzaklad(request, statuszaklad):
     settingsvar.grupmedzaklad = []
+    iduser = funciduser()
     match statuszaklad:
         case "2":
             medzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad, '', 'GET')
@@ -680,7 +681,7 @@ def selectmedzaklad(request, statuszaklad):
 
 
     settingsvar.nawpage = 'receptprofillmedzaklad'
-    iduser = funciduser()
+
     backurl = funcbakurl()
     settingsvar.html = 'diagnoz/receptionprofilzaklad.html'
     settingsvar.nextstepdata = {
@@ -714,6 +715,10 @@ def receptprofillmedzaklad(request):
     else:
         status = "5"
         selectmedzaklad(request, status)
+        json = (
+                    'IdUser: ' + iduser + ' ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+                    datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: receptprofillmedzaklad')
+        unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -751,6 +756,9 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
                             break
 
     shablonlistlikar()
+    json = ('IdUser:  ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: selectdprofillikar')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -990,6 +998,9 @@ def addColectionInterview():
 
 # --- збереження попереднього діагнозу протоколу опитування
 def savediagnoz(request):
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: savediagnoz')
+    unloadlog(json)
     # --- додати проткол опитування
     addColectionInterview()
     # ---  Додати опитування
@@ -1336,6 +1347,9 @@ def Pacientinitial():
 
 def pacientprofil(request):  # httpRequest
     getpostpacientprofil(request)
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientprofil')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def getpostpacientprofil(request):
@@ -1509,6 +1523,9 @@ def addAdmissionPatientsLikar():
 
 # --- Збереження протоколу опитування та запису до лікаря
 def saveraceptionlikar(request):  # httpRequest
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: saveraceptionlikar')
+    unloadlog(json)
     # --- додати проткол опитування
     addColectionInterview()
     # ---  Додати опитування
@@ -1546,7 +1563,9 @@ def profilpacient(request):  # httpRequest
             settingsvar.initialprofil = True
             iduser = funciduser()
             profilinfopacient()
-
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: profilpacient')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1571,6 +1590,9 @@ def pacientinterwiev(request):  # httpRequest
             accountuser(request)
         else:
             shablonlikar(settingsvar.pacient)
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientinterwiev')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1595,6 +1617,9 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
                 funcshablonlistpacient()
     else:
         nextprofilinterview()
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: profilinterview')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1700,6 +1725,9 @@ def pacientlistinterwiev(request):  # httpRequest
             accountuser(request)
         else:
             funcshablonlistpacient()
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientlistinterwiev')
+    unloadlog(json)
     return render(request, settingsvar.html, settingsvar.nextstepdata )
 
 
@@ -1737,10 +1765,10 @@ def pacientreceptionlikar(request):  # httpRequest
             accountuser(request)
         else:
             funcshablonlistreceptionlikar()
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientreceptionlikar')
+    unloadlog(json)
     return render(request, settingsvar.html, settingsvar.nextstepdata)
-
-
-#    return render(request, 'diagnoz/pacientreceptionlikar.html')
 
 
 # --- Функція формування шаблону  переліку дат обстежень пацієнта у лікаря
@@ -1861,6 +1889,9 @@ def likarprofil(request):  # httpRequest
             else:
                 settingsvar.initialprofil = True
                 likarinfoprofil()
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarprofil')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1987,6 +2018,9 @@ def likarinterwiev(request):  # httpRequest
             else:
                 funcsearchpacient(settingsvar.formsearch)
             settingsvar.nextstepdata['backurl'] = backurl
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarinterwiev')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -2043,6 +2077,9 @@ def likarreceptionpacient(request):  # httpRequest
             accountuser(request)
         else:
             listreceptionpacient()
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarreceptionpacient')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -2103,6 +2140,9 @@ def likarvisitngdays(request):  # httpRequest
             accountuser(request)
         else:
             listlikarvisitngdays()
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarvisitngdays')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -2139,6 +2179,9 @@ def likarworkdiagnoz(request):  # httpRequest
             accountuser(request)
         else:
             listworkdiagnoz()
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarworkdiagnoz')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -2149,19 +2192,10 @@ def listworkdiagnoz():
     if settingsvar.directdiagnoz == True:
         settingsvar.listapi = rest_api('api/LikarGrupDiagnozController/', '', 'GET')
         backurl = 'glavmeny'
-        tmp = []
-        for item in settingsvar.listapi:
-            if len(tmp) == 0: tmp.append(item)
-            for itemapp in tmp:
-                if itemapp['icdGrDiagnoz'] == item['icdGrDiagnoz']:
-                    app = False
-                    break
-                else:
-                    app = True
-            if app == True: tmp.append(item)
-        settingsvar.listapi = tmp
+        listapi()
     else:
         settingsvar.listapi = rest_api('api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + '/0', '', 'GET')
+        listapi()
     if len(settingsvar.listapi) > 0:
 
         settingsvar.nextstepdata = {
@@ -2177,23 +2211,46 @@ def listworkdiagnoz():
     return
 
 
+def listapi():
+    tmp = []
+    for item in settingsvar.listapi:
+        if len(tmp) == 0:
+            point = item['icdGrDiagnoz'].index('.')
+            item['icd'] = item['icdGrDiagnoz'][0:point]
+            tmp.append(item)
+        for itemapp in tmp:
+            if itemapp['icdGrDiagnoz'] == item['icdGrDiagnoz']:
+                app = False
+                break
+            else:
+                app = True
+        if app == True:
+            point = item['icdGrDiagnoz'].index('.')
+            item['icd'] = item['icdGrDiagnoz'][0:point]
+            tmp.append(item)
+    settingsvar.listapi = tmp
+    return
+
 # --- детелізація переліку  робочих діагнозів за обраним напрямком
-def workdiagnozlikar(request, select_kodDoctor, select_icdGrDiagnoz):
+def workdiagnozlikar(request, select_kodDoctor, select_icd):
     iduser = funciduser()
     backurl = 'likarworkdiagnoz'
-    likar = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
-    medzaklad = settingsvar.namemedzaklad
-    if settingsvar.directdiagnoz == True: backurl = 'directiondiagnoz'
     settingsvar.nawpage = 'likarworkdiagnoz'
-    if settingsvar.directdiagnoz == True:
-        settingsvar.nawpage = 'directiondiagnoz'
+    if settingsvar.directdiagnoz == False:
+        likar = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+        medzaklad = settingsvar.namemedzaklad
+    else:
         likar = ""
         medzaklad = ""
+        backurl = 'directiondiagnoz'
+        settingsvar.nawpage = 'directiondiagnoz'
+
     settingsvar.html = 'diagnoz/workdiagnozlikar.html'
-    point = select_icdGrDiagnoz.index('.')
-    icdGrDiagnoz = select_icdGrDiagnoz[0:point]
-    settingsvar.listworkdiagnoz = rest_api('api/DiagnozController/' + '0/' + icdGrDiagnoz + '/0', '',
+    #    point = select_icd.index('.')
+    #    icdGrDiagnoz = select_icd[0:point]
+    settingsvar.listworkdiagnoz = rest_api('api/DiagnozController/' + '0/' + select_icd + '/0', '',
                                'GET')
+
     if len(settingsvar.listworkdiagnoz) > 0:
 
         settingsvar.nextstepdata = {
@@ -2202,13 +2259,12 @@ def workdiagnozlikar(request, select_kodDoctor, select_icdGrDiagnoz):
             'backurl': backurl,
             'piblikar': likar,
             'medzaklad': medzaklad,
-            'icdgrup': select_icdGrDiagnoz,
+            'icdgrup': settingsvar.listworkdiagnoz[0]['icdGrDiagnoz'],
             'directdiagnoz': settingsvar.directdiagnoz
         }
     else:
-        errorprofil('Шановний користувач! За вашим запитом немає робочих діагнозів за ' + select_icdGrDiagnoz)
-        settingsvar.nextstepdata['backurl'] = 'likarworkdiagnoz'
-        if settingsvar.directdiagnoz == True: settingsvar.nextstepdata['backurl'] = 'directiondiagnoz'
+        errorprofil('Шановний користувач! За вашим запитом немає робочих діагнозів за ' + select_icd)
+        settingsvar.nextstepdata['backurl'] = backurl
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -2253,6 +2309,9 @@ def likarlibdiagnoz(request):  # httpRequest
             accountuser(request)
         else:
             listlibdiagnoz()
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarlibdiagnoz')
+    unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def listlibdiagnoz():

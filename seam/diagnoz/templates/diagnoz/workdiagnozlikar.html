@@ -26,7 +26,7 @@
     <a aria-current="page" class="nav-link" href=""><font style="vertical-align: inherit;">
         {{item.nameDiagnoza}} </font></a>
     {% else %}
-    <a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodDiagnoza %} "><font
+    <a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodDiagnoza  %} "><font
             style="vertical-align: inherit;"> {{item.nameDiagnoza}} </font></a>
     {% endif %}
     {% endfor %}
