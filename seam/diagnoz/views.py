@@ -51,17 +51,18 @@ def reception(request):  # httpRequest
     #        settingsvar.nawpage = ''
     #        settingsvar.html = 'diagnoz/index.html'
     #    else:
-        json = ('IdUser: guest,' + 'dateseanse :' +
-                datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: reception')
-        unloadlog(json)
-        settingsvar.kabinet = 'guest'
-        settingsvar.likar = {}
-        settingsvar.pacient = {}
-        settingsvar.setintertview = False
-        settingsvar.kabinetitem = 'guest'
-        settingsvar.datereception = 'не встановлено'
-        settingsvar.datedoctor = 'не встановлено'
-        interwievcomplaint(request)
+    json = ('IdUser: guest,' + 'dateseanse :' +
+            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: reception')
+    unloadlog(json)
+    settingsvar.kabinet = 'guest'
+    settingsvar.likar = {}
+    settingsvar.pacient = {}
+    settingsvar.setintertview = False
+    settingsvar.kabinetitem = 'guest'
+    settingsvar.datereception = 'не встановлено'
+    settingsvar.datedoctor = 'не встановлено'
+    interwievcomplaint(request)
+
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
