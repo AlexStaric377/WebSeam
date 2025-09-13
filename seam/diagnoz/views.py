@@ -112,6 +112,7 @@ def likar(request):  # httpRequest
         settingsvar.kabinet = 'likar'
         settingsvar.html = 'diagnoz/likar.html'
         settingsvar.setintertview = False
+        settingsvar.search = False
         settingsvar.nextstepdata = {}
         settingsvar.pacient = {}
         settingsvar.datereception = 'не встановлено'
@@ -1609,7 +1610,7 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
     for item in settingsvar.listapi:
         if settingsvar.protokol == item['kodProtokola']:
             match settingsvar.kabinet:
-                case 'pacientlistinterwiev' | 'listinterwiev':
+                case 'pacientlistinterwiev' | 'listinterwiev' | 'likarlistinterwiev':  # 'likarreceptionpacient'
                     settingsvar.nametInterview = item['nameInterview']
                 case 'listreceptionlikar':
                     settingsvar.nametInterview = item['diagnoz']
@@ -1897,11 +1898,11 @@ def likarprofil(request):  # httpRequest
         else:
             settingsvar.html = 'diagnoz/likarprofil.html'
             if settingsvar.initialprofil == True:
-                settingsvar.html = 'diagnoz/likar.html'
-                settingsvar.initialprofil = False
-            else:
-                settingsvar.initialprofil = True
                 likarinfoprofil()
+            else:
+                settingsvar.html = 'diagnoz/likar.html'
+                settingsvar.initialprofil = True
+
     json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarprofil')
     unloadlog(json)
