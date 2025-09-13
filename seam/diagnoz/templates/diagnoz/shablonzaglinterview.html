@@ -1,0 +1,9 @@
+<div class="col">
+    {% if likar %}
+    <p>{{piblikar}}</p>
+    <p>{{pacient}}</p>
+    {% else %}
+    <h6>{{iduser}}</h6>
+    {% endif %}
+    <a class="text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
+</div>

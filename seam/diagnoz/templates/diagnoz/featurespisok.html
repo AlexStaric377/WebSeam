@@ -2,19 +2,9 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
-        {% if likar %}
-        <p>{{piblikar}}</p>
-        <p>{{pacient}}</p>
-        {% else %}
-        <h4>{{iduser}}</h4>
-        {% endif %}
-        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
-    </div>
-</nav>
 <div class="container-fluid">
-    <h5> {{ compl }} </h5>
+    {% include 'diagnoz/shablonzaglinterview.html' %}
+    <h6> {{ compl }} </h6>
     {% block featurelist %}
     {% for item in featurelist %}
     <a aria-current="page" class="nav-link"
@@ -28,6 +18,6 @@
 <div style="display: inline-block">
     <p></p>
     <a class="text-decoration-none text-reset" href="{% url 'receptinterwiev' %}">
-        <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20">' '</a>
-    <a aria-current="page" class="text-decoration-none text-reset" href="{% url 'nextgrdetaling' %}">{{next}}</a>
+        <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20"> </a>
+    <a aria-current="page" class="text-decoration-none " href="{% url 'nextgrdetaling' %}"> ] [ {{next}} ]</a>
 </div>

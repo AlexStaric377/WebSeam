@@ -1,9 +1,8 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid">
     <div class="col">
-
         {% if likar %}
         <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
@@ -13,11 +12,8 @@
         {% else %}
         <h6>{{iduser}}</h6>
         {% endif %}
-        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
+        <a class="text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
     </div>
-
-</nav>
-<div class="container-fluid">
     <h6> Оберіть яке нездужання і де вас турбує </h6>
     {% block list %}
     {% for item in complaintlist %}

@@ -47,10 +47,7 @@ def glavmeny(request):
     return render(request, 'diagnoz/glavmeny.html')
 
 def reception(request):  # httpRequest
-    #    if settingsvar.kabinet == 'guest' and settingsvar.html != 'diagnoz/index.html':
-    #        settingsvar.nawpage = ''
-    #        settingsvar.html = 'diagnoz/index.html'
-    #    else:
+
     json = ('IdUser: guest,' + 'dateseanse :' +
             datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: reception')
     unloadlog(json)
@@ -205,7 +202,7 @@ def interwievcomplaint(request):
         settingsvar.nextstepdata = {
         'complaintlist': api,
         'iduser': iduser,
-        'backurl': 'reception'
+            'backurl': 'glavmeny'
         }
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -226,7 +223,7 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
         settingsvar.listfeature = rest_api('api/FeatureController/' + "0/" + nextfeature_keyComplaint + "/0/", '',
                                            'GET')
     iduser = funciduser()
-    settingsvar.nawpage = 'nextfeature'
+    settingsvar.nawpage = 'backfeature'
     settingsvar.html = 'diagnoz/nextfeature.html'
 
     if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
@@ -235,6 +232,7 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     settingsvar.nextstepdata['compl'] = nextfeature_name
     settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
     settingsvar.nextstepdata['iduser'] = iduser
+
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -280,6 +278,7 @@ def funcfeature():
                     break;
 
         settingsvar.listfeature = tmplist
+
     else:
         settingsvar.listfeature = []
         settingsvar.nawpage = 'receptinterwiev'
@@ -290,9 +289,9 @@ def funcfeature():
             'iduser': iduser,
             'backurl': 'reception'
         }
-
+    settingsvar.nawpage = 'backfeature'
     if len(settingsvar.listfeature) > 1:
-        settingsvar.nawpage = 'backfeature'
+
         settingsvar.html = 'diagnoz/nextfeature.html'
         del settingsvar.listfeature[indexfeature]
         if len(settingsvar.pacient) > 0:
@@ -302,6 +301,7 @@ def funcfeature():
         settingsvar.nextstepdata['compl'] = settingsvar.feature_name
         settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
         settingsvar.nextstepdata['iduser'] = iduser
+
     if len(settingsvar.listfeature) == 1:
         nextstepgrdetaling()
     return
@@ -383,7 +383,7 @@ def nextstepgrdetaling():
                 settingsvar.nextstepdata['next'] = '  Далі '
                 settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
                 settingsvar.nextstepdata['iduser'] = iduser
-                settingsvar.nawpage = 'receptinterwiev'
+                settingsvar.nawpage = 'nextgrdetaling'
                 settingsvar.html = 'diagnoz/detaling.html'
                 if len(settingsvar.spisokkeyfeature) > 0: del settingsvar.spisokkeyfeature[0]
                 if len(settingsvar.spisoknamefeature) > 0: del settingsvar.spisoknamefeature[0]
@@ -404,7 +404,8 @@ def nextstepgrdetaling():
                     settingsvar.nextstepdata['next'] = '  Далі '
                     settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
                     settingsvar.nextstepdata['iduser'] = iduser
-                    settingsvar.nawpage = 'receptinterwiev'
+                    settingsvar.nextstepdata['backurl'] = 'nextgrdetaling'
+                    settingsvar.nawpage = 'nextgrdetaling'
                     settingsvar.html = 'diagnoz/grdetaling.html'
                     del settingsvar.spisokGrDetailing[0]
                     del settingsvar.detalingname[0]
@@ -457,7 +458,7 @@ def selectdetaling(request, select_kodDetailing):
 
             index = index + 1
         enddetaling = 'enddetaling'
-        settingsvar.nawpage = 'receptinterwiev'
+        settingsvar.nawpage = 'nextgrdetaling'
         shablondetaling()
 
         return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -480,7 +481,7 @@ def selectgrdetaling(request, select_kodDetailing):
             else:
                 settingsvar.spselectnameDetailing.append(item['nameGrDetailing'])
         settingsvar.rest_apiGrDetaling = tmplist
-        settingsvar.nawpage = 'receptinterwiev'
+        settingsvar.nawpage = 'nextgrdetaling'
         shablongrdetaling()
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -492,7 +493,7 @@ def enddetaling(request):
         if (settingsvar.viewdetaling == False and len(settingsvar.spisoklistdetaling) > 0):
             settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
             shablondetaling()
-            settingsvar.nawpage = 'receptinterwiev'
+            settingsvar.nawpage = 'nextgrdetaling'
             settingsvar.viewdetaling = True
             del settingsvar.spisokkeyfeature[0]
             del settingsvar.spisoknamefeature[0]
@@ -507,7 +508,7 @@ def enddetaling(request):
                                                           '', 'GET')
                 settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 shablongrdetaling()
-                settingsvar.nawpage = 'receptinterwiev'
+                settingsvar.nawpage = 'nextgrdetaling'
                 del settingsvar.detalingname[0]
                 del settingsvar.spisokGrDetailing[0]
 
@@ -635,7 +636,9 @@ def contentinterwiev(request):  # httpRequest
     settingsvar.html = 'diagnoz/contentinterwiev.html'
     iduser = funciduser()
     backurl = settingsvar.nawpage
-    PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
+    PacientName = ""
+    if len(settingsvar.pacient) > 0:
+        PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
     data = {
         'compl': settingsvar.nametInterview,
         'detalinglist': api,
