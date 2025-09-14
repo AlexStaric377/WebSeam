@@ -1451,6 +1451,7 @@ def shablonpacient(profilpacient):
     tel = ''
     mail = ''
     pind = ''
+
     if profilpacient['tel'] != None: tel = profilpacient['tel']
     if profilpacient['email'] != None: mail = profilpacient['email']
     if profilpacient['pind'] != None: pind = profilpacient['pind']
@@ -1665,9 +1666,13 @@ def nextprofilinterview():
         case "profil" | "pacient" | "interwiev" | 'listinterwiev':
             settingsvar.nawpage = 'backprofilinterview'
             backurl = 'pacientlistinterwiev'
+            removefunc = 'removeinterview'
+            remove = True
         case 'listreceptionlikar':
             settingsvar.nawpage = 'pacientreceptionlikar'
             backurl = 'pacientreceptionlikar'
+            removefunc = 'removeinterview'
+            remove = True
         case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
             settingsvar.nawpage = 'backprofilinterview'
             backurl = 'likarlistinterwiev'
@@ -1736,11 +1741,22 @@ def backprofilinterview(request):
 
 def removeinterview(request):
     match settingsvar.kabinetitem:
+        case 'listinterwiev':
+            settingsvar.listapi = rest_api('api/ColectionInterviewController/' + settingsvar.idinterview + '/0/0', '',
+                                           'DEL')
+            if len(settingsvar.listapi) > 0:
+                funcshablonlistpacient()
         case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
             settingsvar.listapi = rest_api('api/ColectionInterviewController/' + settingsvar.idinterview + '/0/0', '',
                                            'DEL')
             if len(settingsvar.listapi) > 0:
                 listlikar()
+        case 'listreceptionlikar':
+            settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + settingsvar.idinterview + '/0/0',
+                                           '',
+                                           'DEL')
+            if len(settingsvar.listapi) > 0:
+                funcshablonlistreceptionlikar()
         case 'likarreceptionpacient':
             settingsvar.listapi = rest_api('api/ControllerAdmissionPatients/' + settingsvar.idinterview + '/0/0', '',
                                            'DEL')
@@ -1784,6 +1800,7 @@ def funcshablonlistpacient():
     settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacienta, '', 'GET')
     if len(settingsvar.listapi) > 0:
         settingsvar.nextstepdata['complaintlist'] = settingsvar.listapi
+
     else:
         errorprofil('Шановний користувач! За вашим запитом відсутні проведені опитування.')
     return
@@ -1820,7 +1837,7 @@ def funcshablonlistreceptionlikar():
     iduser = funciduser()
     settingsvar.html = 'diagnoz/pacientreceptionlikar.html'
     listAdmissionlikar = []
-
+    diagnoz = []
     shablonpacient(settingsvar.pacient)
     settingsvar.nextstepdata['backurl'] = settingsvar.backurl
     settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + settingsvar.kodPacienta + '/0', '', 'GET')
@@ -1837,10 +1854,11 @@ def funcshablonlistreceptionlikar():
                     likarName = likar['name'] + likar['surname'] + " тел.: " + likar['telefon']
                 if item['kodDiagnoz'] != None:
                     diagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
-                #                dateDoctor = " не встановлено"
+
                 dateDoctor = item['dateDoctor']
                 nameDiagnoz = " не встановлено"
-                if len(diagnoz) > 0: nameDiagnoz = diagnoz['nameDiagnoza']
+                if len(diagnoz) > 0:
+                    nameDiagnoz = diagnoz['nameDiagnoza']
                 stepdata['pacient'] = PacientName
                 stepdata['namelikar'] = likarName  # 'Лікар:          ' +
                 stepdata['dateInterview'] = item['dateInterview']  # 'Дата опитування: ' +
@@ -1849,6 +1867,7 @@ def funcshablonlistreceptionlikar():
                 stepdata['kodDoctor'] = item['kodDoctor']
                 stepdata['kodProtokola'] = item['kodProtokola']
                 stepdata['kodDiagnoz'] = item['kodDiagnoz']
+                stepdata['id'] = item['id']
                 listAdmissionlikar.append(stepdata)
 
         settingsvar.nextstepdata['complaintlist'] = listAdmissionlikar
