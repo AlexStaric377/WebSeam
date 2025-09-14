@@ -35,5 +35,8 @@
         </tbody>
     </table>
 </div>
+{% if remove %}
+<a class="text-decoration-none" href="{% url removefunc %}">[ Видалити ]</a>
+{% endif %}
 <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 {% endblock %}

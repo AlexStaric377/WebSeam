@@ -2,6 +2,7 @@
 {% block content %}
 <div class="container-fluid">
     {% include 'diagnoz/shablonzaglinterview.html' %}
+    <a class="text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
     <h6>Перелік попередніх діагнозів</h6>
     {% block detalinglist %}
     {% for item in detalinglist %}

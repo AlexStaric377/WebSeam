@@ -6,6 +6,7 @@
     <div class="col">
         <h6>{{reestrinput}}</h6>
     </div>
+    <a> Для входу до кабінету введіть показники облікового запису</a>
 
 </nav>
 <form class="needs-validation" method="POST" novalidate="">
@@ -31,13 +32,13 @@
         </div>
     </div>
     <p></p>
-    <button class="w-40 h-20 btn btn-primary btn-lg" type="submit"><font style="vertical-align: inherit;"><font
+    <button class="w-30 h-13 btn btn-primary btn-lg" type="submit"><font style="vertical-align: inherit;"><font
             style="vertical-align: inherit;">Підтвердити</font></font></button>
 </form>
-
-<a class="text-decoration-none " href="{% url 'reestraccountuser' %}">{{compl}}</a>
-
-<p></p>
+{% if reestr %}
+<a> Для створення облікового запису натисніть на кнопку "Зареєструватися"</a><p></p>
+<a class="text-decoration-none " href="{% url 'reestraccountuser' %}"> [ {{compl}} ]</a>
+{% endif %}
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
         <a href="{{backurl}}"><img height="20" src="/static/diagnoz/img/backleft.png" style="float: left"

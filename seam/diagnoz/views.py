@@ -1156,6 +1156,7 @@ def accountuser(request):
             cab = 'Кабінет пацієнта'
             backurl = 'pacient'
             compl = 'Зареєструватися'
+            reestr = True
             if (settingsvar.kabinetitem == "likar" or settingsvar.kabinetitem == 'likarinterwiev' \
                     or settingsvar.kabinetitem == 'likarlistinterwiev' \
                     or settingsvar.kabinetitem == 'likarreceptionpacient' \
@@ -1165,13 +1166,15 @@ def accountuser(request):
                 cab = 'Кабінет лікаря'
                 backurl = 'likar'
                 compl = ''
+                reestr = False
             settingsvar.readprofil = False
             settingsvar.formaccount = AccountUserForm()
             settingsvar.nextstepdata = {
                 'form': settingsvar.formaccount,
                 'compl': compl,
                 'reestrinput': cab,
-                'backurl': backurl
+                'backurl': backurl,
+                'reestr': reestr
             }
     else:
         caseprofil()
@@ -1610,6 +1613,7 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
     settingsvar.dateInterview = selected_dateInterview
     settingsvar.protokol = selected_protokol
     settingsvar.nametInterview = ""
+    settingsvar.idinterview = ""
     for item in settingsvar.listapi:
         if settingsvar.protokol == item['kodProtokola']:
             match settingsvar.kabinet:
@@ -1617,7 +1621,9 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
                     settingsvar.nametInterview = item['nameInterview']
                 case 'listreceptionlikar':
                     settingsvar.nametInterview = item['diagnoz']
-            break
+            if selected_dateInterview == item['dateInterview']:
+                settingsvar.idinterview = str(item['id'])
+                break
     if selected_protokol.find('PRT.') < 0:
         match settingsvar.kabinet:  # selected_protokol
             case 'pacient':
@@ -1644,6 +1650,8 @@ def nextprofilinterview():
     likarName = ""
     PacientName = ""
     dateint = ""
+    remove = False
+    removefunc = ""
     select_dateDoctor = " не встановлено"
     match settingsvar.kabinet:
         case 'listinterwiev':
@@ -1651,6 +1659,8 @@ def nextprofilinterview():
             funcshablonlistpacient()
         case 'likarlistinterwiev':
             listlikar()
+            removefunc = 'removeinterview'
+            remove = True
     match settingsvar.kabinetitem:
         case "profil" | "pacient" | "interwiev" | 'listinterwiev':
             settingsvar.nawpage = 'backprofilinterview'
@@ -1664,6 +1674,8 @@ def nextprofilinterview():
         case 'likarreceptionpacient':
             settingsvar.nawpage = 'backprofilinterview'
             backurl = 'likarreceptionpacient'
+            removefunc = 'removeinterview'
+            remove = True
     settingsvar.kodProtokola = settingsvar.protokol
     iduser = funciduser()
     for item in settingsvar.listapi:
@@ -1712,7 +1724,8 @@ def nextprofilinterview():
     settingsvar.nextstepdata['recomendaciya'] = 'Рекомендації:   ' + recommend['contentRecommendation']
     settingsvar.nextstepdata['urlinet'] = 'Опис в інтернеті:   ' + diagnoz['uriDiagnoza']
     settingsvar.nextstepdata['backurl'] = backurl
-
+    settingsvar.nextstepdata['remove'] = remove
+    settingsvar.nextstepdata['removefunc'] = removefunc
     return
 
 
@@ -1720,6 +1733,20 @@ def backprofilinterview(request):
     nextprofilinterview()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
+
+def removeinterview(request):
+    match settingsvar.kabinetitem:
+        case "likar" | 'likarinterwiev' | 'likarlistinterwiev':
+            settingsvar.listapi = rest_api('api/ColectionInterviewController/' + settingsvar.idinterview + '/0/0', '',
+                                           'DEL')
+            if len(settingsvar.listapi) > 0:
+                listlikar()
+        case 'likarreceptionpacient':
+            settingsvar.listapi = rest_api('api/ControllerAdmissionPatients/' + settingsvar.idinterview + '/0/0', '',
+                                           'DEL')
+            if len(settingsvar.listapi) > 0:
+                listreceptionpacient()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 #--- Перегляд проведених інтервью
 

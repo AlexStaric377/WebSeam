@@ -71,3 +71,4 @@ kodDiagnoz = ''
 editprofil = False
 listworkdiagnoz = []
 directdiagnoz = False
+idinterview = ""

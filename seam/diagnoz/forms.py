@@ -21,7 +21,7 @@ class PacientForm(forms.Form):
     pind = forms.CharField(max_length=5, min_length=5, label="Поштовий індекс",
                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "xxxxx"}))
     tel = forms.CharField(label="Телефон", widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
+        attrs={'class': 'form-control', 'placeholder': " +xxx xx xx xxx xx"}))
     email = forms.EmailField(label="Электронна пошта (Email)", required=False,
                              widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "ви@example.com"}))
 
@@ -29,7 +29,8 @@ class PacientForm(forms.Form):
 #--- Форма реєестрації входу до кабінету пацієнта
 class AccountUserForm(forms.Form):
     login = forms.CharField(max_length=13, label='Телефон:',
-                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
+                            widget=forms.TextInput(
+                                attrs={'class': 'form-control', 'placeholder': " +xxx xx xx xxx xx"}))
     password = forms.CharField(max_length=13, label='Пароль:',
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
@@ -37,7 +38,8 @@ class AccountUserForm(forms.Form):
 #--- Форма реєестрації нового облікового запису для пацієнтів
 class ReestrAccountUserForm(forms.Form):
     login = forms.CharField(max_length=13, label='Телефон:',
-                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
+                            widget=forms.TextInput(
+                                attrs={'class': 'form-control', 'placeholder': " +xxx xx xx xxx xx"}))
     password = forms.CharField(max_length=13, label='Пароль:',
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     dwpassword = forms.CharField(max_length=13, label='Повторити пароль:',
@@ -52,7 +54,7 @@ class LikarForm(forms.Form):
     surname = forms.CharField(max_length=37, min_length=3, label="Прізвище",
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
     telefon = forms.CharField(max_length=13, min_length=10, label="Телефон", widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
+        attrs={'class': 'form-control', 'placeholder': " +xxx xx xx xxx xx"}))
     email = forms.EmailField(label="Электронна пошта (Email)", required=False,
                              widget=forms.TextInput(
                                  attrs={'class': 'form-control', 'placeholder': "mymail@example.com"}))
@@ -73,4 +75,4 @@ class SearchPacient(forms.Form):
     surname = forms.CharField(max_length=37, min_length=3, label="Прізвище",
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
     telefon = forms.CharField(max_length=13, min_length=10, label="Телефон", widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': " xxx xx xx xxx xx"}))
+        attrs={'class': 'form-control', 'placeholder': " +xxx xx xx xxx xx"}))

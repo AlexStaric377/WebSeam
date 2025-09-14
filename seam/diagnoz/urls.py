@@ -70,7 +70,8 @@ urlpatterns = [
     path('contentinterview/<str:select_kodDiagnoza>', views.contentinterview, name='contentinterview'),
     path('directiondiagnoz', views.directiondiagnoz, name='directiondiagnoz'),
     path('likarnapryamok', views.likarnapryamok, name='likarnapryamok'),
-    path('profillikarform', views.profillikarform, name='profillikarform')
+    path('profillikarform', views.profillikarform, name='profillikarform'),
+    path('removeinterview', views.removeinterview, name='removeinterview')
 ]
 #
 urlpatterns += [
