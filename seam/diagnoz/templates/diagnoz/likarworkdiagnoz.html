@@ -16,14 +16,16 @@
     <h6>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
     {% block list %}
     {% for item in complaintlist %}
-    <a aria-current="page" class="nav-link" href="{% url 'workdiagnozlikar' item.kodDoctor  item.icd  %}"><font
+    <a aria-current="page" class="nav-link" href="{% url 'workdiagnozlikar' item.kodDoctor  item.icd  item.id %}"><font
             style="vertical-align: inherit;"> {{ item.icdGrDiagnoz }} </font></a>
 
     {% endfor %}
     {% endblock %}
 </div>
-
-<a class="text-decoration-none" href="{{backurl}}">[ Далі ]</a>
+<div style="display: inline-block">
+    <a class="text-decoration-none" href="{% url 'addworkdiagnoz' %}">[ Додати ]</a>
+    <a class="text-decoration-none" href="{{backurl}}">[ Далі ]</a>
+</div>
 
 {% endblock %}
 

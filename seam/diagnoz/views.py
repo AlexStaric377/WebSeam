@@ -2258,19 +2258,20 @@ def listworkdiagnoz():
         listapi()
     else:
         settingsvar.listapi = rest_api('api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + '/0', '', 'GET')
-        listapi()
-    if len(settingsvar.listapi) > 0:
 
+        listapi()
+        #    if len(settingsvar.listapi) > 0:
         settingsvar.nextstepdata = {
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
             'backurl': backurl,
             'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad,
-            'directdiagnoz': settingsvar.directdiagnoz
+            'directdiagnoz': settingsvar.directdiagnoz,
+
         }
-    else:
-        errorprofil('Шановний користувач! За вашим запитом немає пацієнтів записаних для обстеження  .')
+    #    else:
+    #        errorprofil('Шановний користувач! За вашим запитом немає робочих напрямків.')
     return
 
 
@@ -2294,11 +2295,76 @@ def listapi():
     settingsvar.listapi = tmp
     return
 
+
+# Додати робочий напрямок лікаря
+def addworkdiagnoz(request):
+    iduser = funciduser()
+    backurl = 'likarworkdiagnoz'
+    settingsvar.html = 'diagnoz/grupdiagnoz.html'
+    settingsvar.listGrupDiagnoz = rest_api('api/GrupDiagnozController/', '', 'GET')
+    listNameGrDiagnoz()
+    if len(settingsvar.listGrupDiagnoz) > 0:
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'complaintlist': settingsvar.listGrupDiagnoz,
+            'backurl': backurl,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'medzaklad': settingsvar.namemedzaklad,
+        }
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def listNameGrDiagnoz():
+    tmp = []
+    for item in settingsvar.listGrupDiagnoz:
+        if len(tmp) == 0:
+            if '.' in item['nameGrDiagnoz']:
+                point = item['nameGrDiagnoz'].index('.')
+                item['icd'] = item['nameGrDiagnoz'][0:point]
+                tmp.append(item)
+        for itemapp in tmp:
+            if itemapp['nameGrDiagnoz'] == item['nameGrDiagnoz']:
+                app = False
+                break
+            else:
+                app = True
+        if app == True:
+            if '.' in item['nameGrDiagnoz']:
+                point = item['nameGrDiagnoz'].index('.')
+                item['icd'] = item['nameGrDiagnoz'][0:point]
+                tmp.append(item)
+    settingsvar.listGrupDiagnoz = tmp
+    return
+
+
+# Додати новий еапрямок роботи лікаря
+def addgrupdiagnoz(request, select_icdGrDiagnoz):
+    GrupDiagnoz = rest_api('api/GrupDiagnozController/' + "0/" + select_icdGrDiagnoz, '', 'GET')
+    IcdGrDiagnoz = GrupDiagnoz[0]['nameGrDiagnoz']
+    json = {'Id': 0,
+            'KodDoctor': settingsvar.kodDoctor,
+            'IcdGrDiagnoz': IcdGrDiagnoz
+            }
+    GrupDiagnoz = rest_api('api/LikarGrupDiagnozController/', json, 'POST')
+    listworkdiagnoz()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# Видалити робочий напрямок лікаря
+def deleteworkdiagnoz(request):
+    settingsvar.listapi = rest_api('api/LikarGrupDiagnozController/' + settingsvar.select_idigrup + '/0', '',
+                                   'DEL')
+    listworkdiagnoz()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
 # --- детелізація переліку  робочих діагнозів за обраним напрямком
-def workdiagnozlikar(request, select_kodDoctor, select_icd):
+def workdiagnozlikar(request, select_kodDoctor, select_icd, select_id):
     iduser = funciduser()
     backurl = 'likarworkdiagnoz'
     settingsvar.nawpage = 'likarworkdiagnoz'
+    settingsvar.select_idigrup = str(select_id)
     if settingsvar.directdiagnoz == False:
         likar = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
         medzaklad = settingsvar.namemedzaklad
@@ -2312,7 +2378,7 @@ def workdiagnozlikar(request, select_kodDoctor, select_icd):
     #    point = select_icd.index('.')
     #    icdGrDiagnoz = select_icd[0:point]
     settingsvar.listworkdiagnoz = rest_api('api/DiagnozController/' + '0/' + select_icd + '/0', '',
-                               'GET')
+                                           'GET')
 
     if len(settingsvar.listworkdiagnoz) > 0:
 
@@ -2323,11 +2389,21 @@ def workdiagnozlikar(request, select_kodDoctor, select_icd):
             'piblikar': likar,
             'medzaklad': medzaklad,
             'icdgrup': settingsvar.listworkdiagnoz[0]['icdGrDiagnoz'],
-            'directdiagnoz': settingsvar.directdiagnoz
+            'directdiagnoz': settingsvar.directdiagnoz,
+            'listnull': False
         }
     else:
-        errorprofil('Шановний користувач! За вашим запитом немає робочих діагнозів за ' + select_icd)
-        settingsvar.nextstepdata['backurl'] = backurl
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'complaintlist': '',
+            'backurl': backurl,
+            'piblikar': likar,
+            'medzaklad': medzaklad,
+            'icdgrup': 'Шановний користувач! За вашим запитом немає робочих діагнозів за ' + select_icd,
+            'directdiagnoz': settingsvar.directdiagnoz,
+            'listnull': True
+        }
+
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 

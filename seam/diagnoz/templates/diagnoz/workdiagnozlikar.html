@@ -13,13 +13,17 @@
     </div>
 </nav>
 <div class="container-fluid">
-    <p>Перелік робочих діагнозів захворювань за напрямком {{icdgrup}}</p>
+
     {% if directdiagnoz %}
     <p></p>
     {% else %}
+    {% if listnull %}
+    {{icdgrup}}
+    {% else %}
+    <p>Перелік робочих діагнозів захворювань за напрямком {{icdgrup}}</p>
     <h6>Для перегляду змісту опитування, яке визначає попередній діагноз необхідно натиснути на відповідний рядок</h6>
     {% endif %}
-
+    {% endif %}
     {% block list %}
     {% for item in complaintlist %}
     {% if directdiagnoz %}
@@ -32,5 +36,8 @@
     {% endfor %}
     {% endblock %}
 </div>
-<a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
+<div style="display: inline-block">
+    <a class="text-decoration-none" href="{% url 'deleteworkdiagnoz'  %}">[ Видалити поточний напрямок ]</a>
+    <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
+</div>
 {% endblock %}

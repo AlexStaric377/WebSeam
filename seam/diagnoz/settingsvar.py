@@ -72,3 +72,5 @@ editprofil = False
 listworkdiagnoz = []
 directdiagnoz = False
 idinterview = ""
+select_idigrup = ""
+listGrupDiagnoz = []

@@ -8,15 +8,16 @@
     </div>
 </nav>
 <div class="container-fluid">
-    <p>Поточний діагноз : {{workdiagnoz}}</p>
-    <p>Перелік питань належної симптоматики, які визначають попередній діагноз</p>
+    <p>Перелік робочих напрямків діагностики захворювань</p>
+
     {% block list %}
-    {% for item in listwork %}
-    <a aria-current="page" class="nav-link" href=""><font
-            style="vertical-align: inherit;">{{item.detailsInterview}} </font></a>
+    {% for item in complaintlist %}
+
+    <a aria-current="page" class="nav-link" href="{% url 'addgrupdiagnoz'  item.icd  %} "><font
+            style="vertical-align: inherit;"> {{item.nameGrDiagnoz}} </font></a>
+
     {% endfor %}
     {% endblock %}
 </div>
 <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
-
 {% endblock %}

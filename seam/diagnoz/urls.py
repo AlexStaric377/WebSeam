@@ -64,14 +64,17 @@ urlpatterns = [
     path('selectvisitingdays/<str:selected_timevizita>,  <str:selected_datevizita>, <str:selected_daysoftheweek>',
          views.selectvisitingdays, name='selectvisitingdays'),
     path('proseam', views.proseam, name='proseam'),
-    path('workdiagnozlikar/<str:select_kodDoctor>,  <str:select_icd>', views.workdiagnozlikar,
+    path('workdiagnozlikar/<str:select_kodDoctor>,  <str:select_icd>, <int:select_id>', views.workdiagnozlikar,
          name='workdiagnozlikar'),
     path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz'),
     path('contentinterview/<str:select_kodDiagnoza>', views.contentinterview, name='contentinterview'),
     path('directiondiagnoz', views.directiondiagnoz, name='directiondiagnoz'),
     path('likarnapryamok', views.likarnapryamok, name='likarnapryamok'),
     path('profillikarform', views.profillikarform, name='profillikarform'),
-    path('removeinterview', views.removeinterview, name='removeinterview')
+    path('removeinterview', views.removeinterview, name='removeinterview'),
+    path('addworkdiagnoz', views.addworkdiagnoz, name='addworkdiagnoz'),
+    path('deleteworkdiagnoz', views.deleteworkdiagnoz, name='deleteworkdiagnoz'),
+    path('addgrupdiagnoz/<str:select_icdGrDiagnoz>', views.addgrupdiagnoz, name='addgrupdiagnoz')
 ]
 #
 urlpatterns += [
