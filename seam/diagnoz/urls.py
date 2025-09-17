@@ -74,7 +74,8 @@ urlpatterns = [
     path('removeinterview', views.removeinterview, name='removeinterview'),
     path('addworkdiagnoz', views.addworkdiagnoz, name='addworkdiagnoz'),
     path('deleteworkdiagnoz', views.deleteworkdiagnoz, name='deleteworkdiagnoz'),
-    path('addgrupdiagnoz/<str:select_icdGrDiagnoz>', views.addgrupdiagnoz, name='addgrupdiagnoz')
+    path('addgrupdiagnoz/<str:select_icdGrDiagnoz>', views.addgrupdiagnoz, name='addgrupdiagnoz'),
+    path('deletprofil', views.deletprofil, name='deletprofil')
 ]
 #
 urlpatterns += [

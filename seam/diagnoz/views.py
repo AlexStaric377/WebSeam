@@ -1240,6 +1240,33 @@ def profilinfopacient():
     return
 
 
+# Видалити профіль пацієнта
+def deletprofil(request):
+    settingsvar.pacient['id']
+    settingsvar.pacient = rest_api(
+        '/api/PacientController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
+    settingsvar.pacient = rest_api(
+        '/api/ColectionInterviewController/' + '0/' + settingsvar.kodPacienta + '/0', '', 'DEL')
+    settingsvar.pacient = rest_api(
+        '/api/RegistrationAppointmentController/' + '0/' + settingsvar.kodPacienta + '/0', '', 'DEL')
+    settingsvar.pacient = rest_api(
+        '/api/PacientMapAnalizController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
+    settingsvar.pacient = rest_api(
+        '/api/PacientAnalizKroviController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
+    settingsvar.pacient = rest_api(
+        '/api/PacientAnalizUrineController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
+    settingsvar.pacient = rest_api(
+        '/api/AccountUserController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
+    settingsvar.kabinet = 'pacient'
+    settingsvar.setintertview = False
+    settingsvar.html = 'diagnoz/pacient.html'
+    settingsvar.nextstepdata = {}
+    settingsvar.likar = {}
+    settingsvar.pacient = {}
+    settingsvar.datereception = 'не встановлено'
+    settingsvar.datedoctor = 'не встановлено'
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
 # Формування списку проведених опитувань  для виводу на екран
 def shablonforlistinterview():
     iduser = funciduser()
@@ -1326,13 +1353,13 @@ def kabinetpacient(request):
 # --- Створення нового коду профілю пацієнта
 def newpacientprofil():
     CmdStroka = []
-    indexcmp = "PCN.000000001"
+    indexcmp = "PCN.0000000001"
     CmdStroka = rest_api('/api/PacientController/0/0/0/0/0', '', 'GET')
 
     if len(CmdStroka) > 0:
         kodPacient = CmdStroka['kodPacient']
         indexdia = int(kodPacient[5:14])
-        repl = "000000000"
+        repl = "0000000000"
         settingsvar.kodPacienta = "PCN." + repl[0: len(repl) - len(str(indexdia))] + str(indexdia + 1)
 
     return settingsvar.kodPacienta
