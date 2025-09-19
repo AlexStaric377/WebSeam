@@ -58,7 +58,7 @@ def reception(request):  # httpRequest
     settingsvar.kabinetitem = 'guest'
     settingsvar.datereception = 'не встановлено'
     settingsvar.datedoctor = 'не встановлено'
-    interwievcomplaint(request)
+    settingsvar.html = 'diagnoz/reception.html'
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -202,7 +202,7 @@ def interwievcomplaint(request):
         settingsvar.nextstepdata = {
         'complaintlist': api,
         'iduser': iduser,
-            'backurl': 'glavmeny'
+            'backurl': 'reception'
         }
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -671,17 +671,21 @@ def selectmedzaklad(request, statuszaklad):
                     if item['edrpou'] not in itemmedzaklad['edrpou']:
                         settingsvar.grupmedzaklad.append(item)
         case "5":
-            settingsvar.grupDiagnoz = rest_api(
-                '/api/MedGrupDiagnozController/' + "0/0/" + settingsvar.icddiagnoz + "/0", '',
-                                               'GET')
-            for item in settingsvar.grupDiagnoz:
-                medzaklad = rest_api('/api/MedicalInstitutionController/' + item['kodZaklad'] + '/0/0/0', '', 'GET')
-                if len(medzaklad) > 0:
-                    if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(medzaklad)
-                    apptru = False
-                    for itemmedzaklad in settingsvar.grupmedzaklad:
-                        if medzaklad['kodZaklad'] not in itemmedzaklad['kodZaklad']:
-                            apptru = False
+            if settingsvar.kabinetitem == 'guest':
+                settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad, '',
+                                                     'GET')
+
+            else:
+                settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" +
+                                                   settingsvar.icddiagnoz + "/0", '', 'GET')
+                for item in settingsvar.grupDiagnoz:
+                    medzaklad = rest_api('/api/MedicalInstitutionController/' + item['kodZaklad'] + '/0/0/0', '', 'GET')
+                    if len(medzaklad) > 0:
+                        if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(medzaklad)
+                        apptru = False
+                        for itemmedzaklad in settingsvar.grupmedzaklad:
+                            if medzaklad['kodZaklad'] not in itemmedzaklad['kodZaklad']:
+                                apptru = False
                         else:
                             apptru = True
                     if apptru == False:  settingsvar.grupmedzaklad.append(medzaklad)
@@ -2281,13 +2285,15 @@ def listworkdiagnoz():
     settingsvar.html = 'diagnoz/likarworkdiagnoz.html'
     if settingsvar.directdiagnoz == True:
         settingsvar.listapi = rest_api('api/LikarGrupDiagnozController/', '', 'GET')
-        backurl = 'glavmeny'
+        backurl = 'reception'
         listapi()
     else:
         settingsvar.listapi = rest_api('api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + '/0', '', 'GET')
-
         listapi()
-        #    if len(settingsvar.listapi) > 0:
+    listapinull = True
+    сontentnull = 'За вашим запитом не визнвчені напрямки діагностики.'
+    if len(settingsvar.listapi) > 0:
+        listapinull = False
         settingsvar.nextstepdata = {
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
@@ -2295,10 +2301,9 @@ def listworkdiagnoz():
             'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad,
             'directdiagnoz': settingsvar.directdiagnoz,
-
+            'listapinull': listapinull,
+            'сontentnull': сontentnull
         }
-    #    else:
-    #        errorprofil('Шановний користувач! За вашим запитом немає робочих напрямків.')
     return
 
 

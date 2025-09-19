@@ -8,9 +8,7 @@
                 <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
                    id="navbarDropdownMenuLink" role="button">
                     <img alt="" class="d-inline-block align-text-middle" height="30" src="/static/diagnoz/img/meny.png"
-                         width="30">
-                    Навігація
-                </a>
+                         width="30">Навігація </a>
                 <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
                     <li><a class="dropdown-item" href="{% url 'glavmeny' %}">Головна</a></li>
                     <li><a class="dropdown-item" href="{% url 'pacient' %}">Кабінет пацієнта</a></li>
@@ -22,7 +20,25 @@
     </div>
     <div class="col">
         <h4>Реєстратура</h4>
-        <a href="{% url 'receptinterwiev' %}">Провести опитування</a>
+    </div>
+    <div class="navbar-nav">
+        <ul class="navbar-nav mr-auto flex-column">
+            <li class="nav-item active">
+                <a aria-current="page" class="nav-link" href="{% url 'receptinterwiev' %}">
+                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Провести
+                        діагностику</font></font></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'receptprofillmedzaklad' %}">
+                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профільні
+                        лікарні</font></font></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'directiondiagnoz' %}">
+                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Напрямки
+                        діагностики</font></font></a>
+            </li>
+        </ul>
     </div>
 </nav>
 

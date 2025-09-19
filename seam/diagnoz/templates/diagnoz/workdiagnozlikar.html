@@ -5,7 +5,6 @@
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
         {% if directdiagnoz %}
-        <p></p>
         {% else %}
         <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
@@ -15,7 +14,7 @@
 <div class="container-fluid">
 
     {% if directdiagnoz %}
-    <p></p>
+    <p>Перелік робочих діагнозів захворювань за напрямком {{icdgrup}}</p>
     {% else %}
     {% if listnull %}
     {{icdgrup}}
@@ -37,7 +36,10 @@
     {% endblock %}
 </div>
 <div style="display: inline-block">
+    {% if directdiagnoz %}
+    {% else %}
     <a class="text-decoration-none" href="{% url 'deleteworkdiagnoz'  %}">[ Видалити поточний напрямок ]</a>
+    {% endif %}
     <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 </div>
 {% endblock %}

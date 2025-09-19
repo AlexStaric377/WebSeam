@@ -13,17 +13,23 @@
 </nav>
 <div class="container-fluid">
     <p>Перелік робочих напрямків діагностики захворювань</p>
+    {% if listapinull %}
+    <p>{{сontentnull}}</p>
+    {% else %}
     <h6>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
     {% block list %}
     {% for item in complaintlist %}
     <a aria-current="page" class="nav-link" href="{% url 'workdiagnozlikar' item.kodDoctor  item.icd  item.id %}"><font
             style="vertical-align: inherit;"> {{ item.icdGrDiagnoz }} </font></a>
-
     {% endfor %}
     {% endblock %}
+    {% endif %}
 </div>
 <div style="display: inline-block">
+    {% if directdiagnoz %}
+    {% else %}
     <a class="text-decoration-none" href="{% url 'addworkdiagnoz' %}">[ Додати ]</a>
+    {% endif %}
     <a class="text-decoration-none" href="{{backurl}}">[ Далі ]</a>
 </div>
 
