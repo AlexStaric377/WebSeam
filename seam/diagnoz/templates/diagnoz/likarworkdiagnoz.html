@@ -19,8 +19,13 @@
     <h6>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
     {% block list %}
     {% for item in complaintlist %}
+    {% if directdiagnoz %}
+    <a aria-current="page" class="nav-link" href=""><font style="vertical-align: inherit;">
+        {{item.icdGrDiagnoz}} </font></a>
+    {% else %}
     <a aria-current="page" class="nav-link" href="{% url 'workdiagnozlikar' item.kodDoctor  item.icd  item.id %}"><font
             style="vertical-align: inherit;"> {{ item.icdGrDiagnoz }} </font></a>
+    {% endif %}
     {% endfor %}
     {% endblock %}
     {% endif %}
@@ -30,7 +35,7 @@
     {% else %}
     <a class="text-decoration-none" href="{% url 'addworkdiagnoz' %}">[ Додати ]</a>
     {% endif %}
-    <a class="text-decoration-none" href="{{backurl}}">[ Далі ]</a>
+    <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 </div>
 
 {% endblock %}

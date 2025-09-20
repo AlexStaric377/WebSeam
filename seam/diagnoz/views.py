@@ -674,7 +674,6 @@ def selectmedzaklad(request, statuszaklad):
             if settingsvar.kabinetitem == 'guest':
                 settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad, '',
                                                      'GET')
-
             else:
                 settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" +
                                                    settingsvar.icddiagnoz + "/0", '', 'GET')
@@ -744,27 +743,31 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
     settingsvar.gruplikar = []
     settingsvar.namemedzaklad = selected_name
     Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_kodzaklad + "/0", '', 'GET')
-    for item in Grupproflikar:
-        match selected_idstatus:
-            case "2":
-                settingsvar.gruplikar.append(item)
-            case "5":
-                likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '', 'GET')
-                for icdgrdiagnoz in settingsvar.grupDiagnoz:
-                    for likargrdz in likarGrupDiagnoz:
-                        if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
+    if settingsvar.kabinetitem == 'guest':
+        settingsvar.gruplikar = Grupproflikar
+    else:
+        for item in Grupproflikar:
+            match selected_idstatus:
+                case "2":
+                    settingsvar.gruplikar.append(item)
+                case "5":
+                    likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '',
+                                                'GET')
+                    for icdgrdiagnoz in settingsvar.grupDiagnoz:
+                        for likargrdz in likarGrupDiagnoz:
+                            if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
                                 selected_kodzaklad in icdgrdiagnoz['kodZaklad']):
-                            if len(settingsvar.gruplikar) > 0:
-                                apptru = False
-                                for itemgruplikar in settingsvar.gruplikar:
-                                    if itemgruplikar['kodDoctor'] != likargrdz['kodDoctor']:
-                                        apptru = False
-                                    else:
-                                        apptru = True
-                                if apptru == False: settingsvar.gruplikar.append(item)
-                            else:
-                                settingsvar.gruplikar.append(item)
-                            break
+                                if len(settingsvar.gruplikar) > 0:
+                                    apptru = False
+                                    for itemgruplikar in settingsvar.gruplikar:
+                                        if itemgruplikar['kodDoctor'] != likargrdz['kodDoctor']:
+                                            apptru = False
+                                        else:
+                                            apptru = True
+                                    if apptru == False: settingsvar.gruplikar.append(item)
+                                else:
+                                    settingsvar.gruplikar.append(item)
+                                break
 
     shablonlistlikar()
     json = ('IdUser:  ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
@@ -890,14 +893,35 @@ def saveselectlikar(pacient):
 def inputprofilpacient(request, selected_doctor):
     settingsvar.namelikar = ""
     settingsvar.mobtellikar = ""
-    settingsvar.kodDoctor = selected_doctor
+    if "DTR" in selected_doctor: settingsvar.kodDoctor = selected_doctor
     settingsvar.setintertview = True
-    CmdStroka = rest_api('/api/ApiControllerDoctor/' + selected_doctor + "/0/0", '', 'GET')
+    CmdStroka = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodDoctor + "/0/0", '', 'GET')
     if len(CmdStroka) > 0:
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         settingsvar.mobtellikar = CmdStroka['telefon']
         settingsvar.likar = CmdStroka
-        dateregistrationappointment(request)
+        if settingsvar.kabinetitem == 'guest':
+            likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
+                                        settingsvar.kodDoctor + '/0', '', 'GET')
+            iduser = funciduser()
+            backurl = 'receptprofillmedzaklad'
+            directdiagnoz = True
+            settingsvar.nawpage = 'receptprofillmedzaklad'
+
+            settingsvar.html = 'diagnoz/likarworkdiagnoz.html'
+            if len(likarGrupDiagnoz) > 0:
+                settingsvar.nextstepdata = {
+                    'iduser': iduser,
+                    'complaintlist': likarGrupDiagnoz,
+                    'backurl': backurl,
+                    'piblikar': settingsvar.namelikar + " т." + settingsvar.mobtellikar,
+                    'medzaklad': settingsvar.namemedzaklad,
+                    'icdgrup': '',
+                    'directdiagnoz': directdiagnoz,
+                    'listnull': False
+                }
+        else:
+            dateregistrationappointment(request)
     else:
         shablonselect(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
