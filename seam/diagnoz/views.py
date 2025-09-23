@@ -56,6 +56,7 @@ def reception(request):  # httpRequest
     settingsvar.pacient = {}
     settingsvar.setintertview = False
     settingsvar.kabinetitem = 'guest'
+    settingsvar.interviewcompl = False
     settingsvar.datereception = 'не встановлено'
     settingsvar.datedoctor = 'не встановлено'
     settingsvar.html = 'diagnoz/reception.html'
@@ -74,6 +75,7 @@ def pacient(request):  # httpRequest
         unloadlog(json)
         settingsvar.kabinet = 'pacient'
         settingsvar.setintertview = False
+        settingsvar.interviewcompl = False
         settingsvar.html = 'diagnoz/pacient.html'
         settingsvar.nextstepdata = {}
         settingsvar.likar = {}
@@ -95,6 +97,7 @@ def exitkabinet(request):
     settingsvar.setpostlikar = False
     settingsvar.setpost = False
     settingsvar.searchaccount = False
+    settingsvar.interviewcompl = False
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def likar(request):  # httpRequest
@@ -110,6 +113,7 @@ def likar(request):  # httpRequest
         settingsvar.html = 'diagnoz/likar.html'
         settingsvar.setintertview = False
         settingsvar.search = False
+        settingsvar.interviewcompl = False
         settingsvar.nextstepdata = {}
         settingsvar.pacient = {}
         settingsvar.datereception = 'не встановлено'
@@ -180,6 +184,7 @@ def cleanvars():
     interwievpacient = False
     settingsvar.kodProtokola = ""
     settingsvar.setintertview = False
+    settingsvar.interviewcompl = False
     return
 
 
@@ -191,6 +196,7 @@ def interwievcomplaint(request):
         match settingsvar.kabinet:
             case 'guest':
                 settingsvar.setpostlikar = False
+                settingsvar.interviewcompl = True
                 iduser = 'Реєстратура: ' + funciduser()
             case 'pacient' | 'interwiev' | 'likar' | 'likarinterwiev':
                 settingsvar.setpostlikar = True
@@ -671,12 +677,12 @@ def selectmedzaklad(request, statuszaklad):
                     if item['edrpou'] not in itemmedzaklad['edrpou']:
                         settingsvar.grupmedzaklad.append(item)
         case "5":
+            settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" +
+                                               settingsvar.icddiagnoz + "/0", '', 'GET')
             if settingsvar.kabinetitem == 'guest':
                 settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad, '',
                                                      'GET')
             else:
-                settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" +
-                                                   settingsvar.icddiagnoz + "/0", '', 'GET')
                 for item in settingsvar.grupDiagnoz:
                     medzaklad = rest_api('/api/MedicalInstitutionController/' + item['kodZaklad'] + '/0/0/0', '', 'GET')
                     if len(medzaklad) > 0:
@@ -717,6 +723,7 @@ def selectmedzaklad(request, statuszaklad):
 def receptprofillmedzaklad(request):
     if settingsvar.kabinetitem == 'likarinterwiev':
         settingsvar.setintertview = True
+
         medzaklad = rest_api('/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '', 'GET')
         settingsvar.namemedzaklad = medzaklad['name']
         settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
@@ -724,6 +731,7 @@ def receptprofillmedzaklad(request):
         saveselectlikar(settingsvar.pacient)
     else:
         status = "5"
+
         selectmedzaklad(request, status)
         json = (
                 'IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
@@ -743,7 +751,7 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
     settingsvar.gruplikar = []
     settingsvar.namemedzaklad = selected_name
     Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_kodzaklad + "/0", '', 'GET')
-    if settingsvar.kabinetitem == 'guest':
+    if settingsvar.interviewcompl == False and settingsvar.kabinet == 'guest':
         settingsvar.gruplikar = Grupproflikar
     else:
         for item in Grupproflikar:
@@ -900,7 +908,7 @@ def inputprofilpacient(request, selected_doctor):
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         settingsvar.mobtellikar = CmdStroka['telefon']
         settingsvar.likar = CmdStroka
-        if settingsvar.kabinetitem == 'guest':
+        if settingsvar.interviewcompl == False and settingsvar.kabinetitem == 'guest':
             likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
                                         settingsvar.kodDoctor + '/0', '', 'GET')
             iduser = funciduser()

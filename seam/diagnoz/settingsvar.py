@@ -74,3 +74,4 @@ directdiagnoz = False
 idinterview = ""
 select_idigrup = ""
 listGrupDiagnoz = []
+interviewcompl = False

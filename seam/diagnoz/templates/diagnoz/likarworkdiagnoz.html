@@ -16,7 +16,10 @@
     {% if listapinull %}
     <p>{{сontentnull}}</p>
     {% else %}
+    {% if directdiagnoz %}
+    {% else %}
     <h6>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
+    {% endif %}
     {% block list %}
     {% for item in complaintlist %}
     {% if directdiagnoz %}
