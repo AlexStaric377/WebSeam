@@ -75,3 +75,8 @@ idinterview = ""
 select_idigrup = ""
 listGrupDiagnoz = []
 interviewcompl = False
+formvisiting = ''
+setmonth = {'січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень',
+            'серпень', 'вересень', 'жовтень', 'листопад', 'грудень', }
+storkaweekday = ['понеділок', 'вівторок', 'середа', 'четверг', 'пятниця', 'субота', 'неділя']
+adrzaklad = ''

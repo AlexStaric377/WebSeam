@@ -17,13 +17,15 @@
     <p>{{сontentnull}}</p>
     {% else %}
     {% if directdiagnoz %}
+    <h6>Для перегляду профільних лікарень за напрямком необхідно натиснути на відповідний рядок</h6>
     {% else %}
     <h6>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
     {% endif %}
     {% block list %}
     {% for item in complaintlist %}
     {% if directdiagnoz %}
-    <a aria-current="page" class="nav-link" href=""><font style="vertical-align: inherit;">
+    <a aria-current="page" class="nav-link" href="{% url 'profillmedzaklad'  item.icd  %}"><font
+            style="vertical-align: inherit;">
         {{item.icdGrDiagnoz}} </font></a>
     {% else %}
     <a aria-current="page" class="nav-link" href="{% url 'workdiagnozlikar' item.kodDoctor  item.icd  item.id %}"><font

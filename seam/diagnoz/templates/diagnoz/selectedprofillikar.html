@@ -9,6 +9,8 @@
         <p>{{pacient}}</p>
         {% else %}
         <h4>{{iduser}}</h4>
+        <p>{{namedzaklad}}</p>
+        <p>{{adrdzaklad}}</p>
         {% endif %}
 
     </div>
@@ -18,9 +20,15 @@
     <h5> {{ compl }} </h5>
     {% block detalinglist %}
     {% for item in detalinglist %}
+    {% if directdiagnoz %}
+    <a aria-current="page" class="nav-link"
+       href=""><font style="vertical-align: inherit;">
+        {{item.name}} {{item.surname}} {{item.specialnoct}} {{item.telefon}}</font></a>
+    {% else %}
     <a aria-current="page" class="nav-link"
        href="{% url 'inputprofilpacient' item.kodDoctor  %}"><font style="vertical-align: inherit;">
         {{item.name}} {{item.surname}} {{item.specialnoct}} {{item.telefon}}</font></a>
+    {% endif %}
     {% endfor %}
     {% endblock %}
 

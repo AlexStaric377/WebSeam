@@ -76,3 +76,24 @@ class SearchPacient(forms.Form):
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
     telefon = forms.CharField(max_length=13, min_length=10, label="Телефон", widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': " +xxx xx xx xxx xx"}))
+
+
+# --- Форма реєестрації нового облікового запису для пацієнтів
+class Reestrvisitngdays(forms.Form):
+    Namemonth = [("січень", "січень"), ("лютий", "лютий"), ("березень", "березень"),
+                 ("квітень", "квітень"), ]
+    vivsitmonth = gender = forms.ChoiceField(choices=Namemonth, label="Місяць",
+                                             widget=forms.Select(attrs={'class': 'form-control'}))
+    begindays = forms.CharField(max_length=2, min_length=1, label="Перший день місяця", widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': "xx"}))
+    enddays = forms.CharField(max_length=2, min_length=1, label="Останній день місяця", widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': "xx"}))
+    begintimeofday = forms.CharField(max_length=2, min_length=1, label=" Час початку приймання (години)",
+                                     widget=forms.TextInput(
+                                         attrs={'class': 'form-control', 'placeholder': "xx"}))
+    endtimeofday = forms.CharField(max_length=2, min_length=1, label="Час закінчення приймання (години)",
+                                   widget=forms.TextInput(
+                                       attrs={'class': 'form-control', 'placeholder': "xx"}))
+    duration = forms.CharField(max_length=2, min_length=1, label="Тривалість одного приймання (хв.)",
+                               widget=forms.TextInput(
+                                   attrs={'class': 'form-control', 'placeholder': "xx"}))
