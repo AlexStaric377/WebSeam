@@ -135,7 +135,7 @@ def directiondiagnoz(request):
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: directiondiagnoz')
     unloadlog(json)
     settingsvar.directdiagnoz = True
-    settingsvar.receptitem = 'directdiagnoz'
+    settingsvar.receptitem = 'directiondiagnoz'
     listworkdiagnoz()
     settingsvar.nextstepdata['piblikar'] = ""
     settingsvar.nextstepdata['medzaklad'] = ""
@@ -656,11 +656,12 @@ def contentinterwiev(request):  # httpRequest
     if len(settingsvar.pacient) > 0:
         PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
     data = {
-        'compl': settingsvar.nametInterview,
+        'compl': 'Попередній діагноз: ' + settingsvar.nametInterview,
         'detalinglist': api,
         'iduser': iduser,
         'backurl': backurl,
-        'pacient': PacientName
+        'pacient': PacientName,
+
     }
     return render(request, settingsvar.html, data)
 
@@ -806,7 +807,7 @@ def shablonlistlikar():
     directdiagnoz = settingsvar.directdiagnoz
     if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'directiondiagnoz': backurl = 'backlikarworkdiagnoz'
     if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'receptprofillmedzaklad': backurl = 'receptprofillmedzaklad'
-    if settingsvar.receptitem == 'interwievcomplaint': directdiagnoz = False
+    if settingsvar.receptitem == 'interwievcomplaint' or settingsvar.receptitem == 'directiondiagnoz': directdiagnoz = False
 
     settingsvar.nextstepdata = {
         'iduser': iduser,
@@ -930,28 +931,34 @@ def inputprofilpacient(request, selected_doctor):
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         settingsvar.mobtellikar = CmdStroka['telefon']
         settingsvar.likar = CmdStroka
-        if settingsvar.receptitem != 'interwievcomplaint' and settingsvar.kabinetitem == 'guest':
-            likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
-                                        settingsvar.kodDoctor + '/0', '', 'GET')
-            iduser = funciduser()
-            backurl = 'receptprofillmedzaklad'
-            directdiagnoz = True
-            settingsvar.nawpage = 'receptprofillmedzaklad'
+        likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
+                                    settingsvar.kodDoctor + '/0', '', 'GET')
+        iduser = funciduser()
+        match settingsvar.receptitem:
+            case 'receptprofillmedzaklad' | 'directiondiagnoz':
 
-            settingsvar.html = 'diagnoz/likarworkdiagnoz.html'
-            if len(likarGrupDiagnoz) > 0:
-                settingsvar.nextstepdata = {
+                backurl = 'receptprofillmedzaklad'
+                directdiagnoz = True
+                settingsvar.nawpage = 'receptprofillmedzaklad'
+                if settingsvar.receptitem == 'receptprofillmedzaklad': settingsvar.html = 'diagnoz/likarworkdirection.html'
+                if settingsvar.receptitem == 'directiondiagnoz': settingsvar.html = 'diagnoz/likarworkdiagnoz.html'
+                if len(likarGrupDiagnoz) > 0:
+                    settingsvar.nextstepdata = {
                     'iduser': iduser,
                     'complaintlist': likarGrupDiagnoz,
                     'backurl': backurl,
                     'piblikar': settingsvar.namelikar + " т." + settingsvar.mobtellikar,
                     'medzaklad': settingsvar.namemedzaklad,
-                    'icdgrup': '',
                     'directdiagnoz': directdiagnoz,
-                    'listnull': False
-                }
-        else:
-            dateregistrationappointment(request)
+                        'listapinull': False,
+                        'сontentnull': ''
+                    }
+                else:
+                    settingsvar.nextstepdata = {}
+            case 'interwievcomplaint':
+                dateregistrationappointment(request)
+
+
     else:
         shablonselect(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -1804,6 +1811,7 @@ def nextprofilinterview():
     depend = rest_api('api/DependencyDiagnozController/' + '0/' + settingsvar.protokol + '/0', '', 'GET')
     recommend = rest_api('api/RecommendationController/' + depend['kodRecommend'] + '/0', '', 'GET')
     diagnoz = rest_api('api/DiagnozController/' + depend['kodDiagnoz'] + '/0/0', '', 'GET')
+    settingsvar.namediagnoz = 'Попередній діагноз: ' + diagnoz['nameDiagnoza']
     settingsvar.html = 'diagnoz/profilinterview.html'
     shablonpacient(settingsvar.pacient)
     settingsvar.nextstepdata['namepacient'] = 'Пацієнт:        ' + PacientName
