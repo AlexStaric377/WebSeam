@@ -807,7 +807,7 @@ def shablonlistlikar():
     directdiagnoz = settingsvar.directdiagnoz
     if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'directiondiagnoz': backurl = 'backlikarworkdiagnoz'
     if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'receptprofillmedzaklad': backurl = 'receptprofillmedzaklad'
-    if settingsvar.receptitem == 'interwievcomplaint' or settingsvar.receptitem == 'directiondiagnoz': directdiagnoz = False
+    if settingsvar.receptitem == 'directiondiagnoz': directdiagnoz = False
 
     settingsvar.nextstepdata = {
         'iduser': iduser,
