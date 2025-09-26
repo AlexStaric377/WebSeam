@@ -7,6 +7,10 @@
 </div>
 
 <div class="container-fluid">
+
+    {% if error %}
+    <p>{{profil}}</p>
+    {% else %}
     <table>
         <thead>
         <tr>
@@ -27,6 +31,7 @@
         {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 </div>
 <a class="text-decoration-none" href="{% url 'addvisitingdays' %}">[ Додати ]</a>
 <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>

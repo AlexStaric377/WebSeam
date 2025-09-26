@@ -81,7 +81,9 @@ class SearchPacient(forms.Form):
 # --- Форма реєестрації нового облікового запису для пацієнтів
 class Reestrvisitngdays(forms.Form):
     Namemonth = [("січень", "січень"), ("лютий", "лютий"), ("березень", "березень"),
-                 ("квітень", "квітень"), ]
+                 ("квітень", "квітень"), ("травень", "травень"), ("червень", "червень"),
+                 ("липень", "липень"), ("серпень", "серпень"), ("вересень", "вересень"),
+                 ("жовтень", "жовтень"), ("листопад", "листопад"), ("грудень", "грудень"), ]
     vivsitmonth = gender = forms.ChoiceField(choices=Namemonth, label="Місяць",
                                              widget=forms.Select(attrs={'class': 'form-control'}))
     begindays = forms.CharField(max_length=2, min_length=1, label="Перший день місяця", widget=forms.TextInput(

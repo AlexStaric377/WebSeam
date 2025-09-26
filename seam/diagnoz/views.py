@@ -54,6 +54,7 @@ def reception(request):  # httpRequest
     json = ('IdUser: guest,' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: reception')
     unloadlog(json)
+    settingsvar.receptitem = ""
     settingsvar.kabinet = 'guest'
     settingsvar.likar = {}
     settingsvar.pacient = {}
@@ -90,6 +91,10 @@ def pacient(request):  # httpRequest
 # --- Вийти з кабінету
 def exitkabinet(request):
     cleanvars()
+    settingsvar.setpostlikar = False
+    settingsvar.likar = {}
+    settingsvar.pacient = {}
+    settingsvar.formsearch = {}
     settingsvar.html = 'diagnoz/index.html'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -130,6 +135,7 @@ def directiondiagnoz(request):
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: directiondiagnoz')
     unloadlog(json)
     settingsvar.directdiagnoz = True
+    settingsvar.receptitem = 'directdiagnoz'
     listworkdiagnoz()
     settingsvar.nextstepdata['piblikar'] = ""
     settingsvar.nextstepdata['medzaklad'] = ""
@@ -180,11 +186,9 @@ def cleanvars():
     settingsvar.interviewcompl = False
     settingsvar.kabinet = ''
     settingsvar.kabinetitem = ''
-    settingsvar.likar = {}
-    settingsvar.pacient = {}
-    settingsvar.formsearch = {}
+
     settingsvar.nextstepdata = {}
-    settingsvar.setpostlikar = False
+
     settingsvar.setpost = False
     settingsvar.searchaccount = False
     return
@@ -196,6 +200,7 @@ def interwievcomplaint(request):
     else:
         cleanvars()
         settingsvar.directdiagnoz == False
+        settingsvar.receptitem = 'interwievcomplaint'
         settingsvar.kabinet = "guest"
         iduser = funciduser()
         match settingsvar.kabinet:
@@ -736,7 +741,9 @@ def receptprofillmedzaklad(request):
         saveselectlikar(settingsvar.pacient)
     else:
         status = "5"
-
+        if settingsvar.kabinet == 'guest':
+            settingsvar.directdiagnoz = True
+            if settingsvar.receptitem != 'interwievcomplaint': settingsvar.receptitem = 'receptprofillmedzaklad'
         selectmedzaklad(request, status)
         json = (
                 'IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
@@ -796,8 +803,11 @@ def shablonlistlikar():
     settingsvar.html = 'diagnoz/selectedprofillikar.html'
     iduser = funciduser()
     backurl = funcbakurl()
-    if settingsvar.directdiagnoz == True: backurl = 'backlikarworkdiagnoz'
     directdiagnoz = settingsvar.directdiagnoz
+    if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'directiondiagnoz': backurl = 'backlikarworkdiagnoz'
+    if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'receptprofillmedzaklad': backurl = 'receptprofillmedzaklad'
+    if settingsvar.receptitem == 'interwievcomplaint': directdiagnoz = False
+
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': 'Перелік профільних лікарів',
@@ -920,7 +930,7 @@ def inputprofilpacient(request, selected_doctor):
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         settingsvar.mobtellikar = CmdStroka['telefon']
         settingsvar.likar = CmdStroka
-        if settingsvar.interviewcompl == False and settingsvar.kabinetitem == 'guest':
+        if settingsvar.receptitem != 'interwievcomplaint' and settingsvar.kabinetitem == 'guest':
             likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
                                         settingsvar.kodDoctor + '/0', '', 'GET')
             iduser = funciduser()
@@ -2287,19 +2297,22 @@ def likarvisitngdays(request):  # httpRequest
 def listlikarvisitngdays():
     iduser = funciduser()
     backurl = funcbakurl()
+    error = False
+    profil = ''
     settingsvar.html = 'diagnoz/likarvisitngdays.html'
     settingsvar.listapi = rest_api('api/VisitingDaysController/' + settingsvar.kodDoctor + '/0', '', 'GET')
-    if len(settingsvar.listapi) > 0:
-
-        settingsvar.nextstepdata = {
+    if len(settingsvar.listapi) == 0:
+        error = True
+        profil = 'Шановний користувач! За вашим запитом не сформовано розклад роботи  .'
+    settingsvar.nextstepdata = {
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
             'backurl': backurl,
             'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
-            'medzaklad': settingsvar.namemedzaklad
-        }
-    else:
-        errorprofil('Шановний користувач! За вашим запитом не сформовано розклад роботи  .')
+        'medzaklad': settingsvar.namemedzaklad,
+        'error': error,
+        'profil': profil
+    }
     return
 
 
@@ -2310,13 +2323,12 @@ def addvisitingdays(request):
     if request.method == 'POST':
         form = Reestrvisitngdays(request.POST)
         settingsvar.formaccount = form.data
-        index = 1
-        for itmonth in settingsvar.setmonth:
-            if settingsvar.formaccount['vivsitmonth'] == itmonth:
-                numbermonth = index
+
+        for key, value in settingsvar.setmonth:
+            if key == settingsvar.formaccount['vivsitmonth']:
+                numbermonth = value
                 break
-            index = index + 1
-        time_step = timedelta(hours=int(settingsvar.formaccount['duration']))
+        time_step = timedelta(minutes=int(settingsvar.formaccount['duration']))
         for itemdays in range(int(settingsvar.formaccount['begindays']), int(settingsvar.formaccount['enddays'])):
 
             date_format = "%Y-%m-%d %H:%M:%S"
@@ -2325,29 +2337,35 @@ def addvisitingdays(request):
             year = dateyear.year
             date_string = str(year) + "-" + str(numbermonth) + "-" + str(
                 itemdays) + " 00:00:00"  # "2023-09-23 00:00:00"
-            dateVizita = str(itemdays) + "." + str(numbermonth) + "." + str(year)
+            nawdays = str(itemdays)
+            if itemdays < 10: nawdays = "0" + nawdays
+            nawmonth = str(numbermonth)
+            if numbermonth < 10: nawmonth = "0" + nawmonth
+            dateVizita = nawdays + "." + nawmonth + "." + str(year)
             dtvisit = datetime.strptime(dateVizita, format_date)
             ind = dtvisit.weekday()
             if ind != 5 and ind != 6:
                 DaysOfTheWeek = settingsvar.storkaweekday[ind]
                 datework = datetime.strptime(date_string, date_format)
+                iso_date = datework.isoformat()
                 time_to_add = timedelta(hours=int(settingsvar.formaccount['begintimeofday']))
-
-                for itemtime in range(int(settingsvar.formaccount['begintimeofday']),
-                                      int(settingsvar.formaccount['endtimeofday'])):
-                    datetimebeginvisit = datework + time_to_add
-                    time_to_add = time_to_add + time_step
-                    timeVizita = datetimebeginvisit.strftime("%H:%M:%S")
-                    json = {'id': 0,
+                time_to_end = timedelta(hours=int(settingsvar.formaccount['endtimeofday']))
+                for itemtime in range(int(settingsvar.formaccount['begintimeofday']), 24):
+                    if time_to_end >= time_to_add:
+                        datetimebeginvisit = dtvisit + time_to_add
+                        time_to_add = time_to_add + time_step
+                        timeVizita = datetimebeginvisit.strftime("%H:%M:%S")
+                        json = {'id': 0,
                             'KodDoctor': settingsvar.kodDoctor,
                             'DaysOfTheWeek': DaysOfTheWeek,
                             'DateVizita': dateVizita,
                             'TimeVizita': timeVizita,
                             'OnOff': 'Так',
-                            'DateWork': datework,
+                                'DateWork': iso_date,
                             }
-                    # --- записати в Бд введенний профіль
-                    visitingdays = rest_api('/api/VisitingDaysController/', json, 'POST')
+                        # --- записати в Бд введенний профіль
+                        visitingdays = rest_api('/api/VisitingDaysController/', json, 'POST')
+        listlikarvisitngdays()
     else:
         settingsvar.formvisiting = Reestrvisitngdays()
         settingsvar.nextstepdata = {
@@ -2357,8 +2375,7 @@ def addvisitingdays(request):
             'medzaklad': settingsvar.namemedzaklad,
 
         }
-
-    settingsvar.html = 'diagnoz/addvisitingdays.html'
+        settingsvar.html = 'diagnoz/addvisitingdays.html'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # --- Робочі напрямки
