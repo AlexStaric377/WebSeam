@@ -186,10 +186,7 @@ def cleanvars():
     settingsvar.interviewcompl = False
     settingsvar.kabinet = ''
     settingsvar.kabinetitem = ''
-
     settingsvar.nextstepdata = {}
-
-    settingsvar.setpost = False
     settingsvar.searchaccount = False
     return
 
@@ -808,6 +805,7 @@ def shablonlistlikar():
     if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'directiondiagnoz': backurl = 'backlikarworkdiagnoz'
     if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'receptprofillmedzaklad': backurl = 'receptprofillmedzaklad'
     if settingsvar.receptitem == 'directiondiagnoz': directdiagnoz = False
+    if settingsvar.kabinet == 'interwiev': directdiagnoz = True
 
     settingsvar.nextstepdata = {
         'iduser': iduser,
@@ -955,7 +953,7 @@ def inputprofilpacient(request, selected_doctor):
                     }
                 else:
                     settingsvar.nextstepdata = {}
-            case 'interwievcomplaint':
+            case 'interwievcomplaint' | 'pacientinterwiev':
                 dateregistrationappointment(request)
 
 
@@ -1654,6 +1652,8 @@ def profilpacient(request):  # httpRequest
     cleanvars()
     settingsvar.nawpage = 'pacientprofil'
     settingsvar.kabinetitem = 'profil'
+    settingsvar.kabinet = 'pacient'
+    iduser = funciduser()
     if settingsvar.setpost == False:
         accountuser(request)
         settingsvar.initialprofil = True
@@ -1665,10 +1665,9 @@ def profilpacient(request):  # httpRequest
         else:
             settingsvar.readprofil = True
             settingsvar.initialprofil = True
-            iduser = funciduser()
-            profilinfopacient()
+        profilinfopacient()
     json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
-            datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: profilpacient')
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: profilpacient')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -1689,8 +1688,8 @@ def pacientinterwiev(request):  # httpRequest
         settingsvar.nawpage = 'receptinterwiev'
         settingsvar.kabinetitem = 'interwiev'
         settingsvar.kabinet = 'interwiev'
+        settingsvar.receptitem = 'pacientinterwiev'
         if settingsvar.setpost == False:
-            #            testaccountuser(request)
             accountuser(request)
         else:
             shablonlikar(settingsvar.pacient)
@@ -1870,10 +1869,10 @@ def pacientlistinterwiev(request):  # httpRequest
     else:
         cleanvars()
         settingsvar.readprofil = False
-        settingsvar.backurl = funcbakurl()
         settingsvar.nawpage = 'pacientlistinterwiev'
         settingsvar.kabinet = 'listinterwiev'
         settingsvar.kabinetitem = 'listinterwiev'
+        settingsvar.backurl = funcbakurl()
         if settingsvar.setpost == False:
             accountuser(request)
         else:
@@ -1911,10 +1910,10 @@ def pacientreceptionlikar(request):  # httpRequest
     else:
         cleanvars()
         settingsvar.readprofil = False
-        settingsvar.backurl = funcbakurl()
         settingsvar.nawpage = 'pacientreceptionlikar'
         settingsvar.kabinet = 'listreceptionlikar'
         settingsvar.kabinetitem = 'listreceptionlikar'
+        settingsvar.backurl = funcbakurl()
         if settingsvar.setpost == False:
             accountuser(request)
         else:
