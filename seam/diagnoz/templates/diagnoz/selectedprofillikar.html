@@ -22,16 +22,40 @@
     <h6>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне прізвище</h6>
     {% endif %}
     {% block list %}
-    {% for item in detalinglist %}
-    {% if directdiagnoz %}
-    <a aria-current="page" class="nav-link"
-       href="{% url 'inputprofilpacient' item.kodDoctor  %}"><font style="vertical-align: inherit;">
-        {{item.name}} {{item.surname}} {{item.specialnoct}} {{item.telefon}}</font></a>
-    {% else %}
-    <a aria-current="page" class="nav-link" href=""><font style="vertical-align: inherit;">
-        {{item.name}} {{item.surname}} {{item.specialnoct}} {{item.telefon}}</font></a>
-    {% endif %}
-    {% endfor %}
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 15%;"> Ім'я, прізвище</th>
+            <th style="width: 10%;"> Телефон</th>
+            <th> Професійна діяльність</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for item in detalinglist %}
+        <tr>
+            {% if directdiagnoz %}
+            <td><a aria-current="page" class="nav-link"
+                   href="{% url 'inputprofilpacient' item.kodDoctor  %}"><font style="vertical-align: inherit;">
+                {{item.name}} {{item.surname}} </font></a></td>
+            <td><a aria-current="page" class="nav-link"
+                   href="{% url 'inputprofilpacient' item.kodDoctor  %}"><font style="vertical-align: inherit;">
+                {{item.telefon}}</font></a></td>
+            <td><a aria-current="page" class="nav-link"
+                   href="{% url 'inputprofilpacient' item.kodDoctor  %}"><font style="vertical-align: inherit;">
+                {{item.specialnoct}} {{item.resume}}</font></a></td>
+            {% else %}
+            <td><a aria-current="page" class="nav-link"
+                   href=""><font style="vertical-align: inherit;"> {{item.name}} {{item.surname}} </font></a></td>
+            <td><a aria-current="page" class="nav-link"
+                   href=""><font style="vertical-align: inherit;"> {{item.telefon}}</font></a></td>
+            <td><a aria-current="page" class="nav-link"
+                   href=""><font style="vertical-align: inherit;"> {{item.specialnoct}} {{item.resume}}</font></a></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
     {% endblock %}
 </div>
 <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
