@@ -5,16 +5,30 @@
 <div class="container-fluid">
     {% include 'diagnoz/shablonzaglinterview.html' %}
     <h6> {{ compl }} </h6>
+    <div class="row row-cols-auto">
+        <div class="col">
     {% block featurelist %}
-    {% for item in featurelist %}
-    <a aria-current="page" class="nav-link"
-       href="{% url 'featurespisok' item.keyComplaint item.keyFeature %}"><font
-            style="vertical-align: inherit;">{{item.name}}</font></a>
-
-    {% endfor %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Деталі прояву</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in featurelist %}
+                <tr>
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'featurespisok' item.keyComplaint item.keyFeature %}"><font
+                            style="vertical-align: inherit;">{{item.name}}</font></a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
     {% endblock %}
-</div>
+        </div>
 {% endblock %}
+    </div>
+</div>
 <div style="display: inline-block">
     <p></p>
     <a class="text-decoration-none text-reset" href="{% url 'receptinterwiev' %}">

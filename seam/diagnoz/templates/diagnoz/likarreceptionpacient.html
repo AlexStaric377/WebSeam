@@ -10,7 +10,9 @@
 
 <div class="container-fluid">
     <h6>Для перегляду деталей обстеження необхідного пацієнта натисніть на відповідний рядок</h6>
-    <table>
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table table-striped">
         <thead>
         <tr>
             <th>Дата візиту</th>
@@ -34,6 +36,8 @@
     {% endfor %}
         </tbody>
     </table>
+        </div>
+    </div>
 </div>
 {% if remove %}
 <a class="text-decoration-none" href="{% url removefunc %}">[ Видалити ]</a>

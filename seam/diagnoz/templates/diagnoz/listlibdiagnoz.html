@@ -9,16 +9,32 @@
     </div>
 </nav>
 <div class="container-fluid">
-    <p>Бібліотека робочих напрямків</p>
+
     <h6>Для перегляду переліку діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
+    <div class="row row-cols-auto">
+        <div class="col">
     {% block list %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Бібліотека робочих напрямків</th>
+                </tr>
+                </thead>
+                <tbody>
     {% for item in complaintlist %}
-    <a aria-current="page" class="nav-link" href="{% url 'libdiagnoz'  item.icdGrDiagnoz  %}"><font
-            style="vertical-align: inherit;"> {{ item.icdGrDiagnoz }} </font></a>
+    <tr>
+        <td><a aria-current="page" class="nav-link" href="{% url 'libdiagnoz'  item.icdGrDiagnoz  %}"><font
+                style="vertical-align: inherit;"> {{ item.icdGrDiagnoz }} </font></a></td>
+    </tr>
 
     {% endfor %}
+                </tbody>
+            </table>
     {% endblock %}
+        </div>
+    </div>
 </div>
+
 <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 
 {% endblock %}

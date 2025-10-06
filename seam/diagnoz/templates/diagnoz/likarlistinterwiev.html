@@ -9,7 +9,9 @@
 
 <div class="container-fluid">
     <h6>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</h6>
-    <table>
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table table-striped">
         <thead>
         <tr>
             <th>Дата опитування</th>
@@ -33,6 +35,8 @@
         {% endfor %}
         </tbody>
     </table>
+        </div>
+    </div>
 </div>
 <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 {% endblock %}

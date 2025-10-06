@@ -14,16 +14,43 @@
 </nav>
 <div class="container-fluid">
     <h6>Для вибору дати та часу співбесіди з лікарем натисніть на відповідний рядок</h6>
-    {% block list %}
+    <div class="row row-cols-auto">
+        <div class="col">
+
+            {% block list %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>День неділі</th>
+                    <th>Дата прийому</th>
+                    <th>Час прийому</th>
+                    <th>Прийом дійсний</th>
+                </tr>
+                </thead>
+                <tbody>
     {% for item in complaintlist %}
     {% if item.onOff == "Так" %}
-    <a aria-current="page" class="nav-link"
+    <tr>
+        <td><a aria-current="page" class="nav-link"
        href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
-            style="vertical-align: inherit;"> {{ item.daysOfTheWeek }} : {{ item.dateVizita }} :
-        {{item.timeVizita}}</font></a>
+                style="vertical-align: inherit;"> {{ item.daysOfTheWeek }} </font></a></td>
+        <td><a aria-current="page" class="nav-link"
+               href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
+                style="vertical-align: inherit;"> {{ item.dateVizita }} </font></a></td>
+        <td><a aria-current="page" class="nav-link"
+               href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
+                style="vertical-align: inherit;"> {{item.timeVizita}}</font></a></td>
+        <td><a aria-current="page" class="nav-link"
+               href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
+                style="vertical-align: inherit;"> {{item.onOff }}</font></a></td>
+    </tr>
     {% endif %}
     {% endfor %}
+                </tbody>
+            </table>
     {% endblock %}
+        </div>
+    </div>
 </div>
 <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 {% endblock %}

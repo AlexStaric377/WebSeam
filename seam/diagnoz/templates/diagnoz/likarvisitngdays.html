@@ -11,7 +11,9 @@
     {% if error %}
     <p>{{profil}}</p>
     {% else %}
-    <table>
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table table-striped">
         <thead>
         <tr>
             <th>День неділі</th>
@@ -31,6 +33,8 @@
         {% endfor %}
         </tbody>
     </table>
+        </div>
+    </div>
     {% endif %}
 </div>
 <a class="text-decoration-none" href="{% url 'addvisitingdays' %}">[ Додати ]</a>

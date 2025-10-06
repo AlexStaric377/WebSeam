@@ -1,6 +1,11 @@
 {% extends 'diagnoz/shablonmeny.html' %}
-
+{% block title %}SEAM{% endblock %}
 {% block nav %}
+<div class="col">
+    <img alt="" class=" d-inline-block align-text-middle" height="35" src="/static/diagnoz/img/kaducey.ico"
+         width="30">
+    <p>Диференційна діагностика стану нездужання людини- CEAM</p>
+</div>
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <ul class="navbar-nav">
@@ -8,8 +13,7 @@
                 <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
                    id="navbarDropdownMenuLink" role="button">
                     <img alt="" class="d-inline-block align-text-middle" height="30" src="/static/diagnoz/img/meny.png"
-                         width="30"> Навігація
-                </a>
+                         width="30"> Навігація </a>
                 <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
                     <li><a class="dropdown-item" href="{% url 'home' %}">Головна</a></li>
                     <li><a class="dropdown-item" href="{% url 'reception' %}">Реєстратура</a></li>
@@ -19,40 +23,48 @@
             </li>
         </ul>
     </div>
-    <div class="col">
-        <h4>Кабінет пацієнта</h4>
-    </div>
-    <div class="navbar-nav">
-        <ul class="navbar-nav mr-auto flex-column">
-            <li class="nav-item active">
-                <a aria-current="page" class="nav-link" href="{% url 'profilpacient' %}"><font
-                        style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Профіль</font></font></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'pacientinterwiev' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Опитування</font></font></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'pacientlistinterwiev' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Перегляд опитувань</font></font></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'pacientreceptionlikar' %}"><font
-                        style="vertical-align: inherit;"><font style="vertical-align: inherit;">Запис на обстеження до
-                    лікаря</font></font></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'pacientstanhealth' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Тиск, пульс, аналізи</font></font></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'exitkabinet' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Вийти з кабінету</font></font></a>
-            </li>
-        </ul>
-    </div>
 
+    <div class="row row-cols-auto">
+    <div class="col">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Кабінет пацієнта</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><a aria-current="page" class="nav-link" href="{% url 'profilpacient' %}"><font
+                        style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Профіль</font></font></a></td>
+            </tr>
+            <tr>
+                <td><a class="nav-link" href="{% url 'pacientinterwiev' %}"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Опитування</font></font></a></td>
+            </tr>
+            <tr>
+                <td><a class="nav-link" href="{% url 'pacientlistinterwiev' %}"><font
+                        style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Перегляд опитувань</font></font></a></td>
+            </tr>
+            <tr>
+                <td><a class="nav-link" href="{% url 'pacientreceptionlikar' %}"><font
+                        style="vertical-align: inherit;"><font style="vertical-align: inherit;">Запис на обстеження до
+                    лікаря</font></font></a></td>
+            </tr>
+            <tr>
+                <td><a class="nav-link" href="{% url 'pacientstanhealth' %}"><font
+                        style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Тиск, пульс, аналізи</font></font></a></td>
+            </tr>
+            <tr>
+                <td><a class="nav-link" href="{% url 'exitkabinet' %}"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Вийти з кабінету</font></font></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
 </nav>
 
 {% endblock %}

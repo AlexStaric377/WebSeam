@@ -5,13 +5,28 @@
 <div class="container-fluid">
     {% include 'diagnoz/shablonzaglinterview.html' %}
     <h6> {{ compl }} </h6>
+    <div class="row row-cols-auto">
+        <div class="col">
     {% block detalinglist %}
-    {% for item in detalinglist %}
-    <a aria-current="page" class="nav-link" href="{% url 'selectgrdetaling' item.kodDetailing%}"><font
-            style="vertical-align: inherit;">{{item.nameGrDetailing}}</font></a>
-
-    {% endfor %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Деталі прояву</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in detalinglist %}
+                <tr>
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'selectgrdetaling' item.kodDetailing%}"><font
+                            style="vertical-align: inherit;">{{item.nameGrDetailing}}</font></a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
     {% endblock %}
+        </div>
+    </div>
 </div>
 <div style="display: inline-block">
     <p></p>

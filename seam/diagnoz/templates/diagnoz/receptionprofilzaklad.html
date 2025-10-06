@@ -16,13 +16,28 @@
 </nav>
 <div class="container-fluid">
     <h5> {{ compl }} </h5>
+    <div class="row row-cols-auto">
+        <div class="col">
     {% block detalinglist %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Характер прояву</th>
+                </tr>
+                </thead>
+                <tbody>
     {% for item in detalinglist %}
-    <a aria-current="page" class="nav-link"
+    <tr>
+        <td><a aria-current="page" class="nav-link"
        href="{% url 'selectdprofillikar' item.kodZaklad  item.idStatus  item.name%}"><font
-            style="vertical-align: inherit;">{{item.name}}</font></a>
+                style="vertical-align: inherit;">{{item.name}}</font></a></td>
+    </tr>
     {% endfor %}
+                </tbody>
+            </table>
     {% endblock %}
+        </div>
+    </div>
     <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 </div>
 
