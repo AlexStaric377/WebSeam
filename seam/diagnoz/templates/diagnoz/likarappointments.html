@@ -24,7 +24,6 @@
                     <th>День неділі</th>
                     <th>Дата прийому</th>
                     <th>Час прийому</th>
-                    <th>Прийом дійсний</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -40,9 +39,7 @@
         <td><a aria-current="page" class="nav-link"
                href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
                 style="vertical-align: inherit;"> {{item.timeVizita}}</font></a></td>
-        <td><a aria-current="page" class="nav-link"
-               href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
-                style="vertical-align: inherit;"> {{item.onOff }}</font></a></td>
+
     </tr>
     {% endif %}
     {% endfor %}

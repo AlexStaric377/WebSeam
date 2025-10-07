@@ -1,29 +1,91 @@
 {% extends 'diagnoz/shablonpage.html' %}
 {% block content %}
+
 <div class="container-fluid">
+    <div class="col">
     {% include 'diagnoz/shablonzaglinterview.html' %}
     <a class="text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
-    <h6>Перелік попередніх діагнозів</h6>
+    </div>
+</div>
     {% block detalinglist %}
-    {% for item in detalinglist %}
-    <a aria-current="page" class="nav-link"
-       href="{% url 'selectdiagnoz' item.kodProtokola item.nametInterview  %}"><font
-            style="vertical-align: inherit;">{{item.nametInterview}}</font></a>
-    {% endfor %}
+<div class="row row-cols-auto">
+    <div class="col">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Перелік попередніх діагнозів</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in detalinglist %}
+            <tr>
+                <td><a aria-current="page" class="nav-link"
+                       href="{% url 'selectdiagnoz' item.kodProtokola item.nametInterview  %}"><font
+                        style="vertical-align: inherit;">{{item.nametInterview}}</font></a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
     {% endblock %}
-    <h5> Назва попереднього діагнозу {{compl}} </h5>
-    <p><h6>Короткий опис діагнозу:</h6>
-    <p> {{opis}} </p>
-    <p><h6>Посилання на опис в інтернеті:</h6>
-    <p> {{http}} </p>
-    <p><h6>Рекомендації щодо подальших дій:</h6>
-    <p> {{rekomendaciya}} </p>
-    <p>
-        <a class="text-decoration-none " href="{% url 'receptfamilylikar' %}">[ Записатися до сімейного лікаря ]</a><br>
-        <a class="text-decoration-none " href="{% url 'receptprofillmedzaklad' %}">[ Записатися до профільного лікаря
-            ]</a><br>
-        <a class="text-decoration-none " href="{% url 'savediagnoz' %}">[ Зберегти опитування ]</a><br>
-        <a class="text-decoration-none " href="{% url 'receptinterwiev' %}">[ Почати з початку ]</a>
+
+<div class="row row-cols-auto">
+    <div class="col">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Назва попереднього діагнозу {{compl}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><p><h6>Короткий опис діагнозу:</h6></td>
+            </tr>
+            <tr>
+                <td><p> {{opis}} </p></td>
+            </tr>
+            <tr>
+                <td><p><h6>Посилання на опис в інтернеті:</h6></td>
+            </tr>
+            <tr>
+                <td><p> {{http}} </p></td>
+            </tr>
+            <tr>
+                <td><p><h6>Рекомендації щодо подальших дій:</h6></td>
+            </tr>
+            <tr>
+                <td><p> {{rekomendaciya}} </p></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row row-cols-auto">
+        <div class="col">
+
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td><a class="text-decoration-none " href="{% url 'receptfamilylikar' %}">[ Записатися до сімейного
+                        лікаря ]</a></td>
+                </tr>
+                <tr>
+                    <td><a class="text-decoration-none " href="{% url 'receptprofillmedzaklad' %}">[ Записатися до
+                        профільного лікаря ]</a></td>
+                </tr>
+                <tr>
+                    <td><a class="text-decoration-none " href="{% url 'savediagnoz' %}">[ Зберегти опитування ]</a></td>
+                </tr>
+                <tr>
+                    <td><a class="text-decoration-none " href="{% url 'receptinterwiev' %}">[ Почати з початку ]</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

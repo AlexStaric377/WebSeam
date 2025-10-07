@@ -5,15 +5,42 @@
     <h6>{{medzaklad}}</h6>
 </div>
 <div class="container-fluid">
-    <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль лікаря</font></font>
-    </h4>
-    <h6>{{name}}</h6>
-    <h6>{{specialnoct}}</h6>
-    <h6>{{uriwebDoctor}}</h6>
-    <h6>{{telefon}}</h6>
-    <h6>{{email}}</h6>
-    <a class="text-decoration-none" href="{% url 'likarnapryamok' %}">{{napryamok}}</a>
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Профіль лікаря</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><p>{{name}}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{specialnoct}}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{uriwebDoctor}} </p></td>
+                </tr>
+                <tr>
+                    <td><p>{{telefon}}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{email}}</p></td>
+                </tr>
+                <tr>
+                    <td><a class="text-decoration-none" href="{% url 'likarnapryamok' %}">{{napryamok}}</a></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
+<div style="display: inline-block">
 <a class="text-decoration-none" href="{% url 'profillikarform' %}">[ Корегувати ]</a>
 <a class="text-decoration-none" href="{% url 'likar' %}">[ Далі ]</a>
+</div>
 {% endblock %}

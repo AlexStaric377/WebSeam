@@ -2,31 +2,59 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid">
     <div class="col">
         {% if likar %}
         <p>{{piblikar}}</p>
-        <p>{{pacient}}</p>
+
         {% else %}
-        <h6>{{iduser}}</h6>
+        <!---        <h6>{{iduser}}</h6> --->
         {% endif %}
-        <a href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
+        <a class="text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
     </div>
-</nav>
-<div class="container-fluid">
-    <p></p>
-    <h6>{{ namepacient }} </h6>
-    <h6>{{ namelikar }} </h6>
-    <h6>{{ dateinterv }}</h6>
-    <h6> {{ datereception }} </h6>
-    <h6> {{ diagnoz }} </h6>
-    <h6> {{ recomendaciya }} </h6>
-    <h6> {{ urlinet }} </h6>
 </div>
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Профіль пацієнта</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><p>{{ namepacient }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ namelikar }} </p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ dateinterv }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ datereception }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ diagnoz }} </p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ recomendaciya }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ urlinet }} </p></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<div style="display: inline-block">
     {% if remove %}
     <a class="text-decoration-none" href="{% url removefunc %}">[ Видалити ]</a>
     {% endif %}
     <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
-</nav>
+</div>
 {% endblock %}

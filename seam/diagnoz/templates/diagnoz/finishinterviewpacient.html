@@ -1,24 +1,53 @@
 {% extends 'diagnoz/shablonpage.html' %}
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid">
     <div class="col">
         <h6>{{iduser}}</h6>
-        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
+        <a class="bg-white text-primary text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування
+            ]</a>
     </div>
-</nav>
+</div>
+
 <div class="container-fluid">
-    <h6> {{ pacient }} </h6>
-    <h6>{{ shapka }}</h6>
-    <h6> {{ medzaklad }} </h6>
-    <h6> {{ likar }} </h6>
-    <h6> {{ datereception }} </h6>
-    <h6> {{ diagnoz }} </h6>
-    <h6> {{ podval }} </h6>
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <!---                <th scope="col">Кабінет лікаря</th> --->
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><p>{{ pacient }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ shapka }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ medzaklad }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ likar }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ datereception }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ diagnoz }}</p></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div style="display: inline-block">
-        <p></p>
-        <a class="text-decoration-none text-reset" href="{% url 'saveraceptionlikar' %}">[ Так ] </a>
-        <a class="text-decoration-none text-reset" href="{% url backurl %}"> [ Ні ]</a>
+
+        <a>{{ podval }}</a>
+        <a class="text-decoration-none bg-white text-primary " href="{% url 'saveraceptionlikar' %}">[ Так ] </a>
+        <a class="text-decoration-none bg-white text-primary " href="{% url backurl %}"> [ Ні ]</a>
     </div>
 </div>
 

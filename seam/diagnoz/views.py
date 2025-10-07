@@ -41,12 +41,12 @@ def rest_api(api_url, data, method):
 #    return
 
 def index(request):  # httpRequest
-
+    exitkab()
     return render(request, 'diagnoz/index.html')
 
 
 def glavmeny(request):
-    cleanvars()
+    exitkab()
     return render(request, 'diagnoz/glavmeny.html')
 
 def reception(request):  # httpRequest
@@ -89,12 +89,18 @@ def pacient(request):  # httpRequest
 
 
 # --- Вийти з кабінету
-def exitkabinet(request):
+def exitkab():
     cleanvars()
     settingsvar.setpostlikar = False
+    settingsvar.setpost = False
     settingsvar.likar = {}
     settingsvar.pacient = {}
     settingsvar.formsearch = {}
+    return
+
+
+def exitkabinet(request):  #
+    exitkab()
     settingsvar.html = 'diagnoz/index.html'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -770,6 +776,7 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
             match selected_idstatus:
                 case "2":
                     settingsvar.gruplikar.append(item)
+                    settingsvar.directdiagnoz = True
                 case "5":
                     likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '',
                                                 'GET')
@@ -983,7 +990,7 @@ def shablonselect(request):
 
 
 def backshablonselect(request):
-    shablonselect()
+    shablonselect(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1481,11 +1488,12 @@ def getpostpacientprofil(request):
             # --- записати в Бд введенний профіль
             settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
         else:
-            json['id'] = settingsvar.pacient['id']
-            json['KodPacient'] = settingsvar.pacient['kodPacient']
-            settingsvar.kodPacienta = settingsvar.pacient['kodPacient']
-            settingsvar.pacient = rest_api('/api/PacientController/', json, 'PUT')
-            settingsvar.editprofil = False
+            if len(settingsvar.pacient) > 0:
+                json['id'] = settingsvar.pacient['id']
+                json['KodPacient'] = settingsvar.pacient['kodPacient']
+                settingsvar.kodPacienta = settingsvar.pacient['kodPacient']
+                settingsvar.pacient = rest_api('/api/PacientController/', json, 'PUT')
+                settingsvar.editprofil = False
         if len(settingsvar.pacient) > 0:
             if settingsvar.readprofil != False:
                 saveselectlikar(settingsvar.pacient)

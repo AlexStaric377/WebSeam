@@ -2,23 +2,40 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+
+<div class="row row-cols-auto">
     <div class="col">
+        <table class="table">
+            <thead>
+            </thead>
+            <tbody>
         {% if likar %}
-        <p>{{piblikar}}</p>
-        <p>{{pacient}}</p>
+        <tr>
+            <td><p>{{piblikar}}</p></td>
+        </tr>
+        <tr>
+            <td><p>{{pacient}}</p></td>
+        </tr>
         {% else %}
-        <h4>{{iduser}}</h4>
-        <p>{{namedzaklad}}</p>
-        <p>{{adrdzaklad}}</p>
+        <tr>
+            <td><h5>{{iduser}}</h5></td>
+        </tr>
+        <tr>
+            <td><p>{{namedzaklad}}</p></td>
+        </tr>
+        <tr>
+            <td><p>{{adrdzaklad}}</p></td>
+        </tr>
         {% endif %}
-
+            </tbody>
+        </table>
     </div>
+</div>
 
-</nav>
 <div class="container-fluid">
     <h5> {{ compl }} </h5>
     {% if directdiagnoz %}
+    {% else %}
     <h6>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне прізвище</h6>
     {% endif %}
     <div class="row row-cols-auto">

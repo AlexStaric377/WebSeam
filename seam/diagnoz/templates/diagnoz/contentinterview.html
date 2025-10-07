@@ -8,14 +8,30 @@
     </div>
 </nav>
 <div class="container-fluid">
+    <div class="col">
     <p>Поточний діагноз : {{workdiagnoz}}</p>
-    <p>Перелік питань належної симптоматики, які визначають попередній діагноз</p>
+    </div>
+    <div class="row row-cols-auto">
+        <div class="col">
     {% block list %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Перелік питань належної симптоматики, які визначають попередній діагноз</th>
+                </tr>
+                </thead>
+                <tbody>
     {% for item in listwork %}
-    <a aria-current="page" class="nav-link" href=""><font
-            style="vertical-align: inherit;">{{item.detailsInterview}} </font></a>
+    <tr>
+        <td><a aria-current="page" class="nav-link" href=""><font
+                style="vertical-align: inherit;">{{item.detailsInterview}} </font></a></td>
+    </tr>
     {% endfor %}
+                </tbody>
+            </table>
     {% endblock %}
+        </div>
+    </div>
 </div>
 <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 

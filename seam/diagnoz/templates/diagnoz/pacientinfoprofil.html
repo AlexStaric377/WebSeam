@@ -1,23 +1,46 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-<div class="col">
-    <h6>Кабінет пацієнта</h6>
-    <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
-        пацієнта</font></font></h4>
-</div>
+<h6>Кабінет пацієнта</h6>
 <div class="container-fluid">
-    <h6> {{ namesurname }} </h6>
-    <h6>{{ gender }}</h6>
-    <h6> {{ age }} </h6>
-    <h6> {{ weight }} </h6>
-    <h6> {{ growth }} </h6>
-    <h6> {{ profession }} </h6>
-    <h6> {{ pind }} </h6>
-    <h6> {{ tel }} </h6>
-    <h6> {{ email }} </h6>
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Профіль пацієнта</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><p>{{ namesurname }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ gender }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ age }} </p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ weight }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ growth }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ profession }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ pind }} </p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ email }} </p></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <div style="display: inline-block">
-        <p></p>
         <a class="text-decoration-none" href="{% url 'pacientprofil' %}">[ Корегувати ]</a>
         <a class="text-decoration-none" href="{% url 'deletprofil' %}">[ Видалити профіль ]</a>
         <a class="text-decoration-none" href="{% url 'pacient' %}">[ Далі ]</a>

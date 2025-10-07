@@ -8,21 +8,19 @@
         <p>{{piblikar}}</p>
         <p>{{pacient}}</p>
         {% else %}
-        <h4>{{iduser}}</h4>
+        <h5>{{iduser}}</h5>
         {% endif %}
-        <!---        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a> --->
     </div>
 
 </nav>
 <div class="container-fluid">
-    <h5> {{ compl }} </h5>
     <div class="row row-cols-auto">
         <div class="col">
     {% block detalinglist %}
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">Характер прояву</th>
+                    <th scope="col">{{ compl }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,7 +36,9 @@
     {% endblock %}
         </div>
     </div>
-    <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
 </div>
-
+<div class="col">
+    <a class="bg-white text-primary text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
+</div>
 {% endblock %}
+<!--- style="background-color: #d3d3c7;" --->

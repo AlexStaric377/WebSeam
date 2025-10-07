@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid">
     <div class="col">
         {% if directdiagnoz %}
         {% else %}
@@ -10,9 +10,9 @@
         <p>{{piblikar}}</p>
         {% endif %}
     </div>
-</nav>
+</div>
 <div class="container-fluid">
-
+    <div class="col">
     {% if directdiagnoz %}
     <p>Перелік робочих діагнозів захворювань за напрямком {{icdgrup}}</p>
     {% else %}
@@ -23,18 +23,38 @@
     <h6>Для перегляду змісту опитування, яке визначає попередній діагноз необхідно натиснути на відповідний рядок</h6>
     {% endif %}
     {% endif %}
+    </div>
+</div>
+<div class="row row-cols-auto">
+    <div class="col">
     {% block list %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Попередній діагноз</th>
+            </tr>
+            </thead>
+            <tbody>
     {% for item in complaintlist %}
+
     {% if directdiagnoz %}
-    <a aria-current="page" class="nav-link" href=""><font style="vertical-align: inherit;">
-        {{item.nameDiagnoza}} </font></a>
+    <tr>
+        <td><a aria-current="page" class="nav-link" href=""><font style="vertical-align: inherit;">
+            {{item.nameDiagnoza}} </font></a></td>
+    </tr>
     {% else %}
-    <a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodDiagnoza  %} "><font
-            style="vertical-align: inherit;"> {{item.nameDiagnoza}} </font></a>
+    <tr>
+        <td><a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodDiagnoza  %} "><font
+                style="vertical-align: inherit;"> {{item.nameDiagnoza}} </font></a></td>
+    </tr>
     {% endif %}
     {% endfor %}
+            </tbody>
+        </table>
     {% endblock %}
+    </div>
 </div>
+
 <div style="display: inline-block">
     {% if directdiagnoz %}
     {% else %}
