@@ -61,6 +61,8 @@ def reception(request):  # httpRequest
     settingsvar.setintertview = False
     settingsvar.kabinetitem = 'guest'
     settingsvar.interviewcompl = False
+    settingsvar.setpost = False
+    settingsvar.search = False
     settingsvar.datereception = 'не встановлено'
     settingsvar.datedoctor = 'не встановлено'
     settingsvar.html = 'diagnoz/reception.html'
@@ -975,12 +977,25 @@ def shablonselect(request):
     iduser = funciduser()
     match settingsvar.kabinet:
         case "guest":
-            settingsvar.html = 'diagnoz/pacientprofil.html'
-            settingsvar.readprofil = True
-            getpostpacientprofil(request)
-            form = PacientForm()
-            if settingsvar.html == 'diagnoz/pacientprofil.html':
-                settingsvar.nextstepdata['form'] = form
+
+            if settingsvar.search == False:
+                if request.method == 'POST':
+                    form = SearchPacient(request.POST)
+                    settingsvar.formsearch = form.data
+                    funcsearchpacient(settingsvar.formsearch)
+                    settingsvar.search = True
+                    request.method = "GET"
+                else:
+                    settingsvar.setpost = False
+                    settingsvar.search = False
+                    search_pacient()
+            else:
+                if len(settingsvar.formsearch) > 0:
+                    funcsearchpacient(settingsvar.formsearch)
+                else:
+                    settingsvar.setpost = False
+                    settingsvar.search = False
+                    search_pacient()
         case "pacient" | 'interwiev':
             saveselectlikar(settingsvar.pacient)
 
@@ -1015,7 +1030,7 @@ def dateregistrationappointment(request):
 
 
 def selectvisitingdays(request, selected_timevizita, selected_datevizita, selected_daysoftheweek):
-
+    settingsvar.readprofil = True
     settingsvar.datereception = selected_daysoftheweek + ' ' + selected_datevizita + ' ' + selected_timevizita
     shablonselect(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -1379,34 +1394,42 @@ def shablonforlistreceptionandstanhealth():
 
 # --- пошуку даних пацієнта
 def funcsearchpacient(formsearch):
-    if len(formsearch['name']) > 0 and len(formsearch['surname']) > 0 and len(
+    if len(formsearch) > 0:
+        if len(formsearch['name']) > 0 and len(formsearch['surname']) > 0 and len(
             formsearch['telefon']) > 0:
-        json = "0/0/" + formsearch['name'] + "/" + formsearch['surname'] + '/' + formsearch[
+            json = "0/0/" + formsearch['name'] + "/" + formsearch['surname'] + '/' + formsearch[
             'telefon']
-    if len(formsearch['name']) > 0 and len(formsearch['surname']) > 0 and len(
+        if len(formsearch['name']) > 0 and len(formsearch['surname']) > 0 and len(
             formsearch['telefon']) == 0:
-        json = "0/0/" + formsearch['name'] + "/" + formsearch['surname'] + '/0'
-    if len(formsearch['name']) > 0 and len(formsearch['surname']) == 0 and len(
+            json = "0/0/" + formsearch['name'] + "/" + formsearch['surname'] + '/0'
+        if len(formsearch['name']) > 0 and len(formsearch['surname']) == 0 and len(
             formsearch['telefon']) == 0:
-        json = "0/0/" + formsearch['name'] + '/0/0'
-    if len(formsearch['name']) == 0 and len(formsearch['surname']) == 0 and len(
+            json = "0/0/" + formsearch['name'] + '/0/0'
+        if len(formsearch['name']) == 0 and len(formsearch['surname']) == 0 and len(
             formsearch['telefon']) > 0:
-        json = "0/0/0/0/" + formsearch['telefon']
-    if len(formsearch['name']) == 0 and len(formsearch['surname']) > 0 and len(
+            json = "0/0/0/0/" + formsearch['telefon']
+        if len(formsearch['name']) == 0 and len(formsearch['surname']) > 0 and len(
             formsearch['telefon']) > 0:
-        json = "0/0/0/" + formsearch['surname'] + '/' + formsearch['telefon']
-    settingsvar.pacient = rest_api('api/PacientController/' + json, '', 'GET')
+            json = "0/0/0/" + formsearch['surname'] + '/' + formsearch['telefon']
+        settingsvar.pacient = rest_api('api/PacientController/' + json, '', 'GET')
 
-    if len(settingsvar.pacient) > 0:
-        profilpacient = {}
-        profilpacient = settingsvar.pacient[0]
-        settingsvar.pacient = profilpacient
-        settingsvar.kodPacienta = profilpacient['kodPacient']
-        shablonlikar(profilpacient)
+        if len(settingsvar.pacient) > 0:
+            profilpacient = {}
+            profilpacient = settingsvar.pacient[0]
+            settingsvar.pacient = profilpacient
+            settingsvar.kodPacienta = profilpacient['kodPacient']
+            if settingsvar.kabinet == "pacient" or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likar':
+                shablonlikar(profilpacient)
+            else:
+                saveselectlikar(settingsvar.pacient)
+
+        else:
+            settingsvar.search = False
+            settingsvar.formsearch = ''
+            errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
     else:
         settingsvar.search = False
-        errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
-
+        settingsvar.formsearch = ''
     return
 
 
@@ -1577,6 +1600,7 @@ def errorprofil(compl):
     settingsvar.html = 'diagnoz/savediagnoz.html'
     iduser = funciduser()
     backurl = funcbakurl()
+    if settingsvar.kabinet == "guest": backurl = 'backshablonselect'
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': compl,
