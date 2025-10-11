@@ -1313,14 +1313,14 @@ def profilinfopacient():
     if settingsvar.pacient['email'] != None: email = settingsvar.pacient['email']
     settingsvar.nextstepdata = {
         'namesurname': "Імя, прізвище: " + settingsvar.pacient['name'] + " " + settingsvar.pacient['surname'],
-        'gender': 'чол/жін:' + settingsvar.pacient['gender'],
+        'gender': 'Стать : ' + settingsvar.pacient['gender'],
         'age': 'Вік(рік.): ' + str(settingsvar.pacient['age']),
         'weight': 'Вага(кг.): ' + str(settingsvar.pacient['weight']),
         'growth': 'Зріст(см.): ' + str(settingsvar.pacient['growth']),
         'profession': 'Профессія: ' + settingsvar.pacient['profession'],
         'pind': 'Поштовий індекс: ' + settingsvar.pacient['pind'],
         'tel': 'Телефон: ' + settingsvar.pacient['tel'],
-        'email': 'Поштовий електронний адрес: ' + email
+        'email': 'Поштова електронна адреса: ' + email
     }
     return
 
@@ -1394,6 +1394,10 @@ def shablonforlistreceptionandstanhealth():
 
 # --- пошуку даних пацієнта
 def funcsearchpacient(formsearch):
+    settingsvar.search = False
+    settingsvar.formsearch = ''
+    profilpacient = {}
+    json = ""
     if len(formsearch) > 0:
         if len(formsearch['name']) > 0 and len(formsearch['surname']) > 0 and len(
             formsearch['telefon']) > 0:
@@ -1411,25 +1415,27 @@ def funcsearchpacient(formsearch):
         if len(formsearch['name']) == 0 and len(formsearch['surname']) > 0 and len(
             formsearch['telefon']) > 0:
             json = "0/0/0/" + formsearch['surname'] + '/' + formsearch['telefon']
-        settingsvar.pacient = rest_api('api/PacientController/' + json, '', 'GET')
+        if len(formsearch['name']) == 0 and len(formsearch['surname']) > 0 and len(
+                formsearch['telefon']) == 0:
+            json = "0/0/0/" + formsearch['surname'] + '/0'
+        if len(formsearch['name']) > 0 and len(formsearch['surname']) == 0 and len(
+                formsearch['telefon']) > 0:
+            json = "0/0/" + formsearch['name'] + '/0/' + formsearch['telefon']
+        if len(json) > 0:
+            profilpacient = rest_api('api/PacientController/' + json, '', 'GET')
 
-        if len(settingsvar.pacient) > 0:
-            profilpacient = {}
-            profilpacient = settingsvar.pacient[0]
+        if len(profilpacient) > 0:
             settingsvar.pacient = profilpacient
-            settingsvar.kodPacienta = profilpacient['kodPacient']
+            if len(profilpacient) > 1:
+                settingsvar.pacient = profilpacient[0]
+            settingsvar.kodPacienta = settingsvar.pacient['kodPacient']
             if settingsvar.kabinet == "pacient" or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likar':
-                shablonlikar(profilpacient)
+                shablonlikar(settingsvar.pacient)
             else:
                 saveselectlikar(settingsvar.pacient)
-
         else:
-            settingsvar.search = False
-            settingsvar.formsearch = ''
             errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
-    else:
-        settingsvar.search = False
-        settingsvar.formsearch = ''
+
     return
 
 
@@ -1508,8 +1514,24 @@ def getpostpacientprofil(request):
             # --- записати в Бд облікові дані
             if settingsvar.kabinet == 'pacient':
                 funcaddaccount(settingsvar.formaccount.data['login'], settingsvar.formaccount.data['password'])
-            # --- записати в Бд введенний профіль
-            settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
+                # --- записати в Бд введенний профіль
+                settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
+            else:
+                settingsvar.pacient = {'id': 0,
+                                       'kodPacient': newpacientprofil(),
+                                       'kodKabinet': "",
+                                       'age': form.data['age'],
+                                       'weight': form.data['weight'],
+                                       'growth': form.data['growth'],
+                                       'gender': form.data['gender'],
+                                       'tel': form.data['tel'],
+                                       'email': form.data['email'],
+                                       'name': form.data['name'],
+                                       'surname': form.data['surname'],
+                                       'pind': form.data['pind'],
+                                       'profession': form.data['profession']
+                                       }
+                settingsvar.readprofil = True
         else:
             if len(settingsvar.pacient) > 0:
                 json['id'] = settingsvar.pacient['id']
@@ -1670,6 +1692,11 @@ def saveraceptionlikar(request):  # httpRequest
     addReceptionLikar()
     # ---  Додати запис до лікаря в розклад прийому лікаря
     addAdmissionPatientsLikar()
+    if settingsvar.kabinet == 'guest' and len(settingsvar.pacient) > 0:
+        # --- записати в Бд введенний профіль
+        doc = rest_api('api/PacientController/' + '0/0/0/0/' + settingsvar.pacient['tel'], '', 'GET')
+        if len(doc) == 0:
+            settingsvar.pacient = rest_api('/api/PacientController/', settingsvar.pacient, 'POST')
 
     shablonpacient(settingsvar.pacient)
     settingsvar.nawpage = 'saveraceptionlikar'
@@ -2088,7 +2115,7 @@ def likarinfoprofil():
         'name': "Ім'я, прівище :" + settingsvar.likar['name'] + " " + settingsvar.likar['surname'],
         'specialnoct': "Спеціальність :" + settingsvar.likar['specialnoct'],
         'telefon': "Телефон :" + settingsvar.likar['telefon'],
-        'email': "Поштовий електронніий адрес :" + settingsvar.likar['email'],
+        'email': "Поштова електронна адреса :" + settingsvar.likar['email'],
         'uriwebDoctor': "Сторінка в інтенеті :" + settingsvar.likar['uriwebDoctor'],
         'napryamok': "Робочі напрямки",
 

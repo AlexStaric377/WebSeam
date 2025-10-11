@@ -11,7 +11,16 @@
     <form class="needs-validation" method="POST" novalidate="">
         {% csrf_token %}
         <div class="row g-3">
-            <div class="col-sm-4">
+            <div class="col-md-3">
+                <label class="form-label"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">{{form.tel.label}}</font></font>
+                </label>
+                {{form.tel}}
+                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                        style="vertical-align: inherit;">Вимагається допустимий номер.</font></font>
+                </div>
+            </div>
+            <div class="col-sm-3">
                 <label class="form-label"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">{{ form.name.label }}</font></font>
                 </label>
@@ -20,7 +29,7 @@
                         style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <label class="form-label"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
                 {{form.surname}}
@@ -83,15 +92,6 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
-                <label class="form-label"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">{{form.tel.label}}</font></font>
-                </label>
-                {{form.tel}}
-                <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Вимагається допустимий номер.</font></font>
-                </div>
-            </div>
 
             <div class="col-5">
                 <label class="form-label"><font style="vertical-align: inherit;"><font

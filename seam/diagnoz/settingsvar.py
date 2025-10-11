@@ -82,3 +82,4 @@ storkaweekday = ['понеділок', 'вівторок', 'середа', 'че
 adrzaklad = ''
 receptitem = ''
 namediagnoz = ''
+postpacient = {}
