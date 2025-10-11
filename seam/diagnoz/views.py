@@ -1425,11 +1425,11 @@ def funcsearchpacient(formsearch):
             profilpacient = rest_api('api/PacientController/' + json, '', 'GET')
 
         if len(profilpacient) > 0:
-            settingsvar.pacient = profilpacient
-            if len(profilpacient) > 1:
-                settingsvar.pacient = profilpacient[0]
+            settingsvar.pacient = profilpacient[0]
+
             settingsvar.kodPacienta = settingsvar.pacient['kodPacient']
-            if settingsvar.kabinet == "pacient" or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likar':
+            if (settingsvar.kabinet == "pacient" or settingsvar.kabinet == 'interwiev'
+                    or settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev'):
                 shablonlikar(settingsvar.pacient)
             else:
                 saveselectlikar(settingsvar.pacient)
@@ -1490,6 +1490,27 @@ def pacientprofil(request):  # httpRequest
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
+
+def modformatjson(formdata):
+    settingsvar.pacient = {'id': 0,
+                           'kodPacient': newpacientprofil(),
+                           'kodKabinet': "",
+                           'age': formdata['age'],
+                           'weight': formdata['weight'],
+                           'growth': formdata['growth'],
+                           'gender': formdata['gender'],
+                           'tel': formdata['tel'],
+                           'email': formdata['email'],
+                           'name': formdata['name'],
+                           'surname': formdata['surname'],
+                           'pind': formdata['pind'],
+                           'profession': formdata['profession']
+                           }
+    settingsvar.readprofil = True
+    return
+
+
+
 def getpostpacientprofil(request):
     settingsvar.html = 'diagnoz/pacientprofil.html'
     if settingsvar.kabinetitem != 'likarinterwiev': settingsvar.kabinetitem = 'profil'
@@ -1509,48 +1530,44 @@ def getpostpacientprofil(request):
                 'Pind': form.data['pind'],
                 'Profession': form.data['profession']
                 }
-
-        if settingsvar.editprofil == False:
-            # --- записати в Бд облікові дані
-            if settingsvar.kabinet == 'pacient':
-                funcaddaccount(settingsvar.formaccount.data['login'], settingsvar.formaccount.data['password'])
-                # --- записати в Бд введенний профіль
-                settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
-            else:
-                settingsvar.pacient = {'id': 0,
-                                       'kodPacient': newpacientprofil(),
-                                       'kodKabinet': "",
-                                       'age': form.data['age'],
-                                       'weight': form.data['weight'],
-                                       'growth': form.data['growth'],
-                                       'gender': form.data['gender'],
-                                       'tel': form.data['tel'],
-                                       'email': form.data['email'],
-                                       'name': form.data['name'],
-                                       'surname': form.data['surname'],
-                                       'pind': form.data['pind'],
-                                       'profession': form.data['profession']
-                                       }
-                settingsvar.readprofil = True
-        else:
-            if len(settingsvar.pacient) > 0:
-                json['id'] = settingsvar.pacient['id']
-                json['KodPacient'] = settingsvar.pacient['kodPacient']
-                settingsvar.kodPacienta = settingsvar.pacient['kodPacient']
-                settingsvar.pacient = rest_api('/api/PacientController/', json, 'PUT')
-                settingsvar.editprofil = False
-        if len(settingsvar.pacient) > 0:
-            if settingsvar.readprofil != False:
+        match settingsvar.kabinet:
+            case 'guest':
+                modformatjson(form.data)
                 saveselectlikar(settingsvar.pacient)
-            else:
-                if settingsvar.kabinetitem == 'likarinterwiev':
+            case 'pacient' | 'interwiev':
+                if settingsvar.editprofil == False:
+                    # --- записати в Бд облікові дані
+
+                    Stroka = rest_api('/api/AccountUserController/' + "0/" + form.data['tel'] + "/0/0", '', 'GET')
+                    if len(Stroka) == 0:
+                        funcaddaccount(settingsvar.formaccount.data['login'], settingsvar.formaccount.data['password'])
+
+                    # --- записати в Бд введенний профіль
+                    doc = rest_api('api/PacientController/' + '0/0/0/0/' + json['Tel'], '', 'GET')
+                    if len(doc) == 0:
+                        settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
+                    else:
+                        settingsvar.pacient = doc[0]
+                    settingsvar.setpost = True
                     shablonlikar(settingsvar.pacient)
                 else:
-                    settingsvar.setpost = True
-                    settingsvar.setpostlikar = True
-                    errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
-        else:
-            errorprofil('Шановний користувач! Похибка на серевері. Ваш профіль не збережено.')
+                    if len(settingsvar.pacient) > 0:
+                        json['id'] = settingsvar.pacient['id']
+                        json['KodPacient'] = settingsvar.pacient['kodPacient']
+                        settingsvar.kodPacienta = settingsvar.pacient['kodPacient']
+                        settingsvar.pacient = rest_api('/api/PacientController/', json, 'PUT')
+                        settingsvar.editprofil = False
+            case 'likarinterwiev':
+                if len(settingsvar.pacient) > 0:
+                    if settingsvar.readprofil != False:
+                        saveselectlikar(settingsvar.pacient)
+                else:
+                    modformatjson(form.data)
+                    shablonlikar(settingsvar.pacient)
+            case _:
+                settingsvar.setpost = True
+                settingsvar.setpostlikar = True
+                errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
     else:
         backurl = funcbakurl()
         if settingsvar.kabinetitem == 'likarinterwiev': backurl = 'likar'
@@ -2197,12 +2214,14 @@ def getpostlikarprofil(request):
 # --- Функція пошуку пацієнта в БД для проведення опитування
 def search_pacient():
     iduser = funciduser()
+    backurl = funcbakurl()
     formsearch = SearchPacient()
     settingsvar.nextstepdata = {
         'form': formsearch,
         'compl': 'Зареєструвати пацієнта',
         'reestrinput': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
-        'medzaklad': settingsvar.namemedzaklad
+        'medzaklad': settingsvar.namemedzaklad,
+        'backurl': backurl
     }
     settingsvar.html = 'diagnoz/searchpacient.html'
     return
@@ -2263,10 +2282,12 @@ def listlikar():
     settingsvar.nawpage = 'likarlistinterweiv'
     settingsvar.html = 'diagnoz/likarlistinterwiev.html'
     settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/' + settingsvar.kodDoctor + '/0', '', 'GET')
+    pacient = {}
     if len(settingsvar.listapi) > 0:
         for item in settingsvar.listapi:
             pacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
-            item['resultDiagnoz'] = pacient['name'] + ' ' + pacient['surname'] + ' Телефон: ' + pacient['tel']
+            if 'name' in pacient:
+                item['resultDiagnoz'] = pacient['name'] + ' ' + pacient['surname'] + ' Телефон: ' + pacient['tel']
         settingsvar.nextstepdata = {
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
