@@ -1043,7 +1043,7 @@ def SelectNewKodComplInteriew():
     indexcmp = "CMP.000000000001"
     CmdStroka = rest_api('/api/CompletedInterviewController/' + "0/1", '', 'GET')
 
-    if len(CmdStroka) > 0:
+    if 'kodComplInterv' in CmdStroka and CmdStroka['kodComplInterv'] != None:
         kodCompl = CmdStroka['kodComplInterv']
         indexdia = int(kodCompl[5:16])
         repl = "000000000000"
@@ -1364,7 +1364,11 @@ def shablonforlistinterview():
     if len(settingsvar.listapi) > 0:
         settingsvar.nextstepdata = {
             'iduser': iduser,
-            'complaintlist': settingsvar.listapi
+            'complaintlist': settingsvar.listapi,
+            'backurl': backurl,
+            'likar': True,
+            'pacient': 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + settingsvar.pacient['name']
+                       + " " + settingsvar.pacient['surname']
         }
     else:
         errorprofil(
@@ -1455,7 +1459,7 @@ def newpacientprofil():
     indexcmp = "PCN.0000000001"
     CmdStroka = rest_api('/api/PacientController/0/0/0/0/0', '', 'GET')
 
-    if len(CmdStroka) > 0:
+    if 'kodPacient' in CmdStroka and CmdStroka['kodPacient'] != None:
         kodPacient = CmdStroka['kodPacient']
         indexdia = int(kodPacient[5:14])
         repl = "0000000000"
@@ -1491,6 +1495,7 @@ def pacientprofil(request):  # httpRequest
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# функція запису введених показників профілю пацієнта в форматі масиву для вдображення в шаблонах
 def modformatjson(formdata):
     settingsvar.pacient = {'id': 0,
                            'kodPacient': newpacientprofil(),
@@ -1565,6 +1570,7 @@ def getpostpacientprofil(request):
                     modformatjson(form.data)
                     shablonlikar(settingsvar.pacient)
             case _:
+                modformatjson(form.data)
                 settingsvar.setpost = True
                 settingsvar.setpostlikar = True
                 errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
@@ -1964,6 +1970,7 @@ def funcshablonlistpacient():
     iduser = funciduser()
     settingsvar.html = 'diagnoz/pacientlistinterwiev.html'
     shablonpacient(settingsvar.pacient)
+    settingsvar.nextstepdata['likar'] = True
     settingsvar.nextstepdata['backurl'] = settingsvar.backurl
     settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacienta, '', 'GET')
     if len(settingsvar.listapi) > 0:
@@ -2006,26 +2013,28 @@ def funcshablonlistreceptionlikar():
     settingsvar.html = 'diagnoz/pacientreceptionlikar.html'
     listAdmissionlikar = []
     diagnoz = []
+    PacientName = ""
     shablonpacient(settingsvar.pacient)
     settingsvar.nextstepdata['backurl'] = settingsvar.backurl
     settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + settingsvar.kodPacienta + '/0', '', 'GET')
     if len(settingsvar.listapi) > 0:
         stepdata = {}
         doc = rest_api('api/PacientController/' + settingsvar.listapi[0]['kodPacient'] + '/0/0/0/0', '', 'GET')
-        PacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
+        if 'name' in doc:
+            PacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
         for item in settingsvar.listapi:
-            if item['dateDoctor'] != 'не встановлено' and item['dateDoctor'] != '' and item['dateInterview'] != '':
+            if item['dateDoctor'] != '' and item['dateInterview'] != '':
                 stepdata = {}
                 likar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
                 likarName = ' не встановлено'
-                if len(likar) > 0:
+                if 'name' in likar:
                     likarName = likar['name'] + likar['surname'] + " тел.: " + likar['telefon']
                 if item['kodDiagnoz'] != None:
                     diagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
 
                 dateDoctor = item['dateDoctor']
                 nameDiagnoz = " не встановлено"
-                if len(diagnoz) > 0:
+                if 'nameDiagnoza' in diagnoz:
                     nameDiagnoz = diagnoz['nameDiagnoza']
                 stepdata['pacient'] = PacientName
                 stepdata['namelikar'] = likarName  # 'Лікар:          ' +

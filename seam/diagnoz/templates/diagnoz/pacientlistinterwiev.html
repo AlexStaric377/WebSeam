@@ -2,17 +2,17 @@
 
 {% block content %}
 <div class="col">
+    <h6>{{iduser}}</h6>
     {% if likar %}
     <p>{{piblikar}}</p>
     <p>{{pacient}}</p>
-    {% else %}
-    <h6>{{iduser}}</h6>
     {% endif %}
     <h6>Перегляд проведених опитувань</h6>
+    <p>Для перегляду деталей необхідного <br>
+        опитування натисніть на відповідний рядок</p>
 </div>
 
 <div class="container-fluid">
-    <h6>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</h6>
     <table class="table table-striped">
         <thead>
         <tr>
