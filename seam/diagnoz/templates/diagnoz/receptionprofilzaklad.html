@@ -4,11 +4,10 @@
 
 <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
     <div class="col">
+        <h6>{{iduser}}</h5>
         {% if likar %}
         <p>{{piblikar}}</p>
         <p>{{pacient}}</p>
-        {% else %}
-        <h5>{{iduser}}</h5>
         {% endif %}
     </div>
 
@@ -16,21 +15,23 @@
 <div class="container-fluid">
     <div class="row row-cols-auto">
         <div class="col">
-    {% block detalinglist %}
+            {% block detalinglist %}
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">{{ compl }}</th>
+                    <th scope="col">{{ compl }} <br>Для перегляду переліку профільних лікарів закладу натиснути на
+                        відповідний рядок
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
-    {% for item in detalinglist %}
-    <tr>
-        <td><a aria-current="page" class="nav-link"
-       href="{% url 'selectdprofillikar' item.kodZaklad  item.idStatus  item.name%}"><font
+                {% for item in detalinglist %}
+                <tr>
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'selectdprofillikar' item.kodZaklad  item.idStatus  item.name%}"><font
                 style="vertical-align: inherit;">{{item.name}}</font></a></td>
-    </tr>
-    {% endfor %}
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
     {% endblock %}

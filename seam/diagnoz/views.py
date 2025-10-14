@@ -822,6 +822,7 @@ def shablonlistlikar():
         'detalinglist': settingsvar.gruplikar,
         'piblikar': '',
         'pacient': '',
+        'likar': False,
         'backurl': backurl,
         'namedzaklad': settingsvar.namemedzaklad,
         'adrdzaklad': settingsvar.adrzaklad,
@@ -934,7 +935,7 @@ def inputprofilpacient(request, selected_doctor):
     if "DTR" in selected_doctor: settingsvar.kodDoctor = selected_doctor
     settingsvar.setintertview = True
     CmdStroka = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodDoctor + "/0/0", '', 'GET')
-    if len(CmdStroka) > 0:
+    if 'name' in CmdStroka:
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         settingsvar.mobtellikar = CmdStroka['telefon']
         settingsvar.likar = CmdStroka
