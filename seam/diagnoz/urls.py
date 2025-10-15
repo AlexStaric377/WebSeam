@@ -78,7 +78,8 @@ urlpatterns = [
     path('deletprofil', views.deletprofil, name='deletprofil'),
     path('addvisitingdays', views.addvisitingdays, name='addvisitingdays'),
     path('profillmedzaklad/<str:select_icd>', views.profillmedzaklad, name='profillmedzaklad'),
-    path('backlikarworkdiagnoz', views.backlikarworkdiagnoz, name='backlikarworkdiagnoz')
+    path('backlikarworkdiagnoz', views.backlikarworkdiagnoz, name='backlikarworkdiagnoz'),
+    path('checkvisitinglikar', views.checkvisitinglikar, name='checkvisitinglikar')
 ]
 #
 urlpatterns += [

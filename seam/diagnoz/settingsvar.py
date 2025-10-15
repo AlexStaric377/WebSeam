@@ -83,3 +83,5 @@ adrzaklad = ''
 receptitem = ''
 namediagnoz = ''
 postpacient = {}
+funciya = ''
+icdGrDiagnoz = ""
