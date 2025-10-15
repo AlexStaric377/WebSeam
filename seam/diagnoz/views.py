@@ -1815,7 +1815,7 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
             match settingsvar.kabinet:
                 case 'pacientlistinterwiev' | 'listinterwiev' | 'likarlistinterwiev':  # 'likarreceptionpacient'
                     settingsvar.nametInterview = item['nameInterview']
-                case 'listreceptionlikar':
+                case 'listreceptionlikar' | 'checkvisitinglikar':
                     settingsvar.nametInterview = item['diagnoz']
             if selected_dateInterview == item['dateInterview']:
                 settingsvar.idinterview = str(item['id'])
@@ -1832,7 +1832,7 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
                 settingsvar.nextstepdata = {}
             case 'likarlistinterwiev':
                 likarlistinterwiev(request)
-            case 'interwiev' | 'listinterwiev' | 'likarinterwiev' | 'likarreceptionpacient':
+            case 'interwiev' | 'listinterwiev' | 'likarinterwiev' | 'likarreceptionpacient' | 'checkvisitinglikar':
                 funcshablonlistpacient()
     else:
         nextprofilinterview()
@@ -1898,12 +1898,12 @@ def nextprofilinterview():
                     case 'likarreceptionpacient':
                         if item['dateVizita'] != None:
                             select_dateDoctor = item['dateVizita']
-                    case "profil" | "pacient" | "interwiev" | 'listinterwiev' | "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'listreceptionlikar':
+                    case "profil" | "pacient" | "interwiev" | 'listinterwiev' | "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'listreceptionlikar' | 'guest':
                         if (item['dateDoctor'] != None):
                             select_dateDoctor = item['dateDoctor']
                 dateint = item['dateInterview']
                 match settingsvar.kabinetitem:
-                    case "profil" | "pacient" | "interwiev" | 'listinterwiev' | 'listreceptionlikar':
+                    case "profil" | "pacient" | "interwiev" | 'listinterwiev' | 'listreceptionlikar' | 'guest':
                         if item['kodDoctor'] != None and len(item['kodDoctor']) > 0:
                             doc = rest_api('api/ApiControllerDoctor/' + item['kodDoctor'] + '/0/0', '', 'GET')
                             likarName = ''
