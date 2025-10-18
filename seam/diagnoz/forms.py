@@ -84,18 +84,24 @@ class Reestrvisitngdays(forms.Form):
                  ("квітень", "квітень"), ("травень", "травень"), ("червень", "червень"),
                  ("липень", "липень"), ("серпень", "серпень"), ("вересень", "вересень"),
                  ("жовтень", "жовтень"), ("листопад", "листопад"), ("грудень", "грудень"), ]
-    vivsitmonth = gender = forms.ChoiceField(choices=Namemonth, label="Місяць",
+    Nameweek = [("понеділок", "понеділок"), ("вівторок", "вівторок"), ("середа", "середа"),
+                ("четверг", "четверг"), ("п'ятниця", "п'ятниця")]
+    vivsitmonth = forms.ChoiceField(choices=Namemonth, label="Місяць",
+                                    widget=forms.Select(attrs={'class': 'form-control'}))
+
+    vivsitweekday = forms.ChoiceField(choices=Nameweek, label="День неділі",
                                              widget=forms.Select(attrs={'class': 'form-control'}))
+
     begindays = forms.CharField(max_length=2, min_length=1, label="Перший день місяця", widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': "xx"}))
+        attrs={'class': 'form-control', 'placeholder': "01"}), initial="01")
     enddays = forms.CharField(max_length=2, min_length=1, label="Останній день місяця", widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': "xx"}))
+        attrs={'class': 'form-control', 'placeholder': "31"}), initial="31")
     begintimeofday = forms.CharField(max_length=2, min_length=1, label=" Час початку приймання (години)",
-                                     widget=forms.TextInput(
-                                         attrs={'class': 'form-control', 'placeholder': "xx"}))
+                                     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "09"}),
+                                     initial="09")
     endtimeofday = forms.CharField(max_length=2, min_length=1, label="Час закінчення приймання (години)",
-                                   widget=forms.TextInput(
-                                       attrs={'class': 'form-control', 'placeholder': "xx"}))
+                                   widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "17"}),
+                                   initial="17")
     duration = forms.CharField(max_length=2, min_length=1, label="Тривалість одного приймання (хв.)",
-                               widget=forms.TextInput(
-                                   attrs={'class': 'form-control', 'placeholder': "xx"}))
+                               widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "30"}),
+                               initial="30")

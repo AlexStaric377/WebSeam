@@ -85,3 +85,4 @@ namediagnoz = ''
 postpacient = {}
 funciya = ''
 icdGrDiagnoz = ""
+searchpacient = ""

@@ -66,6 +66,7 @@ def reception(request):  # httpRequest
     settingsvar.datereception = 'не встановлено'
     settingsvar.datedoctor = 'не встановлено'
     settingsvar.html = 'diagnoz/reception.html'
+    settingsvar.funciya = ''
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -87,6 +88,7 @@ def pacient(request):  # httpRequest
         settingsvar.likar = {}
         settingsvar.datereception = 'не встановлено'
         settingsvar.datedoctor = 'не встановлено'
+        settingsvar.funciya = ''
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -98,6 +100,7 @@ def exitkab():
     settingsvar.likar = {}
     settingsvar.pacient = {}
     settingsvar.formsearch = {}
+    settingsvar.funciya = ''
     return
 
 
@@ -124,6 +127,7 @@ def likar(request):  # httpRequest
         settingsvar.pacient = {}
         settingsvar.datereception = 'не встановлено'
         settingsvar.datedoctor = 'не встановлено'
+        settingsvar.funciya = ''
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -695,8 +699,8 @@ def selectmedzaklad(request, statuszaklad):
                     if item['edrpou'] not in itemmedzaklad['edrpou']:
                         settingsvar.grupmedzaklad.append(item)
         case "5":
-            settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/0/" +
-                                               settingsvar.icddiagnoz + "/0", '', 'GET')
+            settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/" +
+                                               settingsvar.icdGrDiagnoz + "/0/0", '', 'GET')  # settingsvar.icddiagnoz
             if settingsvar.kabinetitem == 'guest':
                 settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad, '',
                                                      'GET')
@@ -865,7 +869,8 @@ def funcbakurl():
             bakurl = 'pacient'
         case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
             bakurl = 'likar'
-
+        case "likarprofil":
+            bakurl = 'likarprofil'
     return bakurl
 
 
@@ -993,6 +998,7 @@ def shablonselect(request):
                 if request.method == 'POST':
                     form = SearchPacient(request.POST)
                     settingsvar.formsearch = form.data
+                    settingsvar.searchpacient = settingsvar.formsearch
                     funcsearchpacient(settingsvar.formsearch)
                     settingsvar.search = True
                     request.method = "GET"
@@ -1001,8 +1007,8 @@ def shablonselect(request):
                     settingsvar.search = False
                     search_pacient()
             else:
-                if len(settingsvar.formsearch) > 0:
-                    funcsearchpacient(settingsvar.formsearch)
+                if len(settingsvar.searchpacient) > 0:
+                    funcsearchpacient(settingsvar.searchpacient)
                 else:
                     settingsvar.setpost = False
                     settingsvar.search = False
@@ -1456,12 +1462,12 @@ def funcsearchpacient(formsearch):
             else:
                 if settingsvar.funciya == 'checkvisitinglikar':
                     funcshablonlistreceptionlikar()
-                    # funcshablonlistpacient()
+
                 else:
                     saveselectlikar(settingsvar.pacient)
         else:
             errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
-    settingsvar.funciya = ''
+
     return
 
 
@@ -1832,7 +1838,7 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
                 settingsvar.nextstepdata = {}
             case 'likarlistinterwiev':
                 likarlistinterwiev(request)
-            case 'interwiev' | 'listinterwiev' | 'likarinterwiev' | 'likarreceptionpacient' | 'checkvisitinglikar':
+            case 'guest' | 'interwiev' | 'listinterwiev' | 'likarinterwiev' | 'likarreceptionpacient' | 'checkvisitinglikar':
                 funcshablonlistpacient()
     else:
         nextprofilinterview()
@@ -2155,10 +2161,12 @@ def inputkabinetlikar(request):
 
 # --- Вхід до кабінету
 def likarprofil(request):  # httpRequest
+
     if inputkabinetlikar(request) == True:
         cleanvars()
         settingsvar.nawpage = 'likarprofil'
         settingsvar.kabinetitem = 'likar'
+        settingsvar.kabinet = 'likarprofil'
         if settingsvar.setpostlikar == False:
             accountuser(request)
             settingsvar.initialprofil = True
@@ -2179,11 +2187,11 @@ def likarprofil(request):  # httpRequest
 def likarinfoprofil():
     settingsvar.nextstepdata = {
         'medzaklad': settingsvar.namemedzaklad,
-        'name': "Ім'я, прівище :" + settingsvar.likar['name'] + " " + settingsvar.likar['surname'],
-        'specialnoct': "Спеціальність :" + settingsvar.likar['specialnoct'],
-        'telefon': "Телефон :" + settingsvar.likar['telefon'],
-        'email': "Поштова електронна адреса :" + settingsvar.likar['email'],
-        'uriwebDoctor': "Сторінка в інтенеті :" + settingsvar.likar['uriwebDoctor'],
+        'name': "Ім'я, прівище  :   " + settingsvar.likar['name'] + " " + settingsvar.likar['surname'],
+        'specialnoct': "Спеціальність  :   " + settingsvar.likar['specialnoct'],
+        'telefon': "Телефон  :   " + settingsvar.likar['telefon'],
+        'email': "Поштова електронна адреса :   " + settingsvar.likar['email'],
+        'uriwebDoctor': "Сторінка в інтенеті  :   " + settingsvar.likar['uriwebDoctor'],
         'napryamok': "Робочі напрямки",
 
     }
@@ -2488,25 +2496,12 @@ def addvisitingdays(request):
             ind = dtvisit.weekday()
             if ind != 5 and ind != 6:
                 DaysOfTheWeek = settingsvar.storkaweekday[ind]
-                datework = datetime.strptime(date_string, date_format)
-                iso_date = datework.isoformat()
-                time_to_add = timedelta(hours=int(settingsvar.formaccount['begintimeofday']))
-                time_to_end = timedelta(hours=int(settingsvar.formaccount['endtimeofday']))
-                for itemtime in range(int(settingsvar.formaccount['begintimeofday']), 24):
-                    if time_to_end >= time_to_add:
-                        datetimebeginvisit = dtvisit + time_to_add
-                        time_to_add = time_to_add + time_step
-                        timeVizita = datetimebeginvisit.strftime("%H:%M:%S")
-                        json = {'id': 0,
-                            'KodDoctor': settingsvar.kodDoctor,
-                            'DaysOfTheWeek': DaysOfTheWeek,
-                            'DateVizita': dateVizita,
-                            'TimeVizita': timeVizita,
-                            'OnOff': 'Так',
-                                'DateWork': iso_date,
-                            }
-                        # --- записати в Бд введенний профіль
-                        visitingdays = rest_api('/api/VisitingDaysController/', json, 'POST')
+                if len(settingsvar.formaccount['vivsitweekday']) > 0:
+                    if DaysOfTheWeek == settingsvar.formaccount['vivsitweekday']:
+                        addvisitingdaypacient(DaysOfTheWeek, date_string, dtvisit, time_step, dateVizita)
+                else:
+                    addvisitingdaypacient(DaysOfTheWeek, date_string, dtvisit, time_step, dateVizita)
+
         listlikarvisitngdays()
     else:
         settingsvar.formvisiting = Reestrvisitngdays()
@@ -2519,6 +2514,32 @@ def addvisitingdays(request):
         }
         settingsvar.html = 'diagnoz/addvisitingdays.html'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# Запис поточного рядка  прийому пацієнтів на обстеження
+def addvisitingdaypacient(DaysOfTheWeek, date_string, dtvisit, time_step, dateVizita):
+    date_format = "%Y-%m-%d %H:%M:%S"
+    datework = datetime.strptime(date_string, date_format)
+    iso_date = datework.isoformat()
+    time_to_add = timedelta(hours=int(settingsvar.formaccount['begintimeofday']))
+    time_to_end = timedelta(hours=int(settingsvar.formaccount['endtimeofday']))
+    for itemtime in range(int(settingsvar.formaccount['begintimeofday']), 24):
+        if time_to_end >= time_to_add:
+            datetimebeginvisit = dtvisit + time_to_add
+            time_to_add = time_to_add + time_step
+            timeVizita = datetimebeginvisit.strftime("%H:%M:%S")
+            json = {'id': 0,
+                    'KodDoctor': settingsvar.kodDoctor,
+                    'DaysOfTheWeek': DaysOfTheWeek,
+                    'DateVizita': dateVizita,
+                    'TimeVizita': timeVizita,
+                    'OnOff': 'Так',
+                    'DateWork': iso_date,
+                    }
+            # --- записати в Бд введенний профіль
+            visitingdays = rest_api('/api/VisitingDaysController/', json, 'POST')
+
+    return
 
 # --- Робочі напрямки
 def likarworkdiagnoz(request):  # httpRequest
