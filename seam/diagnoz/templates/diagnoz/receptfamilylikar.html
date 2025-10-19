@@ -10,7 +10,6 @@
         {% else %}
         <h4>{{iduser}}</h4>
         {% endif %}
-        <!---        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a> --->
     </div>
 </nav>
 <div class="container-fluid">
@@ -18,7 +17,7 @@
     {% block detalinglist %}
 
     {% endblock %}
-    <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
+    <a class="btn btn-primary" href="{% url backurl %}" role="button">Далі</a>
 </div>
 
 {% endblock %}

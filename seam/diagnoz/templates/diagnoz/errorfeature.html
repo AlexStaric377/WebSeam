@@ -20,8 +20,8 @@
     {% block detalinglist %}
     <p>За результатами вибору на цей час комбінація симптомів не сприяє визначенню діагнозу</p>
     {% endblock %}
-    <a class="text-decoration-none text-reset" href="{% url 'receptinterwiev' %}">
-        <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20">' '</a>
+    <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button">Початок опитування</a>
+
 </div>
 
 {% endblock %}

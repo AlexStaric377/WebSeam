@@ -1204,7 +1204,7 @@ def reestraccountuser(request):
 
 
 def accountuser(request):
-
+    backurl = funcbakurl()
     settingsvar.html = 'diagnoz/accountuser.html'
     if settingsvar.setpost == False:
         if request.method == 'POST':
@@ -1275,7 +1275,7 @@ def accountuser(request):
                     or settingsvar.kabinetitem == 'likarlibdiagnoz'):
                 cab = 'Кабінет лікаря'
                 backurl = 'likar'
-                compl = ''
+                compl = 'Реєстрація '
                 reestr = False
             settingsvar.readprofil = False
             settingsvar.formaccount = AccountUserForm()

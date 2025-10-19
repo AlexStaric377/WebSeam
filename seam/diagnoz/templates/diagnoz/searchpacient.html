@@ -51,10 +51,9 @@
             style="vertical-align: inherit;">Підтвердити</font></font></button>
 </form>
 {% if reestr %}
-<a class="text-decoration-none " href="{% url 'pacientprofil' %}"> [ {{compl}} ]</a>
+<a class="btn btn-primary" href="{% url 'pacientprofil' %}" role="button">{{compl}}</a>
 {% endif %}
 <p></p>
-<a href="{% url backurl %}">
-    <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20"></a>
+<a class="btn btn-primary" href="{% url backurl %}" role="button">Головна</a>
 
 {% endblock %}

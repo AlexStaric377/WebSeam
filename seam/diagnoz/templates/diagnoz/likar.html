@@ -66,13 +66,14 @@
                 <td><a class="nav-link" href="{% url 'likarlibdiagnoz' %}"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">Загальна бібліотека напрямків </font></font></a></td>
             </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'exitkabinet' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Вийти з кабінету</font></font></a></td>
-            </tr>
             </tbody>
         </table>
     </div>
+    </div>
+</nav>
+<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+    <div class="col">
+        <a class="btn btn-primary" href="{% url 'exitkabinet' %}" role="button">Вийти з кабінету</a>
     </div>
 </nav>
 {% endblock %}

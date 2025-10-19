@@ -30,9 +30,7 @@
 </div>
 <div style="display: inline-block">
     <p></p>
-
-    <a class="text-decoration-none text-reset" href="{% url 'receptinterwiev' %}">
-        <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20"> </a>
-    <a aria-current="page" class="text-decoration-none " href="{% url 'enddetaling' %}"> ] [ {{next}} ]</a>
+    <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button">Початок опитування</a>
+    <a class="btn btn-primary" href="{% url 'enddetaling' %}" role="button">{{next}}</a>
 </div>
 {% endblock %}

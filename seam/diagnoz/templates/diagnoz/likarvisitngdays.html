@@ -39,7 +39,8 @@
     </div>
     {% endif %}
 </div>
-<a class="text-decoration-none" href="{% url 'addvisitingdays' %}">[ Додати ]</a>
-<a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
+
+<a class="btn btn-primary" href="{% url 'addvisitingdays' %}" role="button">Додати</a>
+<a class="btn btn-primary" href="{% url backurl %}" role="button">Повернутися</a>
 {% endblock %}
 

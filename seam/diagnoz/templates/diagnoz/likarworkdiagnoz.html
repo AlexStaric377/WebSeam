@@ -58,9 +58,9 @@
 <div style="display: inline-block">
     {% if directdiagnoz %}
     {% else %}
-    <a class="text-decoration-none" href="{% url 'addworkdiagnoz' %}">[ Додати ]</a>
+    <a class="btn btn-primary" href="{% url 'addworkdiagnoz' %}" role="button">Додати</a>
     {% endif %}
-    <a class="text-decoration-none" href="{% url backurl %}">[ Далі ]</a>
+    <a class="btn btn-primary" href="{% url backurl %}" role="button">Повернутися</a>
 </div>
 
 {% endblock %}

@@ -31,7 +31,6 @@
 </div>
 <div style="display: inline-block">
     <p></p>
-    <a class="text-decoration-none text-reset" href="{% url 'receptinterwiev' %}">
-        <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20"> </a>
-    <a aria-current="page" class="text-decoration-none " href="{% url 'nextgrdetaling' %}"> ] [ {{next}} ]</a>
+    <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button">Початок опитування</a>
+    <a aria-current="page" class="btn btn-primary" href="{% url 'nextgrdetaling' %}" role="button">{{next}}</a>
 </div>

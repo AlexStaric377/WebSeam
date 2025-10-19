@@ -33,10 +33,9 @@
         </div>
     </div>
     <div style="display: inline-block">
+        <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button">Початок опитування</a>
+        <a class="btn btn-primary" href="{% url backurl %}" role="button">Вийти</a>
 
-    <a class="text-decoration-none " href="{% url backurl %}"> [ Вийти ]</a>
-    <a href="{% url 'receptinterwiev' %}">
-        <img height="20" src="/static/diagnoz/img/backleft.png" style="float: left" width="20"></a>
 </div>
 </div>
 {% endblock %}
