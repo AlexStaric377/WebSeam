@@ -4,9 +4,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from diagnoz import views
 
-# urls_api = r'http GET http://192.168.1.113:50001/api/ApiControllerComplaint/ Accept:application/json'
-# urls_api_pk = r'http GET http://192.168.1.113:50001/api/ApiControllerComplaint/A.007/0/ Accept:application/json'
-
 urlpatterns = [
 
     path('', views.index, name='home'),

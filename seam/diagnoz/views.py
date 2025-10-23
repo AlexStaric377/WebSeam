@@ -2429,15 +2429,18 @@ def listreceptionpacient():
 # --- Розклад роботи
 def likarvisitngdays(request):  # httpRequest
     if inputkabinetlikar(request) == True:
-        cleanvars()
-        settingsvar.readprofil = False
-        settingsvar.nawpage = 'likar'
-        settingsvar.kabinetitem = 'likarvisitngdays'
-        settingsvar.kabinet = 'likarvisitngdays'
-        if settingsvar.setpostlikar == False:
-            accountuser(request)
-        else:
+        if settingsvar.kabinet == "guest":
             listlikarvisitngdays()
+        else:
+            cleanvars()
+            settingsvar.readprofil = False
+            settingsvar.nawpage = 'likar'
+            settingsvar.kabinetitem = 'likarvisitngdays'
+            settingsvar.kabinet = 'likarvisitngdays'
+            if settingsvar.setpostlikar == False:
+                accountuser(request)
+            else:
+                listlikarvisitngdays()
     json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarvisitngdays')
     unloadlog(json)
@@ -2450,7 +2453,7 @@ def listlikarvisitngdays():
     error = False
     profil = ''
     settingsvar.html = 'diagnoz/likarvisitngdays.html'
-    settingsvar.listapi = rest_api('api/VisitingDaysController/' + settingsvar.kodDoctor + '/0', '', 'GET')
+    settingsvar.listapi = rest_api('api/ApiControllerVisitingDays/' + settingsvar.kodDoctor + '/0', '', 'GET')
     if len(settingsvar.listapi) == 0:
         error = True
         profil = 'Шановний користувач! За вашим запитом не сформовано розклад роботи  .'

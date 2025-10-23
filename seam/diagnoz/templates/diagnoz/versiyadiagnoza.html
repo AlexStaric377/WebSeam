@@ -62,12 +62,20 @@
     </div>
 </div>
 <div class="container-fluid">
-    <div style="display: inline-block">
-
-        <a class="btn btn-primary" href="{% url 'receptfamilylikar' %}" role="button">Записатися до сімейного лікаря</a>
+    <div class="col">
         <a class="btn btn-primary" href="{% url 'receptprofillmedzaklad' %}" role="button">Записатися до профільного
             лікаря</a>
+    </div>
+    <p></p>
+    <div class="col">
+        <a class="btn btn-primary" href="{% url 'receptfamilylikar' %}" role="button">Записатися до сімейного лікаря</a>
+    </div>
+    <p></p>
+    <div class="col">
         <a class="btn btn-primary" href="{% url 'savediagnoz' %}" role="button">Зберегти опитування</a>
+    </div>
+    <p></p>
+    <div class="col">
         <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button">Почати з початку</a>
     </div>
 
