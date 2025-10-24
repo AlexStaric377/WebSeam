@@ -2457,6 +2457,12 @@ def listlikarvisitngdays():
     if len(settingsvar.listapi) == 0:
         error = True
         profil = 'Шановний користувач! За вашим запитом не сформовано розклад роботи  .'
+    else:
+        tmp = []
+        for item in settingsvar.listapi:
+            if item['onOff'] == 'Так':
+                tmp.append(item)
+            settingsvar.listapi = tmp
     settingsvar.nextstepdata = {
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
