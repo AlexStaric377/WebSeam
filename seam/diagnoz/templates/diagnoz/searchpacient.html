@@ -47,13 +47,13 @@
         </div>
     </div>
     <p></p>
-    <button class="w-40 h-20 btn btn-primary btn-lg" type="submit"><font style="vertical-align: inherit;"><font
+    <button class="w-40 h-20 btn btn-primary btn-lg" type="submit"><font style="font-size: 14px;"><font
             style="vertical-align: inherit;">Підтвердити</font></font></button>
 </form>
 {% if reestr %}
-<a class="btn btn-primary" href="{% url 'pacientprofil' %}" role="button">{{compl}}</a>
+<a class="btn btn-primary" href="{% url 'pacientprofil' %}" role="button" style="font-size: 14px;">{{compl}}</a>
 {% endif %}
 <p></p>
-<a class="btn btn-primary" href="{% url backurl %}" role="button">Головна</a>
+<a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Головна</a>
 
 {% endblock %}

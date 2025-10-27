@@ -46,6 +46,8 @@ main .features p {
     auto
 }
 
-
+div .custom-font-size {
+  font-size: 7px; /* или 1.5rem, 2em */
+}
 
 
