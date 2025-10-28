@@ -1,44 +1,45 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="col">
-        {% if likar %}
-        <p>{{medzaklad}}</p>
-        <p>{{piblikar}}</p>
-        <p>{{pacient}}</p>
-        <p>{{age_weight_growth}}</p>
-        <p> {{tel_email_pind}}</p>
-        {% else %}
-        <h6>{{iduser}}</h6>
-        {% endif %}
+<div class="col justify-content-md-center">
+    <div class="container-fluid">
+        <div class="col-md-auto">
+            {% if likar %}
+            <p>{{medzaklad}}</p>
+            <p>{{piblikar}}</p>
+            <p>{{pacient}}</p>
+            <p>{{age_weight_growth}}</p>
+            <p> {{tel_email_pind}}</p>
+            {% else %}
+            <h6>{{iduser}}</h6>
+            {% endif %}
+        </div>
     </div>
-
-    <div class="row row-cols-auto">
-        <div class="col">
-    {% block list %}
-            <table class="table table-striped">
+    <!---    <div class="row row-cols-auto"> --->
+    <div class="col-md-auto">
+        {% block list %}
+        <table class="table table-striped col-md-auto">
                 <thead>
                 <tr>
                     <th scope="col">Оберіть яке нездужання і де вас турбує</th>
                 </tr>
                 </thead>
                 <tbody>
-    {% for item in complaintlist %}
-    <tr>
-        <td><a aria-current="page" class="nav-link" href="{% url 'nextfeature' item.keyComplaint item.name %}"><font
-                style="vertical-align: inherit;"> {{ item.name }} </font></a></td>
-    </tr>
-    {% endfor %}
+                {% for item in complaintlist %}
+                <tr>
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'nextfeature' item.keyComplaint item.name %}"><font
+                            style="vertical-align: inherit;"> {{ item.name }} </font></a></td>
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
-    {% endblock %}
-        </div>
-
+        {% endblock %}
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Повернутися</a>
     </div>
 </div>
-<div style="display: inline-block">
-    <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Реєстратура</a>
-</div>
+
 {% endblock %}
 

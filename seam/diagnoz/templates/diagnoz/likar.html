@@ -1,80 +1,44 @@
 {% extends 'diagnoz/shablonmeny.html' %}
 {% block title %}SEAM{% endblock %}
 {% block nav %}
-<div class="col">
-    <img alt="" class=" d-inline-block align-text-middle" height="35" src="/static/diagnoz/img/kaducey.ico"
-         width="30">
-    <p style="font-size: 14px;">Диференційна діагностика стану нездужання людини- CEAM</p>
-</div>
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-        <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-                <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                   id="navbarDropdownMenuLink" role="button">
-                    <img alt="" class="d-inline-block align-text-middle" height="30" src="/static/diagnoz/img/meny.png"
-                         width="30">
-                    Навігація
-                </a>
-                <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'home' %}">Головна</a></li>
-                    <li><a class="dropdown-item" href="{% url 'reception' %}">Реєстратура</a></li>
-                    <li><a class="dropdown-item" href="{% url 'pacient' %}">Кабінет пацієнта</a></li>
-                    <!---                   <li><a class="dropdown-item" href="{% url 'setings' %}">Налаштування</a></li> --->
-                </ul>
-            </li>
-        </ul>
-    </div>
 
-    <div class="row row-cols-auto">
-    <div class="col">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">Кабінет лікаря</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><a aria-current="page" class="nav-link" href="{% url 'likarprofil' %}"><font
-                        style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Профіль</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'likarinterwiev' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Опитування</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'likarlistinterwiev' %}"><font
-                        style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Перегляд опитувань</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'likarreceptionpacient' %}"><font
-                        style="vertical-align: inherit;"><font style="vertical-align: inherit;">Розклад обстеження
-                    пацієнтів </font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'likarvisitngdays' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Розклад роботи </font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'likarworkdiagnoz' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Робочі напрямки</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'likarlibdiagnoz' %}"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Загальна бібліотека напрямків </font></font></a></td>
-            </tr>
-            </tbody>
-        </table>
+<div class="col justify-content-md-center">
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'likarprofil' %}">
+            <font style="font-size: 35px;"><font style="vertical-align: inherit;">Профіль</font></font></a>
+
     </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'likarinterwiev' %}"
+           style="font-size: 35px;">Провести діагностику</a>
+
     </div>
-</nav>
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
-        <a class="btn btn-primary" href="{% url 'exitkabinet' %}" role="button" style="font-size: 14px;">Вийти з
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'likarlistinterwiev' %}"
+           style="font-size: 35px;">Перегляд опитувань</a>
+    </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'likarreceptionpacient' %}"
+           style="font-size: 35px;">Розклад обстеження пацієнтів</a>
+    </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'likarvisitngdays' %}"
+           style="font-size: 35px;">Розклад роботи</a>
+    </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'likarworkdiagnoz' %}"
+           style="font-size: 35px;">Робочі напрямки</a>
+    </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'likarlibdiagnoz' %}"
+           style="font-size: 35px;">Загальна бібліотека напрямків</a>
+    </div>
+    <div style="display: inline-block">
+        <p></p>
+        <a class="btn btn-primary" href="{% url 'glavmeny' %}" role="button" style="font-size: 14px;">Вийти з
             кабінету</a>
     </div>
-</nav>
+
+</div>
+
 {% endblock %}

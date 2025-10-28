@@ -1,65 +1,29 @@
 {% extends 'diagnoz/shablonmeny.html' %}
 {% block title %}SEAM{% endblock %}
 {% block nav %}
-<div class="col">
-    <img alt="" class=" d-inline-block align-text-middle" height="35" src="/static/diagnoz/img/kaducey.ico"
-         width="30">
-    <p style="font-size: 14px;">Диференційна діагностика стану нездужання людини-CEAM</p>
-</div>
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-        <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-                <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                   id="navbarDropdownMenuLink" role="button">
-                    <img alt="" class="d-inline-block align-text-middle" height="30" src="/static/diagnoz/img/meny.png"
-                         width="30">Навігація </a>
-                <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'glavmeny' %}">Головна</a></li>
-                    <li><a class="dropdown-item" href="{% url 'pacient' %}">Кабінет пацієнта</a></li>
-                    <li><a class="dropdown-item" href="{% url 'likar' %}">Кабінет лікаря</a></li>
-                    <!---                    <li><a class="dropdown-item" href="{% url 'setings' %}">Налаштування</a></li> --->
-                </ul>
-            </li>
-        </ul>
+
+<div class="col justify-content-md-center">
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'receptinterwiev' %}">
+            <font style="font-size: 35px;"><font style="vertical-align: inherit;">Провести діагностику</font></font></a>
     </div>
-    <div class="row row-cols-auto">
-    <div class="col">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">Реєстратура</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><a aria-current="page" class="nav-link" href="{% url 'receptinterwiev' %}">
-                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                        Провести діагностику</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a aria-current="page" class="nav-link" href="{% url 'checkvisitinglikar' %}">
-                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                        Перегляд запису до лікаря</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'receptprofillmedzaklad' %}">
-                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профільні
-                        лікарні</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'directiondiagnoz' %}">
-                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Напрямки
-                        діагностики</font></font></a></td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'checkvisitinglikar' %}"
+           style="font-size: 35px;">Перегляд запису до лікаря</a>
     </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'receptprofillmedzaklad' %}"
+           style="font-size: 35px;">Профільні лікарні</a>
+    </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'directiondiagnoz' %}"
+           style="font-size: 35px;">Напрямки діагностики</a>
     </div>
     <div style="display: inline-block">
         <p></p>
         <a class="btn btn-primary" href="{% url 'glavmeny' %}" role="button" style="font-size: 14px;">Головна</a>
     </div>
-</nav>
+
+</div>
 
 {% endblock %}

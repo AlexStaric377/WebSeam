@@ -217,7 +217,7 @@ def interwievcomplaint(request):
             case 'guest':
                 settingsvar.setpostlikar = False
                 settingsvar.interviewcompl = True
-                iduser = 'Реєстратура: ' + funciduser()
+                iduser = funciduser()
             case 'pacient' | 'interwiev' | 'likar' | 'likarinterwiev':
                 settingsvar.setpostlikar = True
                 iduser = funciduser()

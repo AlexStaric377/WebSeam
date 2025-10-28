@@ -1,48 +1,18 @@
 {% extends 'diagnoz/shablonmeny.html' %}
 {% block title %}SEAM{% endblock %}
 {% block nav %}
-<div class="col">
-    <img alt="" class=" d-inline-block align-text-middle" height="35" src="/static/diagnoz/img/kaducey.ico"
-                 width="30">
-    <p style="font-size: 14px;">Диференційна діагностика стану нездужання людини-CEAM</p>
+
+<div class="col justify-content-md-center">
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'reception' %}">
+            <font style="font-size: 35px;"><font style="vertical-align: inherit;">Гість</font></font></a>
+    </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'pacient' %}" style="font-size: 35px;">Пацієнт</a>
+    </div>
+    <div class="col-md-auto">
+        <a class="text-primary text-decoration-none" href="{% url 'likar' %}" style="font-size: 35px;">Лікарь</a>
+    </div>
 </div>
-
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-
-    <div class="row row-cols-auto">
-    <div class="col">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">Навігація</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><a aria-current="page" class="nav-link" href="{% url 'reception' %}"><i
-                        class="bi bi-bar-chart-steps"></i>
-                    <font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Реєстратура</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'pacient' %}"><i class="bi bi-house-add"></i>
-                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Кабінет
-                        пацієнта</font></font></a></td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'likar' %}"><i class="bi bi-house-add"></i>
-                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Кабінет лікаря</font></font></a>
-                </td>
-            </tr>
-            <tr>
-                <td><a class="nav-link" href="{% url 'proseam' %}">
-                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Про CЕАМ</font></font></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    </div>
-</nav>
 
 {% endblock %}

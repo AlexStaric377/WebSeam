@@ -16,33 +16,39 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-<div class="container-fluid">
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <main>
-            <ul class="navbar-nav">
-                <li class="nav-item dropdown">
-                    <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                       id="navbarDropdownMenuLink" role="button">
-                        <img alt="" class="d-inline-block align-text-middle" height="30"
-                             src="/static/diagnoz/img/meny.png"
-                             style="float: left" width="30">
-                        Навігація
-                    </a>
-                    <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'home' %}">Головна</a></li>
-                        <li><a class="dropdown-item" href="{% url 'reception' %}">Реєстратура</a></li>
-                        <li><a class="dropdown-item" href="{% url 'pacient' %}">Кабінет пацієнта</a></li>
-                        <li><a class="dropdown-item" href="{% url 'likar' %}">Кабінет лікаря</a></li>
-                        <!---   <li><a class="dropdown-item" href="{% url 'setings' %}">Налаштування</a></li> --->
+<div class="container text-center">
+    <div class="container-fluid">
+        <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+            <nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+                <div class="container">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+                               id="navbarDropdownMenuLink" role="button">
+                                <img alt="" class="d-inline-block align-text-middle" height="30"
+                                     src="/static/diagnoz/img/meny.png"
+                                     width="30">Навігація </a>
+                            <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'glavmeny' %}">Головна</a></li>
+                                <li><a class="dropdown-item" href="{% url 'reception' %}">Гість</a></li>
+                                <li><a class="dropdown-item" href="{% url 'pacient' %}">Пацієнт</a></li>
+                                <li><a class="dropdown-item" href="{% url 'likar' %}">Лікарь</a></li>
+                                <!---                    <li><a class="dropdown-item" href="{% url 'setings' %}">Налаштування</a></li> --->
+                            </ul>
+                        </li>
                     </ul>
-                </li>
-            </ul>
+                </div>
+            </nav>
+            <div class="col text-end">
+                <a href="{% url 'proseam' %}">
+                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Про CЕАМ</font></font></a>
+            </div>
+        </nav>
+        {% block content %}
+        {% endblock %}
 
-            {% block content %}
-            {% endblock %}
-
-        </main>
     </div>
+
 </div>
 
 </body>
