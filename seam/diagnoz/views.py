@@ -1461,9 +1461,12 @@ def funcsearchpacient(formsearch):
                 shablonlikar(settingsvar.pacient)
             else:
                 if settingsvar.funciya == 'checkvisitinglikar':
+                    settingsvar.backurl = 'checkvisitinglikar'
+                    settingsvar.nextstepdata['iduser'] = 'Реєстратура'
                     funcshablonlistreceptionlikar()
 
                 else:
+                    settingsvar.setintertview = True
                     saveselectlikar(settingsvar.pacient)
         else:
             errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
@@ -2277,10 +2280,12 @@ def search_pacient():
     compl = 'Зареєструвати пацієнта'
     if settingsvar.funciya == 'checkvisitinglikar':
         reestr = False
+        iduser = 'Реєстратура'
     formsearch = SearchPacient()
     settingsvar.nextstepdata = {
         'form': formsearch,
         'compl': compl,
+        'iduser': iduser,
         'reestrinput': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
         'medzaklad': settingsvar.namemedzaklad,
         'backurl': backurl,
@@ -2624,12 +2629,13 @@ def profillmedzaklad(request, select_icd):
     settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/" +
                                        select_icd + "/0/0", '', 'GET')
     for item in settingsvar.grupDiagnoz:
-        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['kodZaklad'] + '/0/0/0',
+        if len(item['kodZaklad']) > 0:
+            medzaklad = rest_api('/api/MedicalInstitutionController/' + item['kodZaklad'] + '/0/0/0',
                              '', 'GET')
-        if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(medzaklad)
-        for itemgrup in settingsvar.grupmedzaklad:
-            if itemgrup['kodZaklad'] != item['kodZaklad']:
-                settingsvar.grupmedzaklad.append(medzaklad)
+            if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(medzaklad)
+            for itemgrup in settingsvar.grupmedzaklad:
+                if itemgrup['kodZaklad'] != item['kodZaklad']:
+                    settingsvar.grupmedzaklad.append(medzaklad)
     settingsvar.nawpage = 'backlikarworkdiagnoz'
     iduser = funciduser()
 
