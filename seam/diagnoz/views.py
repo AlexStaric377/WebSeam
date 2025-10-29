@@ -904,11 +904,11 @@ def funcbackpage():
 def saveselectlikar(pacient):
     backurl = funcbakurl()
     iduser = funciduser()
-    if settingsvar.setintertview == True:
-        settingsvar.html = 'diagnoz/finishinterviewpacient.html'
-        settingsvar.nawpage = 'backshablonselect'
+    #    if settingsvar.setintertview == True:
+    settingsvar.html = 'diagnoz/finishinterviewpacient.html'
+    settingsvar.nawpage = 'backshablonselect'
 
-        if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
+    if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
             settingsvar.datereception = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
             settingsvar.nextstepdata = {
                     'iduser': iduser,
@@ -921,25 +921,28 @@ def saveselectlikar(pacient):
                     'podval': 'Ви підтверджуєте збереження опитування?',
                     'backurl': backurl
                 }
-        else:
-                settingsvar.nextstepdata = {
-                    'iduser': iduser,
-                'pacient': 'Увага! ' + pacient['name'] + " " + pacient['surname'],
-                    'shapka': 'Ви сформували запит на прийом до лікаря.',
-                    'medzaklad': settingsvar.namemedzaklad,
-                    'likar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
-                    'datereception': 'Дата прийому: ' + settingsvar.datereception,
-                    'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
-                    'podval': 'Ви підтверджуєте свій вибір?',
-                    'backurl': backurl
-                }
     else:
-        settingsvar.html = 'diagnoz/savediagnoz.html'
-        settingsvar.nextstepdata = {
-            'iduser': iduser,
-            'compl': 'Шановний користувач! Ваш профіль збережено.',
-            'backurl': backurl
-        }
+        if 'name' in pacient:
+            settingsvar.nextstepdata = {
+                'iduser': iduser,
+                'pacient': 'Увага! ' + pacient['name'] + " " + pacient['surname'],
+                'shapka': 'Ви сформували запит на прийом до лікаря.',
+                'medzaklad': settingsvar.namemedzaklad,
+                'likar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+                'datereception': 'Дата прийому: ' + settingsvar.datereception,
+                'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
+                'podval': 'Ви підтверджуєте свій вибір?',
+                'backurl': backurl
+            }
+
+
+        else:
+            settingsvar.html = 'diagnoz/savediagnoz.html'
+            settingsvar.nextstepdata = {
+                'iduser': iduser,
+                'compl': 'Шановний користувач! Ваш профіль не знайдено.',
+                'backurl': backurl
+            }
     return
 
 
