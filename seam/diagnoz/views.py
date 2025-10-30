@@ -667,7 +667,7 @@ def contentinterwiev(request):  # httpRequest
     if len(settingsvar.pacient) > 0:
         PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
     data = {
-        'compl': 'Попередній діагноз: ' + settingsvar.nametInterview,
+        'compl': 'Попередній діагноз: ' + settingsvar.namediagnoz,
         'detalinglist': api,
         'iduser': iduser,
         'backurl': backurl,
@@ -2466,6 +2466,7 @@ def listlikarvisitngdays():
         error = True
         profil = 'Шановний користувач! За вашим запитом не сформовано розклад роботи  .'
     else:
+        if settingsvar.kabinet == "guest": profil = "guest"
         tmp = []
         for item in settingsvar.listapi:
             if item['onOff'] == 'Так':
@@ -2770,7 +2771,7 @@ def workdiagnozlikar(request, select_kodDoctor, select_icd, select_id):
 
 # формування та виведення  переліку діагнозів за вказаним напрямком
 def contentinterview(request, select_kodDiagnoza):
-    namediagnoz = ""
+    #    namediagnoz = ""
     backurl = 'likarworkdiagnoz'
     settingsvar.html = 'diagnoz/contentinterview.html'
     protokol = rest_api('api/DependencyDiagnozController/' + select_kodDiagnoza + "/0/0", '', 'GET')
@@ -2783,7 +2784,7 @@ def contentinterview(request, select_kodDiagnoza):
                 'listwork': workdiagnoz,
                 'medzaklad': settingsvar.namemedzaklad,
                 'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
-                'workdiagnoz': namediagnoz,
+                'namediagnoz': settingsvar.namediagnoz,
                 'backurl': backurl
             }
         else:

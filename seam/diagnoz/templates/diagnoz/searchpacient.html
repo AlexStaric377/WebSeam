@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid text-center">
     <div class="col">
         {% if reestr %}
         <p>{{medzaklad}}</p>
@@ -16,11 +16,13 @@
         {% endif %}
     </div>
 
-</nav>
-<form class="needs-validation" method="POST" novalidate="">
+</div>
+<div class="d-flex justify-content-center align-items-center ">
+    <form class="needs-validation mx-auto " method="POST" novalidate="">
     {% csrf_token %}
-    <div class="row g-3">
-        <div class="col-md-2">
+
+        <div class="row g-3 text-center">
+            <div class="col-md-4">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.telefon.label }}</font></font></label>
             {{form.telefon}}
@@ -29,7 +31,7 @@
             </div>
         </div>
         <p></p>
-        <div class="col-md-2">
+            <div class="col-md-4">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.name.label }}</font></font>
             </label>
@@ -38,7 +40,7 @@
                     style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
             </div>
         </div>
-        <div class="col-md-2">
+            <div class="col-md-4">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
             {{form.surname}}
@@ -47,6 +49,7 @@
             </div>
         </div>
     </div>
+
     <p></p>
     <div style="display: inline-block">
         <button class=" btn btn-primary " type="submit"><font style="font-size: 14px;"><font
@@ -57,6 +60,6 @@
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
     </div>
 </form>
-
+</div>
 
 {% endblock %}

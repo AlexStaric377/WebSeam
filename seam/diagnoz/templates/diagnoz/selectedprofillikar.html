@@ -3,45 +3,48 @@
 {% block content %}
 
 
-<div class="row row-cols-auto">
-    <div class="col">
-        <table class="table">
-            <thead>
-            </thead>
-            <tbody>
+<div class="container text-center">
+    <div class="col text-center">
+
         {% if likar %}
+        <table class="table">
+            <tbody>
         <tr>
             <td><p>{{piblikar}}</p></td>
         </tr>
         <tr>
             <td><p>{{pacient}}</p></td>
         </tr>
+            </tbody>
+        </table>
         {% else %}
-        <tr>
-            <td><h6>{{iduser}}</h6></td>
-        </tr>
+        <h6>{{iduser}}</h6>
+        <table class="table">
+            <tbody>
         <tr>
             <td><p>{{namedzaklad}}</p></td>
         </tr>
         <tr>
             <td><p>{{adrdzaklad}}</p></td>
         </tr>
-        {% endif %}
             </tbody>
         </table>
+        {% endif %}
+
     </div>
-</div>
 
-<div class="container-fluid">
+
+    <div class="container-fluid text-center">
     <h5> {{ compl }} </h5>
-    {% if directdiagnoz %}
 
-    <h6>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне прізвище</h6>
-    {% endif %}
-    <div class="row row-cols-auto">
-        <div class="col">
-    {% block list %}
-            <table class="table table-striped">
+        <div class="row row-cols-auto">
+            <div class="col">
+                {% block list %}
+                {% if directdiagnoz %}
+                <h6>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне
+                    прізвище</h6>
+                {% endif %}
+                <table class="table table-striped">
         <thead>
         <tr>
             <th> Ім'я, прізвище</th> <!---style="width: 15%;"--->
@@ -82,5 +85,5 @@
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
     </div>
 </div>
-
+</div>
 {% endblock %}

@@ -1,19 +1,19 @@
 {% extends 'diagnoz/shablonpage.html' %}
 {% block content %}
-<div class="col">
-        <p>{{medzaklad}}</p>
-        <p>{{piblikar}}</p>
+<div class="container-fluid text-center">
+    <p>{{medzaklad}}</p>
+    <p>{{piblikar}}</p>
     <p>Розклад приймання пацієнтів для обстеження</p>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid text-center">
 
     {% if error %}
     <p>{{profil}}</p>
     {% else %}
-    <div class="row row-cols-auto">
-        <div class="col">
-            <table class="table table-striped">
+
+    <div class="col">
+        <table class="table table-striped">
         <thead>
         <tr>
             <th>День неділі</th>
@@ -35,11 +35,12 @@
         {% endfor %}
         </tbody>
     </table>
-        </div>
     </div>
     {% endif %}
     <div style="display: inline-block">
+        {% if profil != "guest" %}
         <a class="btn btn-primary" href="{% url 'addvisitingdays' %}" role="button" style="font-size: 14px;">Додати</a>
+        {% endif %}
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
     </div>
 </div>

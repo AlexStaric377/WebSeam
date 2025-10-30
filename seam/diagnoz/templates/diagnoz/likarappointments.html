@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid text-center">
     <div class="col">
         {% if likar %}
         <p>{{piblikar}}</p>
@@ -11,12 +11,9 @@
         {% endif %}
         <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
     </div>
-</nav>
-<div class="container-fluid">
-    <h6>Для вибору дати та часу співбесіди з лікарем натисніть на відповідний рядок</h6>
-    <div class="row row-cols-auto">
-        <div class="col">
 
+    <div class="col container-fluid">
+        <h6>Для вибору дати та часу співбесіди з лікарем натисніть на відповідний рядок</h6>
             {% block list %}
             <table class="table table-striped">
                 <thead>
@@ -27,28 +24,30 @@
                 </tr>
                 </thead>
                 <tbody>
-    {% for item in complaintlist %}
-    {% if item.onOff == "Так" %}
-    <tr>
-        <td><a aria-current="page" class="nav-link"
-       href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
-                style="vertical-align: inherit;"> {{ item.daysOfTheWeek }} </font></a></td>
-        <td><a aria-current="page" class="nav-link"
-               href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
-                style="vertical-align: inherit;"> {{ item.dateVizita }} </font></a></td>
-        <td><a aria-current="page" class="nav-link"
-               href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
-                style="vertical-align: inherit;"> {{item.timeVizita}}</font></a></td>
+                {% for item in complaintlist %}
+                {% if item.onOff == "Так" %}
+                <tr>
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
+                            style="vertical-align: inherit;"> {{ item.daysOfTheWeek }} </font></a></td>
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
+                            style="vertical-align: inherit;"> {{ item.dateVizita }} </font></a></td>
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'selectvisitingdays' item.timeVizita  item.dateVizita  item.daysOfTheWeek  %}"><font
+                            style="vertical-align: inherit;"> {{item.timeVizita}}</font></a></td>
 
-    </tr>
-    {% endif %}
-    {% endfor %}
+                </tr>
+                {% endif %}
+                {% endfor %}
                 </tbody>
             </table>
-    {% endblock %}
-        </div>
+        {% endblock %}
     </div>
 </div>
-<a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися на початок</a>
-
+<div class="container-fluid text-center">
+    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися на
+        початок</a>
+</div>
+</div>
 {% endblock %}

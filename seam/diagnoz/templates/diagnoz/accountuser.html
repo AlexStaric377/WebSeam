@@ -2,17 +2,20 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid text-center">
     <div class="col">
         <h6>{{reestrinput}}</h6>
     </div>
     <a> Для входу до кабінету введіть показники облікового запису</a>
-
-</nav>
-<form class="needs-validation" method="POST" novalidate="">
+    {% if reestr %}
+    <a> Для створення облікового запису натисніть на кнопку "Зареєструватися"</a>
+    {% endif %}
+</div>
+<div class="d-flex justify-content-center align-items-center ">
+    <form class="needs-validation mx-auto" method="POST" novalidate="">
     {% csrf_token %}
     <div class="row g-3">
-        <div class="col-md-2">
+        <div class="col-md-4">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.login.label }}</font></font>
             </label>
@@ -22,7 +25,7 @@
             </div>
         </div>
         <p></p>
-        <div class="col-md-2">
+        <div class="col-md-4">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.password.label }}</font></font></label>
             {{form.password}}
@@ -32,18 +35,17 @@
         </div>
     </div>
     <p></p>
-    <button class="w-30 h-13 btn btn-primary btn-lg" type="submit"><font style="font-size: 14px;"><font
+        <div style="display: inline-block">
+            <button class="w-30 h-13 btn btn-primary btn-lg" type="submit"><font style="font-size: 14px;"><font
             style="vertical-align: inherit;">Підтвердити</font></font></button>
-</form>
-{% if reestr %}
-<a> Для створення облікового запису натисніть на кнопку "Зареєструватися"</a><p></p>
-<div class="col">
-    <a class="btn btn-primary" href="{% url 'reestraccountuser' %}" role="button" style="font-size: 14px;">{{compl}}</a>
-</div>
-{% endif %}
-<p></p>
-<div class="col">
-    <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Скасувати запит</a>
+            {% if reestr %}
+            <a class="btn btn-primary" href="{% url 'reestraccountuser' %}" role="button" style="font-size: 14px;">{{compl}}</a>
+            {% endif %}
+            <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Скасувати запит</a>
+        </div>
+
+
+    </form>
 </div>
 
 {% endblock %}

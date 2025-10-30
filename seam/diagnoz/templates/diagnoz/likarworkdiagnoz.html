@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container text-center">
     <div class="col">
         <h6>{{iduser}}</h6>
         {% if directdiagnoz %}
@@ -11,20 +11,22 @@
         <p>{{piblikar}}</p>
         {% endif %}
     </div>
-</nav>
+
 
     {% if listapinull %}
     <p>{{сontentnull}}</p>
-    {% else %}
-    {% if directdiagnoz %}
-<h6>Для перегляду профільних медзакладів за напрямком необхідно натиснути на відповідний рядок</h6>
-    {% else %}
-    <h6>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
     {% endif %}
-<div class="container-fluid">
-    <div class="row row-cols-auto">
+    <div class="container-fluid text-center">
         <div class="col">
-    {% block list %}
+            {% block list %}
+            {% if listapinull %}
+            {% else %}
+            {% if directdiagnoz %}
+            <h6>Для перегляду профільних медзакладів за напрямком необхідно натиснути на відповідний рядок</h6>
+            {% else %}
+            <h6>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
+            {% endif %}
+            {% endif %}
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -32,37 +34,32 @@
                 </tr>
                 </thead>
                 <tbody>
-
                 {% for item in complaintlist %}
-    <tr>
-
-        {% if directdiagnoz %}
-
-        <td><a aria-current="page" class="nav-link" href="{% url 'profillmedzaklad'  item.icd  %}"><font
+                <tr>
+                    {% if directdiagnoz %}
+                    <td><a aria-current="page" class="nav-link" href="{% url 'profillmedzaklad'  item.icd  %}"><font
                 style="vertical-align: inherit;"> {{item.icdGrDiagnoz}} </font></a></td>
-        {% else %}
-        <td><a aria-current="page" class="nav-link"
-               href="{% url 'workdiagnozlikar' item.kodDoctor  item.icd  item.id %}"><font
+                    {% else %}
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'workdiagnozlikar' item.kodDoctor  item.icd  item.id %}"><font
                 style="vertical-align: inherit;"> {{ item.icdGrDiagnoz }} </font></a></td>
-
-        {% endif %}
-    </tr>
-    {% endfor %}
+                    {% endif %}
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
-    {% endblock %}
-    {% endif %}
+            {% endblock %}
+
         </div>
     </div>
-</div>
-<div style="display: inline-block">
+    <div class="container-fluid text-center" style="display: inline-block">
     {% if directdiagnoz %}
     {% else %}
     <a class="btn btn-primary" href="{% url 'addworkdiagnoz' %}" role="button" style="font-size: 14px;">Додати</a>
     {% endif %}
     <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
 </div>
-
+</div>
 {% endblock %}
 
 

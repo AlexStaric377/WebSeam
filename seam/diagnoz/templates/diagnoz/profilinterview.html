@@ -2,21 +2,18 @@
 
 {% block content %}
 
-<div class="container-fluid">
-    <div class="col">
+<div class="container-fluid text-center">
         {% if likar %}
-        <p>{{piblikar}}</p>
-
+    <p>{{piblikar}}</p>
         {% else %}
-        <h6>{{iduser}}</h6>
+    <h6>{{iduser}}</h6>
         {% endif %}
         <a class="text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
-    </div>
 </div>
-<div class="container-fluid">
-    <div class="row row-cols-auto">
-        <div class="col">
-            <table class="table">
+<div class="container-fluid text-center">
+
+
+    <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">Профіль пацієнта</th>
@@ -47,14 +44,11 @@
 
                 </tbody>
             </table>
-        </div>
-    </div>
-
-</div>
-<div style="display: inline-block">
+    <div style="display: inline-block">
     {% if remove %}
     <a class="btn btn-primary" href="{% url removefunc %}" role="button" style="font-size: 14px;">Видалити</a>
     {% endif %}
     <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+</div>
 </div>
 {% endblock %}

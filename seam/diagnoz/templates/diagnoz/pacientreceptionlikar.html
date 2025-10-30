@@ -1,15 +1,14 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-<div class="col">
+<div class="container-fluid text-center">
   <h6>{{iduser}}</h6>
   <p>{{pacient}}</p>
   <h6>Перегляд списку записів обстежень до лікаря</h6>
-  <p>Для перегляду опису обраного попереднього <br>
-    діагнозу натисніть на відповідний рядок</p>
+  <p>Для перегляду опису обраного попереднього діагнозу натисніть на відповідний рядок</p>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid  text-center">
   <table class="table table-striped">
     <thead>
     <tr>
@@ -35,7 +34,7 @@
     {% endfor %}
     </tbody>
   </table>
-  <div style="display: inline-block">
+  <div class="container text-center" style="display: inline-block">
     <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Повернутися</a>
   </div>
 </div>

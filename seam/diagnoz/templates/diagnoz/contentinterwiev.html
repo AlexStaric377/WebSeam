@@ -2,42 +2,37 @@
 
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
-        <h5>{{iduser}}</h5>
-    </div>
-</nav>
-<div class="container-fluid">
-
-<h5>{{pacient}}</h5>
+<div class="container-fluid text-center">
+    <h5>{{iduser}}</h5>
+    <h5>{{pacient}}</h5>
     <h5> {{compl}} </h5>
     <p>{{namediagnoz}}</p>
-    <div class="row row-cols-auto">
-        <div class="col">
+
+
     {% block detalinglist %}
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">Характер прояву</th>
-                </tr>
-                </thead>
-                <tbody>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Характер прояву</th>
+        </tr>
+        </thead>
+        <tbody>
     {% for item in detalinglist %}
     <tr>
         <td><a aria-current="page" class="nav-link" href=""><font
                 style="vertical-align: inherit;">{{item.detailsInterview}}</font></a></td>
     </tr>
     {% endfor %}
-                </tbody>
-            </table>
+        </tbody>
+    </table>
     {% endblock %}
-        </div>
-    </div>
+
+
     <div style="display: inline-block">
         <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
             опитування</a>
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Вийти</a>
+    </div>
+</div>
 
-</div>
-</div>
 {% endblock %}
