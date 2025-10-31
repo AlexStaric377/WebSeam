@@ -2,10 +2,9 @@
 
 {% block content %}
 <h6>Кабінет пацієнта</h6>
-<div class="container-fluid">
-    <div class="row row-cols-auto">
-        <div class="col">
-            <table class="table">
+<div class="container-fluid text-center">
+
+    <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">Профіль пацієнта</th>
@@ -38,8 +37,8 @@
                 </tr>
                 </tbody>
             </table>
-        </div>
-    </div>
+
+
     <div style="display: inline-block">
         <a class="btn btn-primary" href="{% url 'pacientprofil' %}" role="button"
            style="font-size: 14px;">Корегувати</a>

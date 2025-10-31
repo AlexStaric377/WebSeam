@@ -1,10 +1,9 @@
 {% extends 'diagnoz/shablonpage.html' %}
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid text-center">
     {% include 'diagnoz/shablonzaglinterview.html' %}
     <h6> {{ compl }} </h6>
-    <div class="row row-cols-auto">
-        <div class="col">
+
     {% block detalinglist %}
             <table class="table table-striped">
                 <thead>
@@ -13,25 +12,24 @@
                 </tr>
                 </thead>
                 <tbody>
-    {% for item in detalinglist %}
-    <tr>
-        <td><a aria-current="page" class="nav-link"
-       href="{% url 'selectdetaling' item.kodDetailing%}"><font
+                {% for item in detalinglist %}
+                <tr>
+                    <td><a aria-current="page" class="nav-link"
+                           href="{% url 'selectdetaling' item.kodDetailing%}"><font
                 style="vertical-align: inherit;">{{item.nameDetailing}}</font></a></td>
-    </tr>
+                </tr>
 
-    {% endfor %}
+                {% endfor %}
                 </tbody>
             </table>
     {% endblock %}
-        </div>
+    <div style="display: inline-block">
+        <p></p>
+        <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
+            опитування</a>
+        <a aria-current="page" class="btn btn-primary" href="{% url 'enddetaling' %}" role="button"
+           style="font-size: 14px;">{{next}}</a>
     </div>
 </div>
-<div style="display: inline-block">
-    <p></p>
-    <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
-        опитування</a>
-    <a aria-current="page" class="btn btn-primary" href="{% url 'enddetaling' %}" role="button"
-       style="font-size: 14px;">{{next}}</a>
-</div>
+
 {% endblock %}

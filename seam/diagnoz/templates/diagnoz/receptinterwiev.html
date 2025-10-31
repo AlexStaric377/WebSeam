@@ -1,10 +1,9 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-<div class="col justify-content-md-center">
-    <div class="container-fluid">
-        <div class="col-md-auto">
-            {% if likar %}
+<div class="container-fluid text-center">
+
+    {% if likar %}
             <p>{{medzaklad}}</p>
             <p>{{piblikar}}</p>
             <p>{{pacient}}</p>
@@ -13,12 +12,10 @@
             {% else %}
             <h6>{{iduser}}</h6>
             {% endif %}
-        </div>
-    </div>
-    <!---    <div class="row row-cols-auto"> --->
-    <div class="col-md-auto">
-        {% block list %}
-        <table class="table table-striped col-md-auto">
+
+
+    {% block list %}
+    <table class="table table-striped ">
                 <thead>
                 <tr>
                     <th scope="col">Оберіть яке нездужання і де вас турбує</th>
@@ -35,7 +32,7 @@
                 </tbody>
             </table>
         {% endblock %}
-    </div>
+
     <div style="display: inline-block">
         <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Повернутися</a>
     </div>

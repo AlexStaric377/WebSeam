@@ -596,11 +596,12 @@ def writediagnoz():
             settingsvar.nawpage = 'backfromcontent'
             settingsvar.html = 'diagnoz/versiyadiagnoza.html'
             iduser = funciduser()
+            settingsvar.namediagnoz = item['nametInterview']
             settingsvar.nextstepdata = {
                 'opis': item['opistInterview'],
                 'http': item['uriInterview'],
                 'rekomendaciya': contentRecommendation,
-                'compl': settingsvar.nametInterview,
+                'compl': settingsvar.namediagnoz,
                 'detalinglist': settingsvar.diagnozStroka,
                 'iduser': iduser,
                 'piblikar': ''

@@ -1,18 +1,16 @@
 {% extends 'diagnoz/shablonpage.html' %}
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
-        <p>{{medzaklad}}</p>
+<div class="container-fluid  text-center">
+    <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
-    </div>
-</nav>
+
+</div>
 <div class="container-fluid">
-    <div class="col">
+
     <p>Поточний діагноз : {{workdiagnoz}}</p>
-    </div>
-    <div class="row row-cols-auto">
-        <div class="col">
+
+
     {% block list %}
             <table class="table table-striped">
                 <thead>
@@ -30,8 +28,7 @@
                 </tbody>
             </table>
     {% endblock %}
-        </div>
-    </div>
+
 </div>
 
 <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Далі</a>

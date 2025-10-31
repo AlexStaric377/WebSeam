@@ -1,24 +1,15 @@
 {% extends 'diagnoz/shablonpage.html' %}
 {% block content %}
 
-<div class="container-fluid">
-    <div class="col">
+<div class="container-fluid text-center">
         <h6>{{iduser}}</h6>
+    <div class="container">
         <a class="btn btn-sm btn-primary" href="{% url 'contentinterwiev' %}" role="button"
            style="font-size: 14px;">Зміст опитування</a>
     </div>
-</div>
-
-<div class="container-fluid">
-    <div class="row row-cols-auto">
-        <div class="col">
             <table class="table">
-                <thead>
-                <tr>
-                    <!---                <th scope="col">Кабінет лікаря</th> --->
-                </tr>
-                </thead>
-                <tbody>
+
+            <tbody>
                 <tr>
                     <td><p>{{ pacient }}</p></td>
                 </tr>
@@ -40,8 +31,7 @@
 
                 </tbody>
             </table>
-        </div>
-    </div>
+
 
     <div style="display: inline-block">
 
