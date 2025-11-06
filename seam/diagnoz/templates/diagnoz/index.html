@@ -1,6 +1,9 @@
 {% extends 'diagnoz/shablonmeny.html' %}
+
 {% block title %}SEAM{% endblock %}
 {% block nav %}
+{% if mainbar %}
+
 
 <div class="col justify-content-md-center">
     <div class="col-md-auto">
@@ -13,7 +16,13 @@
     <div class="col-md-auto">
         <a class="text-primary text-decoration-none" href="{% url 'likar' %}" style="font-size: 30px;">Лікарь</a>
     </div>
-</div>
+
+    {% else %}
+
+
+    {% endif %}
+
+
 
 {% endblock %}
 

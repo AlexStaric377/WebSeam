@@ -3,16 +3,14 @@
 {% block content %}
 
 <div class="container-fluid text-center">
-    <div class="col">
+
         {% if likar %}
         <p>{{piblikar}}</p>
         {% else %}
         <h6>{{iduser}}</h6>
         {% endif %}
         <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
-    </div>
 
-    <div class="col container-fluid">
         <h6>Для вибору дати та часу співбесіди з лікарем натисніть на відповідний рядок</h6>
             {% block list %}
             <table class="table table-striped">
@@ -43,11 +41,12 @@
                 </tbody>
             </table>
         {% endblock %}
+
+    <div class="container-fluid text-center" style="display: inline-block">
+        <a class="btn btn-primary" href="{% url backurl %}" role="button"
+           style="font-size: 14px;">Повернутися на початок</a>
     </div>
 </div>
-<div class="container-fluid text-center">
-    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися на
-        початок</a>
-</div>
-</div>
+
+
 {% endblock %}

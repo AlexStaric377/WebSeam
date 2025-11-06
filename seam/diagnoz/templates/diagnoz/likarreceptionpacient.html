@@ -1,18 +1,12 @@
 {% extends 'diagnoz/shablonpage.html' %}
-
 {% block content %}
-
-<div class="col">
+<div class="container-fluid  text-center">
         <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
-        <p>Перегляд проведених опитувань</p>
-</div>
-
-<div class="container-fluid">
+    <h6>Перегляд проведених опитувань</h6>
     <h6>Для перегляду деталей обстеження необхідного пацієнта натисніть на відповідний рядок</h6>
-    <div class="row row-cols-auto">
-        <div class="col">
-            <table class="table table-striped">
+
+    <table class="table table-striped">
         <thead>
         <tr>
             <th>Дата візиту</th>
@@ -36,11 +30,11 @@
     {% endfor %}
         </tbody>
     </table>
-        </div>
+    <div style="display: inline-block">
+        {% if remove %}
+        <a class="btn btn-primary" href="{% url removefunc %}" role="button" style="font-size: 14px;">Видалити</a>
+        {% endif %}
+        <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+        {% endblock %}
     </div>
 </div>
-{% if remove %}
-<a class="btn btn-primary" href="{% url removefunc %}" role="button" style="font-size: 14px;">Видалити</a>
-{% endif %}
-<a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
-{% endblock %}

@@ -4,15 +4,10 @@
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     <p>Розклад приймання пацієнтів для обстеження</p>
-</div>
-
-<div class="container-fluid text-center">
 
     {% if error %}
     <p>{{profil}}</p>
     {% else %}
-
-    <div class="col">
         <table class="table table-striped">
         <thead>
         <tr>
@@ -24,20 +19,18 @@
         </thead>
         <tbody>
         {% for item in complaintlist %}
-
         <tr>
             <td><a class="nav-link" href="">{{item.daysOfTheWeek }}</a></td>
             <td><a class="nav-link" href="">{{item.dateVizita }}</a></td>
             <td><a class="nav-link" href="">{{item.timeVizita }}</a></td>
             <td><a class="nav-link" href="">{{item.onOff }}</a></td>
         </tr>
-
         {% endfor %}
         </tbody>
     </table>
-    </div>
+
     {% endif %}
-    <div style="display: inline-block">
+    <div class="container-fluid text-center" style="display: inline-block">
         {% if profil != "guest" %}
         <a class="btn btn-primary" href="{% url 'addvisitingdays' %}" role="button" style="font-size: 14px;">Додати</a>
         {% endif %}

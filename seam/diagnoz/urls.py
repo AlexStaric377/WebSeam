@@ -1,12 +1,19 @@
 from django.urls import include
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
+from django.contrib.auth import views as auth_views
 
 from diagnoz import views
 
-urlpatterns = [
+from . import views
 
-    path('', views.index, name='home'),
+
+
+urlpatterns = [
+    # Предполагаем, что модальное окно находится на главной странице
+    path('', views.home_view, name='home'),
+
+    path('index', views.index, name='index'),
     path('reception', views.reception, name='reception'),
     path('pacient', views.pacient, name='pacient'),
     path('likar', views.likar, name='likar'),
@@ -50,6 +57,7 @@ urlpatterns = [
     path('inputprofilpacient/<str:selected_doctor>', views.inputprofilpacient, name='inputprofilpacient'),
     path('saveraceptionlikar', views.saveraceptionlikar, name='saveraceptionlikar'),
     path('accountuser', views.accountuser, name='accountuser'),
+
     path('kabinetpacient', views.kabinetpacient, name='kabinetpacient'),
     path('profilinterview/<str:selected_protokol>,  <str:selected_datevizita>, <str:selected_dateInterview>',
          views.profilinterview, name='profilinterview'),

@@ -1,23 +1,21 @@
 {% extends 'diagnoz/shablonpage.html' %}
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
-        {% if likar %}
+<div class="container-fluid text-center">
+
+    {% if likar %}
         <p>{{piblikar}}</p>
         <p>{{pacient}}</p>
         {% else %}
         <h4>{{iduser}}</h4>
         {% endif %}
-    </div>
-</nav>
-<div class="container-fluid">
+
+
     <h6> {{ finishtext }} </h6>
-</div>
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
+
+    <div style="display: inline-block">
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Далі</a>
     </div>
-</nav>
+</div>
 
 {% endblock %}

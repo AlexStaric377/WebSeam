@@ -1,16 +1,15 @@
 {% extends 'diagnoz/shablonpage.html' %}
 {% block content %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
-    <div class="col">
-        <h4>{{reestrinput}}</h4>
-    </div>
+<div class="container-fluid text-center">
+    <h5>{{reestrinput}}</h5>
     <a> Для створення облікового запису введіть реєстраційні показники</a>
-</nav>
-<form class="needs-validation" method="POST" novalidate="">
+</div>
+<div class="d-flex justify-content-center align-items-center ">
+    <form class="needs-validation" method="POST" novalidate="">
     {% csrf_token %}
     <div class="row g-3">
-        <div class="col-md-2">
+        <div class="col-md-4">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.login.label }}</font></font>
             </label>
@@ -20,7 +19,7 @@
             </div>
         </div>
         <p></p>
-        <div class="col-md-2">
+        <div class="col-md-4">
             <label class="form-label"><font style="vertical-align: inherit;">
                 <font style="vertical-align: inherit;">{{form.password.label}}</font></font>
             </label>
@@ -30,7 +29,7 @@
             </div>
         </div>
         <p></p>
-        <div class="col-md-2">
+        <div class="col-md-4">
             <label class="form-label"><font style="vertical-align: inherit;">
                 <font style="vertical-align: inherit;">{{form.dwpassword.label}}</font></font>
             </label>
@@ -41,9 +40,12 @@
         </div>
     </div>
     <p></p>
-    <button class="w-30 h-15 btn btn-primary btn-lg" type="submit"><font style="vertical-align: inherit;"><font
+        <div style="display: inline-block">
+            <button class=" btn btn-primary " type="submit"><font style="font-size: 14px;"><font
             style="vertical-align: inherit;">Підтвердити</font></font></button>
-</form>
-<a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Скасувати запит</a>
+            <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Скасувати запит</a>
+        </div>
+    </form>
+</div>
 
 {% endblock %}

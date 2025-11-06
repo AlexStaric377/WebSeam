@@ -1,12 +1,10 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-<div class="col">
+<div class="col justify-content-md-center">
     <h6>Кабінет пацієнта</h6>
-</div>
-<div class="col-md-7 col-lg-8">
-    <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
-        пацієнта</font></font></h4>
+
+    <h6><>Профіль пацієнта</h6>
     <a>Введіть показники вашого профілю для створення облікового запису. По закінченню натисніть кнопку "Зберегти"</a>
     <form class="needs-validation" method="POST" novalidate="">
         {% csrf_token %}
@@ -100,8 +98,8 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label" for="mob_telefon"><font style="vertical-align: inherit;"><font
-                        style="vertical-align: inherit;">Телефон</font></font></label>
+                <label class="form-label" for="mob_telefon"><font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">Телефон</font></font></label>
                 <input class="form-control" id="mob_telefon" placeholder=" xxx xx xx xxx xx" required="" type="number">
                 <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
                         style="vertical-align: inherit;">Вимагається допустимий номер.</font></font>
@@ -120,14 +118,15 @@
                     Ввеіть дійсну адресу электронної пошти для отримання повідомлення про підтвердження реєстрації.
                 </font></font></div>
             </div>
-            <p>
+            <p></p>
+            <div style="display: inline-block">
                 <button class="w-45 btn btn-primary btn-lg" type="submit"><font style="font-size: 14px;"><font
                         style="vertical-align: inherit;">Зберегти</font></font></button>
-            </p>
+                <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Скасувати запит</a>
+
+            </div>
         </div>
     </form>
 </div>
-<div style="display: inline-block">
-    <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Скасувати запит</a>
-</div>
+
 {% endblock %}

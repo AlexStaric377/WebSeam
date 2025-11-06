@@ -1,18 +1,15 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-<div class="col">
+<div class="container-fluid text-center">
     <h6>{{iduser}}</h6>
     {% if likar %}
     <p>{{piblikar}}</p>
     <p>{{pacient}}</p>
     {% endif %}
     <h6>Перегляд проведених опитувань</h6>
-    <p>Для перегляду деталей необхідного <br>
-        опитування натисніть на відповідний рядок</p>
-</div>
+    <p>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</p>
 
-<div class="container-fluid">
     <table class="table table-striped">
         <thead>
         <tr>
@@ -33,7 +30,9 @@
         {% endfor %}
         </tbody>
     </table>
-
+    <div style="display: inline-block">
+        <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+    </div>
 </div>
-<a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Далі</a>
+
 {% endblock %}

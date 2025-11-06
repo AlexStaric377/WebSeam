@@ -23,7 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'diagnoz.apps.DiagnozConfig',
+    'bootstrap_modal_forms',
 ]
+
+# LOGIN_REDIRECT_URL = 'diagnoz.likar/' # Куда перенаправлять после успешного входа
+# LOGIN_URL = 'login'
 
 INSTALLED_APPS += [
     'rest_framework',

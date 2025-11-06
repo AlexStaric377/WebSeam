@@ -1,13 +1,11 @@
 {% extends 'diagnoz/shablonpage.html' %}
 
 {% block content %}
-<div class="col">
+<div class="container-fluid text-center">
     <h6>Кабінет лікаря</h6>
-</div>
-<div class="col-md-7 col-lg-8">
-    <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
-        лікаря</font></font></h4>
-<form action="" method="POST">
+    <h6 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль лікаря</font></font>
+    </h6>
+    <form action="" method="POST">
     {% csrf_token %}
     <div class="row g-3">
         <div class="col-sm-4">
@@ -36,16 +34,6 @@
                     style="vertical-align: inherit;">Вимагається назва професії.</font></font>
             </div>
         </div>
-        <!---<div class="col-md-2">
-             <label class="form-label"><font style="vertical-align: inherit;"><font
-                     style="vertical-align: inherit;">{{form.napryamok.label}}</font></font>
-             </label>
-             {{form.napryamok}}
-             <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                     style="vertical-align: inherit;">Вкажіть допустимий вік.</font></font>
-             </div>
-         </div>
-         <p>--->
         <div class="col-md-2">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{form.uriwebDoctor.label}}</font></font></label>
@@ -87,7 +75,7 @@
             {% endif %}
         </p>
     </div>
-</form>
+    </form>
     <div style="display: inline-block">
         <a class="btn btn-primary" href="{% url 'likar' %}" role="button" style="font-size: 14px;">Скасувати запит</a>
     </div>

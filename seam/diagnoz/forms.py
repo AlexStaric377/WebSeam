@@ -1,6 +1,7 @@
 from django import forms
 
 
+
 # --- Фориа Профіль пацієнта
 class PacientForm(forms.Form):
     Typegender = [("чол.", "чол."), ("жін.", "жін.")]

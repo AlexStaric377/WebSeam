@@ -42,7 +42,9 @@ def rest_api(api_url, data, method):
 
 def index(request):  # httpRequest
     exitkab()
-    return render(request, 'diagnoz/index.html')
+    settingsvar.nextstepdata = {
+        'mainbar': True}
+    return render(request, 'diagnoz/index.html', context=settingsvar.nextstepdata)
 
 
 def glavmeny(request):
@@ -128,6 +130,8 @@ def likar(request):  # httpRequest
         settingsvar.datereception = 'не встановлено'
         settingsvar.datedoctor = 'не встановлено'
         settingsvar.funciya = ''
+        settingsvar.nextstepdata = {
+            'mainbar': True}
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1207,6 +1211,12 @@ def reestraccountuser(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# --- клая модальної форми реєстраціїї входу до кабінету пацієнта або лікаря
+
+
+
+
+
 def accountuser(request):
     backurl = funcbakurl()
     settingsvar.html = 'diagnoz/accountuser.html'
@@ -1269,7 +1279,7 @@ def accountuser(request):
         else:
             cab = 'Кабінет пацієнта'
             backurl = 'pacient'
-            compl = 'Зареєструватися'
+            compl = 'Реєстрація'
             reestr = True
             if (settingsvar.kabinetitem == "likar" or settingsvar.kabinetitem == 'likarinterwiev' \
                     or settingsvar.kabinetitem == 'likarlistinterwiev' \
@@ -1308,7 +1318,10 @@ def caseprofil():
         case 'listinterwiev':
             shablonforlistinterview()
 
-        case 'listreceptionlikar' | 'pacientstanhealth':
+        case 'listreceptionlikar':
+            shablonforlistreceptionandstanhealth()
+            funcshablonlistreceptionlikar()
+        case 'pacientstanhealth':
             shablonforlistreceptionandstanhealth()
 
         case 'likar':
@@ -2281,7 +2294,7 @@ def search_pacient():
     iduser = funciduser()
     backurl = funcbakurl()
     reestr = True
-    compl = 'Зареєструвати пацієнта'
+    compl = 'Реєстрація'
     if settingsvar.funciya == 'checkvisitinglikar':
         reestr = False
         iduser = 'Реєстратура'
@@ -2780,7 +2793,7 @@ def contentinterview(request, select_kodDiagnoza):
         workdiagnoz = rest_api('api/ContentInterviewController/' + protokol['kodProtokola'], '', 'GET')
         if len(workdiagnoz) > 0:
             for item in settingsvar.listworkdiagnoz:
-                if select_kodDiagnoza == item['kodDiagnoza']: namediagnoz = item['nameDiagnoza']
+                if select_kodDiagnoza == item['kodDiagnoza']: settingsvar.namediagnoz = item['nameDiagnoza']
             settingsvar.nextstepdata = {
                 'listwork': workdiagnoz,
                 'medzaklad': settingsvar.namemedzaklad,
@@ -2881,3 +2894,68 @@ def contact(request):
         'NAME': str(row.NAME)
     }
     return render(request, "hj/basic.html", context)
+
+
+'''
+
+view-функция, которая будет и отображать страницу (GET-запрос), 
+и обрабатывать попытку входа (POST-запрос). Django предоставляет готовую форму AuthenticationForm.
+
+
+'''
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
+
+
+def home_view(request):  # Или любое другое ваше view
+
+    # Инициализируем форму
+    login_form = AuthenticationForm()
+
+    if request.method == 'POST':
+        # Если форма отправлена, обрабатываем данные
+        login_form = AuthenticationForm(request, data=request.POST)
+
+        if login_form.is_valid():
+            # Если данные верны, получаем пользователя
+            username = login_form.cleaned_data.get('username')
+            password = login_form.cleaned_data.get('password')
+            # user = authenticate(username=username, password=password)
+            if username == "admin":
+                context = {
+                }
+                return render(request, 'diagnoz/likar.html', context)
+
+            if user is not None:
+                # Входим в систему
+                login(request, user)
+                messages.success(request, f'Добро пожаловать, {username}!')
+                return redirect('/')  # Перенаправляем на главную (или куда нужно)
+            else:
+                return render(request, 'diagnoz/likar.html', context)
+        else:
+            # Если форма невалидна (неверный пароль/логин),
+            # мы НЕ перенаправляем, а просто даем странице
+            # отрендериться снова с этой же формой (в ней уже будут ошибки)
+            messages.error(request, 'Неверное имя пользователя или пароль.')
+    else:
+        login_form = AuthenticationForm()
+    # ----- Добавляем класс 'form-control' для полей -----
+    # Это простой способ добавить Bootstrap-стили без crispy-forms
+    login_form.fields['username'].widget.attrs.update({'class': 'form-control'})
+    login_form.fields['password'].widget.attrs.update({'class': 'form-control'})
+    # ---------------------------------------------------
+    exitkab()
+    settingsvar.html = 'diagnoz/index.html'
+    settingsvar.nextstepdata = {
+        'mainbar': True,
+        'login_form': login_form
+    }
+    #    context = {
+    #        'login_form': login_form
+    #    }
+
+    return render(request, settingsvar.html, settingsvar.nextstepdata)
