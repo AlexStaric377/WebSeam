@@ -2,7 +2,7 @@
 {% block nav %}
 
 <div class="container-fluid text-center">
-    <h5>{{iduser}}</h5>
+    <p>{{iduser}}</p>
     <h5>{{pacient}}</h5>
     <h5> {{compl}} </h5>
     <p>{{namediagnoz}}</p>
@@ -27,11 +27,11 @@
     {% endblock %}
 
 
-<!---    <div style="display: inline-block">
-        <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
-            опитування</a>
-        <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Вийти</a>
-    </div> --->
+<div class="container-fluid text-center" style="display: inline-block">
+    <!---          <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
+               опитування</a> --->
+    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+</div>
 
 
 {% endblock %}

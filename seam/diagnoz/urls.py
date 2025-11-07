@@ -1,10 +1,10 @@
 from django.urls import include
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-# from diagnoz import views
 
 from . import views
 
+# from diagnoz import views
 
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('backpage', views.backmeny.backpage, name='backpage'),
     path('index', views.index, name='index'),
+    path('backindex', views.backindex, name='backindex'),
     path('reception', views.reception, name='reception'),
     path('pacient', views.pacient, name='pacient'),
     path('likar', views.likar, name='likar'),
@@ -36,7 +37,7 @@ urlpatterns = [
         name='featurespisok'),
     path('backfeature', views.backfeature, name='backfeature'),
     path('nextfeature/<str:nextfeature_keyComplaint>,  <str:nextfeature_name>', views.nextfeature, name='nextfeature'),
-    path('glavmeny', views.glavmeny, name='glavmeny'),
+
     path('nextgrdetaling', views.nextgrdetaling, name='nextgrdetaling'),
     path('enddetaling', views.enddetaling, name='enddetaling'),
     path('selectdetaling/<str:select_kodDetailing>', views.selectdetaling,

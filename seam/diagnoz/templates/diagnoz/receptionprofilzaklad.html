@@ -3,19 +3,20 @@
 
 <div class="container-fluid text-center">
 
-        <h6>{{iduser}}</h6>
+    <p>{{iduser}}</p>
         {% if likar %}
         <p>{{piblikar}}</p>
         <p>{{pacient}}</p>
         {% endif %}
+    <h6>{{ compl }}</h6>
 </div>
     {% block detalinglist %}
+<p>Для перегляду переліку профільних лікарів закладу натиснути на
+    відповідний рядок</p>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">{{ compl }} <br>Для перегляду переліку профільних лікарів закладу натиснути на
-                        відповідний рядок
-                    </th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>

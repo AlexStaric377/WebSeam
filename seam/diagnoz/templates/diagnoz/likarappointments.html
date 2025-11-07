@@ -6,11 +6,10 @@
         {% if likar %}
         <p>{{piblikar}}</p>
         {% else %}
-        <h6>{{iduser}}</h6>
+    <p>{{iduser}}</p>
         {% endif %}
-        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
 </div>
-        <h6>Для вибору дати та часу співбесіди з лікарем натисніть на відповідний рядок</h6>
+<p>Для вибору дати та часу співбесіди з лікарем натисніть на відповідний рядок</p>
             {% block list %}
             <table class="table table-striped">
                 <thead>

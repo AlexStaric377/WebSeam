@@ -5,16 +5,13 @@ from datetime import datetime, timedelta
 import environ
 import pyodbc
 import requests
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect
 
 from diagnoz import settingsvar
-from diagnoz import backmeny
 from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient, LikarForm, Reestrvisitngdays
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib import messages
 
 '''
 
@@ -65,7 +62,7 @@ def home_view(request):  # Или любое другое ваше view
     # ---------------------------------------------------
     exitkab()
     settingsvar.html = 'diagnoz/index.html'
-    settingsvar.backpage = 'diagnoz/index.html'
+    settingsvar.backpage = 'index'
     settingsvar.nextstepdata = {
         'mainbar': True,
         'login_form': login_form
@@ -105,24 +102,29 @@ def rest_api(api_url, data, method):
     return stroka
 
 
-#    return
-
-def index(request):  # httpRequest
-    exitkab()
-    settingsvar.nextstepdata = {
-        'mainbar': True}
+def backindex(request):  # httpRequest
+    index()
     return render(request, 'diagnoz/index.html', context=settingsvar.nextstepdata)
 
 
-def glavmeny(request):
+def index():  # httpRequest
     exitkab()
-    return render(request, 'diagnoz/glavmeny.html')
+    settingsvar.html = 'diagnoz/index.html'
+    settingsvar.nextstepdata = {
+        'mainbar': True}
+    return
+
 
 def reception(request):  # httpRequest
 
     json = ('IdUser: guest,' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: reception')
     unloadlog(json)
+    backreception()
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def backreception():
     settingsvar.receptitem = ""
     settingsvar.kabinet = 'guest'
     settingsvar.likar = {}
@@ -136,9 +138,7 @@ def reception(request):  # httpRequest
     settingsvar.datedoctor = 'не встановлено'
     settingsvar.html = 'diagnoz/reception.html'
     settingsvar.funciya = ''
-
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-
+    return
 
 def pacient(request):  # httpRequest
     if (
@@ -219,6 +219,8 @@ def directiondiagnoz(request):
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: directiondiagnoz')
     unloadlog(json)
     settingsvar.directdiagnoz = True
+    settingsvar.kabinet = 'guest'
+    settingsvar.backpage = 'directiondiagnoz'
     settingsvar.receptitem = 'directiondiagnoz'
     listworkdiagnoz()
     settingsvar.nextstepdata['piblikar'] = ""
@@ -268,27 +270,26 @@ def cleanvars():
     settingsvar.kodProtokola = ""
     settingsvar.setintertview = False
     settingsvar.interviewcompl = False
-    settingsvar.kabinet = ''
-    settingsvar.kabinetitem = ''
+
     settingsvar.nextstepdata = {}
     settingsvar.searchaccount = False
     return
 
 
 def interwievcomplaint(request):
+
     if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likarinterwiev':
         shablonlikar(settingsvar.pacient)
     else:
         cleanvars()
         settingsvar.directdiagnoz == False
         settingsvar.receptitem = 'interwievcomplaint'
-        settingsvar.kabinet = "guest"
         iduser = funciduser()
         match settingsvar.kabinet:
             case 'guest':
                 settingsvar.setpostlikar = False
                 settingsvar.interviewcompl = True
-                settingsvar.backpage = 'diagnoz/reception.html'
+                settingsvar.backpage = 'interwievcomplaint'
                 iduser = funciduser()
             case 'pacient' | 'interwiev' | 'likar' | 'likarinterwiev':
                 settingsvar.setpostlikar = True
@@ -816,6 +817,11 @@ def selectmedzaklad(request, statuszaklad):
 
 # --- вибір профільного медзакладу
 def receptprofillmedzaklad(request):
+    backreceptprofillmedzaklad(request)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def backreceptprofillmedzaklad(request):
     likargrupdiagnoz = rest_api(
         '/api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + "/" + settingsvar.icdGrDiagnoz, '', 'GET')
 
@@ -831,6 +837,7 @@ def receptprofillmedzaklad(request):
         status = "5"
         if settingsvar.kabinet == 'guest':
             settingsvar.directdiagnoz = True
+            settingsvar.backpage = 'receptprofillmedzaklad'
             if settingsvar.receptitem != 'interwievcomplaint': settingsvar.receptitem = 'receptprofillmedzaklad'
         if settingsvar.kabinet == 'likarinterwiev':
             settingsvar.directdiagnoz = True
@@ -840,8 +847,7 @@ def receptprofillmedzaklad(request):
                 'IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
                 datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: receptprofillmedzaklad')
         unloadlog(json)
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-
+    return
 
 # --- вибір Амбулаторно-поліклінічного закладу до сімейного лікаря
 def receptfamilylikar(request):
@@ -1199,6 +1205,8 @@ def savediagnoz(request):
 # перегляд запису до лікаря
 def checkvisitinglikar(request):
     settingsvar.funciya = 'checkvisitinglikar'
+    settingsvar.kabinet = "guest"
+    settingsvar.backpage = 'checkvisitinglikar'
     shablonselect(request)
 
     return render(request, settingsvar.html, settingsvar.nextstepdata)
