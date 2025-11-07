@@ -1,6 +1,5 @@
-{% extends 'diagnoz/shablonpage.html' %}
-
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
 <div class="container-fluid text-center">
     <h5>{{iduser}}</h5>
@@ -8,7 +7,7 @@
     <h5> {{compl}} </h5>
     <p>{{namediagnoz}}</p>
 
-
+</div>
     {% block detalinglist %}
     <table class="table table-striped">
         <thead>
@@ -28,11 +27,11 @@
     {% endblock %}
 
 
-    <div style="display: inline-block">
+<!---    <div style="display: inline-block">
         <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
             опитування</a>
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Вийти</a>
-    </div>
-</div>
+    </div> --->
+
 
 {% endblock %}

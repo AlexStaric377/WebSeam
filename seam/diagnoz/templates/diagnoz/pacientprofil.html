@@ -1,6 +1,6 @@
-{% extends 'diagnoz/shablonpage.html' %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
-{% block content %}
 <div class="container-fluid text-center">
     <h6>Кабінет пацієнта</h6>
     <h4 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
@@ -104,7 +104,7 @@
             <div class="container text-center" style="display: inline-block">
                 {% if next %}
                 <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
-                        style="font-size: 14px;"><font style="vertical-align: inherit;">Далі</font></font>
+                        style="font-size: 14px;"><font style="vertical-align: inherit;">Підтвердити</font></font>
                 </button>
                 {% else %}
                 <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font

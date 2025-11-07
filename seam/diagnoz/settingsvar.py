@@ -86,3 +86,4 @@ postpacient = {}
 funciya = ''
 icdGrDiagnoz = ""
 searchpacient = ""
+backpage = ''

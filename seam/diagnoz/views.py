@@ -8,7 +8,74 @@ import requests
 from django.shortcuts import render
 
 from diagnoz import settingsvar
+from diagnoz import backmeny
 from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient, LikarForm, Reestrvisitngdays
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
+
+'''
+
+view-функция, которая будет и отображать страницу (GET-запрос), 
+и обрабатывать попытку входа (POST-запрос). Django предоставляет готовую форму AuthenticationForm.
+
+
+'''
+
+
+def home_view(request):  # Или любое другое ваше view
+
+    # Инициализируем форму
+    login_form = AuthenticationForm()
+
+    if request.method == 'POST':
+        # Если форма отправлена, обрабатываем данные
+        login_form = AuthenticationForm(request, data=request.POST)
+
+        if login_form.is_valid():
+            # Если данные верны, получаем пользователя
+            username = login_form.cleaned_data.get('username')
+            password = login_form.cleaned_data.get('password')
+            # user = authenticate(username=username, password=password)
+            if username == "admin":
+                context = {
+                }
+                return render(request, 'diagnoz/likar.html', context)
+
+            if user is not None:
+                # Входим в систему
+                login(request, user)
+                messages.success(request, f'Добро пожаловать, {username}!')
+                return redirect('/')  # Перенаправляем на главную (или куда нужно)
+            else:
+                return render(request, 'diagnoz/likar.html', context)
+        else:
+            # Если форма невалидна (неверный пароль/логин),
+            # мы НЕ перенаправляем, а просто даем странице
+            # отрендериться снова с этой же формой (в ней уже будут ошибки)
+            messages.error(request, 'Неверное имя пользователя или пароль.')
+    else:
+        login_form = AuthenticationForm()
+    # ----- Добавляем класс 'form-control' для полей -----
+    # Это простой способ добавить Bootstrap-стили без crispy-forms
+    login_form.fields['username'].widget.attrs.update({'class': 'form-control'})
+    login_form.fields['password'].widget.attrs.update({'class': 'form-control'})
+    # ---------------------------------------------------
+    exitkab()
+    settingsvar.html = 'diagnoz/index.html'
+    settingsvar.backpage = 'diagnoz/index.html'
+    settingsvar.nextstepdata = {
+        'mainbar': True,
+        'login_form': login_form
+    }
+    #    context = {
+    #        'login_form': login_form
+    #    }
+
+    return render(request, settingsvar.html, settingsvar.nextstepdata)
+
 
 
 def rest_api(api_url, data, method):
@@ -221,6 +288,7 @@ def interwievcomplaint(request):
             case 'guest':
                 settingsvar.setpostlikar = False
                 settingsvar.interviewcompl = True
+                settingsvar.backpage = 'diagnoz/reception.html'
                 iduser = funciduser()
             case 'pacient' | 'interwiev' | 'likar' | 'likarinterwiev':
                 settingsvar.setpostlikar = True
@@ -2895,67 +2963,3 @@ def contact(request):
     }
     return render(request, "hj/basic.html", context)
 
-
-'''
-
-view-функция, которая будет и отображать страницу (GET-запрос), 
-и обрабатывать попытку входа (POST-запрос). Django предоставляет готовую форму AuthenticationForm.
-
-
-'''
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib import messages
-
-
-def home_view(request):  # Или любое другое ваше view
-
-    # Инициализируем форму
-    login_form = AuthenticationForm()
-
-    if request.method == 'POST':
-        # Если форма отправлена, обрабатываем данные
-        login_form = AuthenticationForm(request, data=request.POST)
-
-        if login_form.is_valid():
-            # Если данные верны, получаем пользователя
-            username = login_form.cleaned_data.get('username')
-            password = login_form.cleaned_data.get('password')
-            # user = authenticate(username=username, password=password)
-            if username == "admin":
-                context = {
-                }
-                return render(request, 'diagnoz/likar.html', context)
-
-            if user is not None:
-                # Входим в систему
-                login(request, user)
-                messages.success(request, f'Добро пожаловать, {username}!')
-                return redirect('/')  # Перенаправляем на главную (или куда нужно)
-            else:
-                return render(request, 'diagnoz/likar.html', context)
-        else:
-            # Если форма невалидна (неверный пароль/логин),
-            # мы НЕ перенаправляем, а просто даем странице
-            # отрендериться снова с этой же формой (в ней уже будут ошибки)
-            messages.error(request, 'Неверное имя пользователя или пароль.')
-    else:
-        login_form = AuthenticationForm()
-    # ----- Добавляем класс 'form-control' для полей -----
-    # Это простой способ добавить Bootstrap-стили без crispy-forms
-    login_form.fields['username'].widget.attrs.update({'class': 'form-control'})
-    login_form.fields['password'].widget.attrs.update({'class': 'form-control'})
-    # ---------------------------------------------------
-    exitkab()
-    settingsvar.html = 'diagnoz/index.html'
-    settingsvar.nextstepdata = {
-        'mainbar': True,
-        'login_form': login_form
-    }
-    #    context = {
-    #        'login_form': login_form
-    #    }
-
-    return render(request, settingsvar.html, settingsvar.nextstepdata)

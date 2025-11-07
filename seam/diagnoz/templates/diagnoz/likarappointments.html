@@ -1,6 +1,5 @@
-{% extends 'diagnoz/shablonpage.html' %}
-
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
 <div class="container-fluid text-center">
 
@@ -10,7 +9,7 @@
         <h6>{{iduser}}</h6>
         {% endif %}
         <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
-
+</div>
         <h6>Для вибору дати та часу співбесіди з лікарем натисніть на відповідний рядок</h6>
             {% block list %}
             <table class="table table-striped">
@@ -42,11 +41,11 @@
             </table>
         {% endblock %}
 
-    <div class="container-fluid text-center" style="display: inline-block">
+<!---    <div class="container-fluid text-center" style="display: inline-block">
         <a class="btn btn-primary" href="{% url backurl %}" role="button"
            style="font-size: 14px;">Повернутися на початок</a>
-    </div>
-</div>
+    </div> --->
+
 
 
 {% endblock %}

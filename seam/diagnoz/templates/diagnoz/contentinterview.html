@@ -1,11 +1,11 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
 <div class="container-fluid  text-center">
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     <p>Поточний діагноз : {{namediagnoz}}</p>
-
+</div>
     {% block list %}
     <table class="table table-striped">
                 <thead>
@@ -26,7 +26,5 @@
     <div style="display: inline-block">
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
     </div>
-</div>
-
 
 {% endblock %}

@@ -1,7 +1,7 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
-<div class="container text-center">
+<div class="container-fluid text-center">
         {% if directdiagnoz %}
     <h6>{{iduser}}</h6>
         {% else %}
@@ -12,7 +12,7 @@
     {% if listapinull %}
     <p>{{сontentnull}}</p>
     {% endif %}
-
+</div>
             {% block list %}
             {% if listapinull %}
             {% else %}
@@ -45,14 +45,15 @@
             </table>
             {% endblock %}
 
-    <div style="display: inline-block">
-    {% if directdiagnoz %}
+<div class="container-fluid text-center" style="display: inline-block">
+
+{% if directdiagnoz %}
     {% else %}
     <a class="btn btn-primary" href="{% url 'addworkdiagnoz' %}" role="button" style="font-size: 14px;">Додати</a>
     {% endif %}
     <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
     </div>
-</div>
+
 {% endblock %}
 
 

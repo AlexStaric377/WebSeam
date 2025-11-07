@@ -1,5 +1,5 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
 <div class="container-fluid text-center">
         <h6>{{iduser}}</h6>
@@ -7,6 +7,7 @@
         <a class="btn btn-sm btn-primary" href="{% url 'contentinterwiev' %}" role="button"
            style="font-size: 14px;">Зміст опитування</a>
     </div>
+</div>
     <table class="table text-center">
             <tbody>
                 <tr>
@@ -32,12 +33,11 @@
             </table>
 
 
-    <div style="display: inline-block">
-
+<div class="container-fluid text-center" style="display: inline-block">
         <a>{{ podval }}</a>
         <a class="btn btn-primary" href="{% url 'saveraceptionlikar' %}" role="button" style="font-size: 14px;">Так</a>
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Ні</a>
     </div>
-</div>
+
 
 {% endblock %}

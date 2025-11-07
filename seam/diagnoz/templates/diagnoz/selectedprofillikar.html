@@ -1,7 +1,10 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
-<div class="container text-center">
-        {% if likar %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+
+{% if likar %}
+
     <table class="table text-center">
             <tbody>
         <tr>
@@ -27,12 +30,13 @@
         {% endif %}
 
     <h5> {{ compl }} </h5>
+</div>
     {% block list %}
-                {% if directdiagnoz %}
+{% if directdiagnoz %}
                 <h6>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне
                     прізвище</h6>
-                {% endif %}
-                <table class="table table-striped">
+{% endif %}
+<table class="table table-striped">
         <thead>
         <tr>
             <th> Ім'я, прізвище</th> <!---style="width: 15%;"--->
@@ -68,9 +72,9 @@
     </table>
     {% endblock %}
 
-    <div style="display: inline-block">
+<!---    <div style="display: inline-block">
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
-    </div>
-</div>
+    </div>--->
+
 
 {% endblock %}

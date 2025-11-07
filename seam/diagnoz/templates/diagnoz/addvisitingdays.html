@@ -1,9 +1,11 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
+<div class="container-fluid text-center">
 <div class="col">
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     <p>Розклад приймання пацієнтів для обстеження</p>
+</div>
 </div>
 <form class="needs-validation" method="POST" novalidate="">
     {% csrf_token %}

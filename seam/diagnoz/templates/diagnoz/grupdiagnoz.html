@@ -1,12 +1,12 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
-<nav class="sidebar-sticky  navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid text-center">
     <div class="col">
         <p>{{medzaklad}}</p>
         <p>{{piblikar}}</p>
     </div>
-</nav>
+</div>
 <div class="container-fluid">
     <p>Перелік робочих напрямків діагностики захворювань</p>
 
@@ -19,6 +19,6 @@
     {% endfor %}
     {% endblock %}
 </div>
-<a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+<!---<a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
 
 {% endblock %}

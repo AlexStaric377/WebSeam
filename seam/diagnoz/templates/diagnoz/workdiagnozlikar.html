@@ -1,5 +1,6 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
+
 <div class="container-fluid text-center">
 
         {% if directdiagnoz %}
@@ -18,7 +19,7 @@
     <h6>Для перегляду змісту опитування, яке визначає попередній діагноз необхідно натиснути на відповідний рядок</h6>
     {% endif %}
     {% endif %}
-
+</div>
     {% block list %}
     <table class="table table-striped">
             <thead>
@@ -49,8 +50,8 @@
         <a class="btn btn-primary" href="{% url 'deleteworkdiagnoz' %}" role="button" style="font-size: 14px;">Видалити
         поточний напрямок</a>
     {% endif %}
-    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+        <!---    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
 
     </div>
-</div>
+
 {% endblock %}

@@ -1,10 +1,11 @@
-{% extends 'diagnoz/shablonpage.html' %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
-{% block content %}
 <div class="container-fluid text-center">
   <h6>{{iduser}}</h6>
   <p>{{pacient}}</p>
   <h6>Перегляд списку записів обстежень до лікаря</h6>
+</div>
   <p>Для перегляду опису обраного попереднього діагнозу натисніть на відповідний рядок</p>
 
   <table class="table table-striped">
@@ -32,10 +33,10 @@
     {% endfor %}
     </tbody>
   </table>
-  <div class="container text-center" style="display: inline-block">
+<!---  <div class="container text-center" style="display: inline-block">
     <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Повернутися</a>
-  </div>
-</div>
+  </div>--->
+
 
 {% endblock %}
 

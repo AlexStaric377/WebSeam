@@ -4,7 +4,8 @@
 {% block nav %}
 {% if mainbar %}
 
-
+{% include 'diagnoz/kaducey.html' %}
+<div class="container text-center">
 <div class="col justify-content-md-center">
     <div class="col-md-auto">
         <a class="text-primary text-decoration-none" href="{% url 'reception' %}">
@@ -16,7 +17,7 @@
     <div class="col-md-auto">
         <a class="text-primary text-decoration-none" href="{% url 'likar' %}" style="font-size: 30px;">Лікарь</a>
     </div>
-
+</div>
     {% else %}
 
 

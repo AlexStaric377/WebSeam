@@ -1,10 +1,11 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
+
 <div class="container-fluid text-center">
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     <p>Розклад приймання пацієнтів для обстеження</p>
-
+</div>
     {% if error %}
     <p>{{profil}}</p>
     {% else %}
@@ -36,6 +37,6 @@
         {% endif %}
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
     </div>
-</div>
+
 {% endblock %}
 

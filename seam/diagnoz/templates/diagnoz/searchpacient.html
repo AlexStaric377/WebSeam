@@ -1,8 +1,8 @@
-{% extends 'diagnoz/shablonpage.html' %}
-
-{% block content %}
+{{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
 <div class="container-fluid text-center">
+
     <div class="col">
         {% if reestr %}
         <p>{{medzaklad}}</p>
@@ -57,7 +57,7 @@
         {% if reestr %}
         <a class="btn btn-primary" href="{% url 'pacientprofil' %}" role="button" style="font-size: 14px;">{{compl}}</a>
         {% endif %}
-        <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+            <!---        <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
     </div>
 </form>
 </div>

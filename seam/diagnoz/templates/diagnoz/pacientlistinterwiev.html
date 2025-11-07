@@ -1,6 +1,6 @@
-{% extends 'diagnoz/shablonpage.html' %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
-{% block content %}
 <div class="container-fluid text-center">
     <h6>{{iduser}}</h6>
     {% if likar %}
@@ -8,6 +8,7 @@
     <p>{{pacient}}</p>
     {% endif %}
     <h6>Перегляд проведених опитувань</h6>
+</div>
     <p>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</p>
 
     <table class="table table-striped">
@@ -30,9 +31,9 @@
         {% endfor %}
         </tbody>
     </table>
-    <div style="display: inline-block">
+<!---    <div style="display: inline-block">
         <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
-    </div>
-</div>
+    </div>--->
+
 
 {% endblock %}

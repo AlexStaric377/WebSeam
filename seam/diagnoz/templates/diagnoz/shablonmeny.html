@@ -15,21 +15,21 @@
 </head>
 <body>
 
-<div class="container text-center" style="height: 30px; background-color: #558787;">
+<!---<div class="container text-center" style="height: 30px; background-color: #558787;"> --->
     <div class="row " style="height: 30px; background-color: #558787;">
         <div class="col-sm-1 justify-content-start " style="height: 30px; width: 80px; background-color: #558787;">
             <nav class="navbar navbar-expand-lg navbar-light " style="height: 25px; background-color: #558787;">
                 <div class="container d-flex  align-items-start">
                     <ul class="navbar-nav ">
                         <li class="nav-item dropdown ">
-                            <a aria-expanded="false" class="nav-link dropdown-toggle"
-                               data-bs-placement="top" data-bs-toggle="tooltip" data-bs-toggle="dropdown"
-                               title="Закладки"
+                            <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-placement="top"
+                               data-bs-toggle="dropdown" data-bs-toggle="tooltip" title="Закладки"
+
                                href="#" id="navbarDropdownMenuLink" role="button">
                                 <img alt="" class="d-inline-block  " height="20" src="/static/diagnoz/img/gamb.png"
                                      width="20"></a>
                             <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu ">
-                                <li><a class="dropdown-item" href="{% url 'glavmeny' %}">Головна</a></li>
+                                <li><a class="dropdown-item" href="{% url 'index' %}">Головна</a></li>
                                 <li><a class="dropdown-item" href="{% url 'reception' %}">Гість</a></li>
                                 <li><a class="dropdown-item" href="{% url 'pacient' %}">Пацієнт</a></li>
                                 <li><a class="dropdown-item" href="{% url 'likar' %}">Лікарь</a></li>
@@ -41,11 +41,20 @@
             </nav>
         </div>
         <div class="col-sm-1 justify-content-start d-flex align-items-start"
+             style="height: 30px; width: 50px; background-color: #558787;">
+            <a class="btn justify-content-start d-flex align-items-start" data-bs-placement="top"
+               data-bs-toggle="tooltip" href="{% url 'backpage' %}"
+               role="button" style="background-color: #558787; height=15" title="Повернутися до попередньої сторінки">
+                <img alt="" height="15" src="/static/diagnoz/img/back2.png" style="background-color: #558787;"
+                     width="20">
+            </a>
+        </div>
+        <div class="col justify-content-start d-flex align-items-center"
              style="height: 30px;  background-color: #558787;">
             <a class="btn justify-content-start d-flex align-items-start" data-bs-placement="top"
                data-bs-toggle="tooltip" href="{% url 'index' %}"
-               role="button" style="background-color: #558787; height=15" title="Повернутися">
-                <img alt="" height="15" src="/static/diagnoz/img/back.png" style="background-color: #558787;"
+               role="button" style="background-color: #558787; height=15" title="Головна">
+                <img alt="" height="15" src="/static/diagnoz/img/back3.png" style="background-color: #558787;"
                      width="20">
             </a>
         </div>
@@ -56,8 +65,7 @@
         <div class=" col-sm-1 justify-content-end d-flex  align-items-end"
              style="height: 30px;  background-color: #558787;">
             <button class="btn btn-success d-flex align-items-end " data-bs-placement="top" data-bs-target="#loginModal"
-                    data-bs-toggle="tooltip"
-                    data-bs-toggle="modal"
+                    data-bs-toggle="modal" data-bs-toggle="tooltip"
                     style="height: 15px; background-color: #558787;" title="Увійти до кабінету" type="button">
                 <img alt="" height="15" src="/static/diagnoz/img/myprofil.png" width="15">
             </button>
@@ -128,21 +136,11 @@
 
     </div>
     <p></p>
-    <div class="row justify-content-md-center">
-        <div class="col-md-auto">
-            <img alt="" class=" d-inline-block" height="145" src="/static/diagnoz/img/kaducey.ico"
-                 width="125">
-        </div>
-    </div>
-    <div class="row justify-content-md-center">
-        <div class="col-md-auto">
-            <p class="fs-2">Диференційна діагностика <br> стану нездужання людини-CEAM</p>
-        </div>
-    </div>
+
     {% block nav %}
     {% endblock %}
 
-</div>
+<!---</div> --->
 <script src="js/bootstrap.min.js"></script>
 <!---<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

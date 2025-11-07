@@ -1,6 +1,5 @@
-{% extends 'diagnoz/shablonpage.html' %}
-
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 <div class="container-fluid text-center">
 
     {% if likar %}
@@ -9,11 +8,12 @@
             <p>{{pacient}}</p>
             <p>{{age_weight_growth}}</p>
             <p> {{tel_email_pind}}</p>
-            {% else %}
-            <h6>{{iduser}}</h6>
-            {% endif %}
-
-
+    {% else %}
+    <p>{{iduser}}</p>
+    {% endif %}
+    <p>Діагностика нездужання</p>
+</div>
+<div class="container-fluid ">
     {% block list %}
     <table class="table table-striped ">
                 <thead>

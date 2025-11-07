@@ -1,6 +1,5 @@
-{% extends 'diagnoz/shablonpage.html' %}
-
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
 <div class="container-fluid text-center">
     <h5>Кабінет пацієнта</h5>
@@ -10,6 +9,7 @@
     <h6>{{iduser}}</h6>
     {% endif %}
     <a class="text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
+</div>
     <table class="table text-center">
                 <thead>
                 <tr>
@@ -41,11 +41,12 @@
 
                 </tbody>
     </table>
-    <div style="display: inline-block">
+
+<div class="container-fluid text-center" style="display: inline-block">
     {% if remove %}
         <a class="btn btn-primary" href="{% url removefunc %}" role="button" style="font-size: 14px;">Видалити</a>
     {% endif %}
-    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+    <!---    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
     </div>
-</div>
+
 {% endblock %}

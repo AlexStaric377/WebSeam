@@ -1,7 +1,9 @@
-{% extends 'diagnoz/shablonpage.html' %}
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
+
 <div class="container-fluid text-center">
     <h6>Кабінет пацієнта</h6>
+</div>
     <table class="table text-center">
                 <thead>
                 <tr>
@@ -35,13 +37,14 @@
                 </tr>
                 </tbody>
     </table>
-    <div style="display: inline-block">
-        <a class="btn btn-primary" href="{% url 'pacientprofil' %}" role="button"
+
+<div class="container-fluid text-center" style="display: inline-block">
+
+    <a class="btn btn-primary" href="{% url 'pacientprofil' %}" role="button"
            style="font-size: 14px;">Корегувати</a>
         <a class="btn btn-primary" href="{% url 'deletprofil' %}" role="button" style="font-size: 14px;">Видалити
             профіль</a>
-        <a class="btn btn-primary" href="{% url 'pacient'  %}" role="button" style="font-size: 14px;">Далі</a>
-    </div>
+    <!---        <a class="btn btn-primary" href="{% url 'pacient'  %}" role="button" style="font-size: 14px;">Далі</a>--->
 </div>
 
 {% endblock %}

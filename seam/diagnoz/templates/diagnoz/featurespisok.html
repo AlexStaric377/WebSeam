@@ -1,11 +1,10 @@
-{% extends 'diagnoz/shablonpage.html' %}
-
-{% block content %}
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
 
 <div class="container-fluid text-center">
     {% include 'diagnoz/shablonzaglinterview.html' %}
     <h6> {{ compl }} </h6>
-
+</div>
     {% block featurelist %}
             <table class="table table-striped">
                 <thead>
@@ -25,13 +24,13 @@
             </table>
     {% endblock %}
 
-    <div style="display: inline-block">
+<div class="container-fluid text-center" style="display: inline-block">
         <p></p>
-        <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
-            опитування</a>
+    <!---        <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
+                опитування</a> --->
         <a aria-current="page" class="btn btn-primary" href="{% url 'nextgrdetaling' %}" role="button"
            style="font-size: 14px;">{{next}}</a>
     </div>
-</div>
+
 {% endblock %}
 
