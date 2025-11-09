@@ -33,9 +33,6 @@ def home_view(request):  # Или любое другое ваше view
 
 def login(request):
     # Инициализируем форму регистрации логина и пароля для входа в кабинет
-    login_form = AuthenticationForm()
-    settingsvar.nextstepdata = {'login_form': login_form}
-
     if request.method == 'POST':
         # Если форма отправлена, обрабатываем данные
         login_form = AuthenticationForm(request, data=request.POST)
@@ -100,13 +97,15 @@ def login(request):
     # отрендериться снова с этой же формой (в ней уже будут ошибки)
     #            messages.error(request, 'Неверное имя пользователя или пароль.')
     else:
-        #        login_form = AuthenticationForm()
+        login_form = AuthenticationForm()
         # ----- Добавляем класс 'form-control' для полей -----
         # Это простой способ добавить Bootstrap-стили без crispy-forms
         login_form.fields['username'].widget.attrs.update({'class': 'form-control'})
         login_form.fields['password'].widget.attrs.update({'class': 'form-control'})
         # ---------------------------------------------------
         if settingsvar.kabinet != '': exitkab()
+    settingsvar.nextstepdata = {'login_form': login_form}
+
     return
 
 
