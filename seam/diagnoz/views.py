@@ -8,7 +8,7 @@ import requests
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
 from diagnoz import settingsvar
 from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient, LikarForm, Reestrvisitngdays
@@ -23,56 +23,91 @@ view-функция, которая будет и отображать стра�
 
 
 def home_view(request):  # Или любое другое ваше view
+    # Инициализируем форму регистрации логина и пароля для входа в кабинет
+    settingsvar.html = 'diagnoz/index.html'
+    settingsvar.backpage = 'home_view'
+    login(request)
 
-    # Инициализируем форму
+    return render(request, settingsvar.html, settingsvar.nextstepdata)
+
+
+def login(request):
+    # Инициализируем форму регистрации логина и пароля для входа в кабинет
     login_form = AuthenticationForm()
+    settingsvar.nextstepdata = {'login_form': login_form}
 
     if request.method == 'POST':
         # Если форма отправлена, обрабатываем данные
         login_form = AuthenticationForm(request, data=request.POST)
+        settingsvar.formsearch = login_form.data
 
-        if login_form.is_valid():
-            # Если данные верны, получаем пользователя
-            username = login_form.cleaned_data.get('username')
-            password = login_form.cleaned_data.get('password')
-            # user = authenticate(username=username, password=password)
-            if username == "admin":
-                context = {
-                }
-                return render(request, 'diagnoz/likar.html', context)
+        json = "0/" + settingsvar.formsearch['username'] + "/" + settingsvar.formsearch['password'] + '/0'
+        Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+        if 'idStatus' in Stroka:
+            match Stroka['idStatus']:
+                case '1':  # 1- адміністратор,
+                    settingsvar.setpost = True
+                case '2':  # 2- пацієнт,
+                    settingsvar.kodPacienta = Stroka['idUser']
+                    settingsvar.pacient = rest_api(
+                        '/api/PacientController/' + settingsvar.kodPacienta + '/0/0/0/0', '', 'GET')
+                    if len(settingsvar.pacient) > 0:
+                        settingsvar.setpost = True
+                        settingsvar.readprofil = True
+                        settingsvar.setpostlikar = True
+                        settingsvar.html = 'diagnoz/pacient.html'
+                case '3' | '4' | '5':  # 3- лікар, 2 - лікар адміністратор, 5- резерв
 
-            if user is not None:
-                # Входим в систему
-                login(request, user)
-                messages.success(request, f'Добро пожаловать, {username}!')
-                return redirect('/')  # Перенаправляем на главную (или куда нужно)
-            else:
-                return render(request, 'diagnoz/likar.html', context)
+                    settingsvar.kodLikar = Stroka['idUser']
+                    settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
+                                                 '', 'GET')
+                    if 'kodDoctor' in settingsvar.likar:
+                        settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
+                        medzaklad = rest_api(
+                            '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
+                            'GET')
+                        settingsvar.namemedzaklad = medzaklad['name']
+                        settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
+                        settingsvar.mobtellikar = settingsvar.likar['telefon']
+                        settingsvar.setpost = True
+                        settingsvar.readprofil = True
+                        settingsvar.setpostlikar = True
+                        settingsvar.html = 'diagnoz/likar.html'
         else:
-            # Если форма невалидна (неверный пароль/логин),
-            # мы НЕ перенаправляем, а просто даем странице
-            # отрендериться снова с этой же формой (в ней уже будут ошибки)
             messages.error(request, 'Неверное имя пользователя или пароль.')
+    #        else:
+    # Если форма невалидна (неверный пароль/логин),
+    # мы НЕ перенаправляем, а просто даем странице
+    # отрендериться снова с этой же формой (в ней уже будут ошибки)
+    #            messages.error(request, 'Неверное имя пользователя или пароль.')
+
+    # user = authenticate(username=username, password=password)
+    #            if username == "admin":
+    #                context = {
+    #                }
+    #                return render(request, 'diagnoz/likar.html', context)
+
+    #            if user is not None:
+    # Входим в систему
+    #                login(request, user)
+    #                messages.success(request, f'Добро пожаловать, {username}!')
+    #                return redirect('/')  # Перенаправляем на главную (или куда нужно)
+    #            else:
+    #                return render(request, 'diagnoz/likar.html', context)
+    #        else:
+    # Если форма невалидна (неверный пароль/логин),
+    # мы НЕ перенаправляем, а просто даем странице
+    # отрендериться снова с этой же формой (в ней уже будут ошибки)
+    #            messages.error(request, 'Неверное имя пользователя или пароль.')
     else:
-        login_form = AuthenticationForm()
-    # ----- Добавляем класс 'form-control' для полей -----
-    # Это простой способ добавить Bootstrap-стили без crispy-forms
-    login_form.fields['username'].widget.attrs.update({'class': 'form-control'})
-    login_form.fields['password'].widget.attrs.update({'class': 'form-control'})
-    # ---------------------------------------------------
-    exitkab()
-    settingsvar.html = 'diagnoz/index.html'
-    settingsvar.backpage = 'index'
-    settingsvar.nextstepdata = {
-        'mainbar': True,
-        'login_form': login_form
-    }
-    #    context = {
-    #        'login_form': login_form
-    #    }
-
-    return render(request, settingsvar.html, settingsvar.nextstepdata)
-
+        #        login_form = AuthenticationForm()
+        # ----- Добавляем класс 'form-control' для полей -----
+        # Это простой способ добавить Bootstrap-стили без crispy-forms
+        login_form.fields['username'].widget.attrs.update({'class': 'form-control'})
+        login_form.fields['password'].widget.attrs.update({'class': 'form-control'})
+        # ---------------------------------------------------
+        if settingsvar.kabinet != '': exitkab()
+    return
 
 
 def rest_api(api_url, data, method):
@@ -102,17 +137,15 @@ def rest_api(api_url, data, method):
     return stroka
 
 
-def backindex(request):  # httpRequest
-    index()
-    return render(request, 'diagnoz/index.html', context=settingsvar.nextstepdata)
+# def backindex(request):  # httpRequest
+#    login()
+#    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
-def index():  # httpRequest
-    exitkab()
+def index(request):  # httpRequest
     settingsvar.html = 'diagnoz/index.html'
-    settingsvar.nextstepdata = {
-        'mainbar': True}
-    return
+    login(request)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 def reception(request):  # httpRequest
@@ -125,6 +158,7 @@ def reception(request):  # httpRequest
 
 
 def backreception():
+    settingsvar.backpage = 'index'
     settingsvar.receptitem = ""
     settingsvar.kabinet = 'guest'
     settingsvar.likar = {}
@@ -149,6 +183,7 @@ def pacient(request):  # httpRequest
         json = ('IdUser: pacient,' + 'dateseanse :' +
                 datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacient')
         unloadlog(json)
+        settingsvar.backpage = 'index'
         settingsvar.kabinet = 'pacient'
         settingsvar.setintertview = False
         settingsvar.interviewcompl = False
@@ -158,6 +193,7 @@ def pacient(request):  # httpRequest
         settingsvar.datereception = 'не встановлено'
         settingsvar.datedoctor = 'не встановлено'
         settingsvar.funciya = ''
+
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -187,6 +223,7 @@ def likar(request):  # httpRequest
         json = ('IdUser: likar,' + 'dateseanse :' +
                 datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likar')
         unloadlog(json)
+        settingsvar.backpage = 'index'
         settingsvar.kabinet = 'likar'
         settingsvar.html = 'diagnoz/likar.html'
         settingsvar.setintertview = False
@@ -210,6 +247,7 @@ def proseam(request):
     json = ('IdUser: proseam,' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: proseam')
     unloadlog(json)
+    settingsvar.backpage = 'index'
     return render(request, 'diagnoz/proseam.html')
 
 
@@ -260,8 +298,7 @@ def cleanvars():
     settingsvar.viewgrdetaling = False
     settingsvar.DiagnozRecomendaciya = []
     settingsvar.rest_apisetdiagnoz = ""
-    settingsvar.html = ""
-    settingsvar.nextstepdata = {}
+
     settingsvar.spisokkeyinterview = []
     settingsvar.spisoknameinterview = []
     settingsvar.strokagrdetaling = ""
@@ -1859,6 +1896,7 @@ def profilpacient(request):  # httpRequest
     settingsvar.nawpage = 'pacientprofil'
     settingsvar.kabinetitem = 'profil'
     settingsvar.kabinet = 'pacient'
+    settingsvar.backpage = 'pacientprofil'
     iduser = funciduser()
     if settingsvar.setpost == False:
         accountuser(request)
@@ -1895,6 +1933,7 @@ def pacientinterwiev(request):  # httpRequest
         settingsvar.kabinetitem = 'interwiev'
         settingsvar.kabinet = 'interwiev'
         settingsvar.receptitem = 'pacientinterwiev'
+        settingsvar.backpage = 'pacientinterwiev'
         if settingsvar.setpost == False:
             accountuser(request)
         else:
@@ -2082,6 +2121,7 @@ def pacientlistinterwiev(request):  # httpRequest
         cleanvars()
         settingsvar.readprofil = False
         settingsvar.nawpage = 'pacientlistinterwiev'
+        settingsvar.backpage = 'listinterwiev'
         settingsvar.kabinet = 'listinterwiev'
         settingsvar.kabinetitem = 'listinterwiev'
         settingsvar.backurl = funcbakurl()
@@ -2140,6 +2180,7 @@ def pacientreceptionlikar(request):  # httpRequest
         settingsvar.kabinet = 'listreceptionlikar'
         settingsvar.kabinetitem = 'listreceptionlikar'
         settingsvar.backurl = funcbakurl()
+        settingsvar.backpage = 'listreceptionlikar'
         if settingsvar.setpost == False:
             accountuser(request)
         else:
@@ -2212,6 +2253,7 @@ def pacientstanhealth(request):  # httpRequest
         settingsvar.nawpage = 'pacient'  # 'pacientreceptionlikar'
         settingsvar.kabinet = 'pacientstanhealth'
         settingsvar.kabinetitem = 'pacientstanhealth'
+        settingsvar.backpage = 'pacientstanhealth'
         if settingsvar.setpost == False:
             accountuser(request)
         else:
@@ -2263,6 +2305,7 @@ def likarprofil(request):  # httpRequest
         settingsvar.nawpage = 'likarprofil'
         settingsvar.kabinetitem = 'likar'
         settingsvar.kabinet = 'likarprofil'
+        settingsvar.backpage = 'likarprofil'
         if settingsvar.setpostlikar == False:
             accountuser(request)
             settingsvar.initialprofil = True
@@ -2395,6 +2438,7 @@ def likarinterwiev(request):  # httpRequest
         settingsvar.nawpage = 'likarinterwiev'
         settingsvar.kabinetitem = 'likarinterwiev'
         settingsvar.kabinet = 'likarinterwiev'
+        settingsvar.backpage = 'likarinterwiev'
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
@@ -2429,6 +2473,7 @@ def likarlistinterwiev(request):  # httpRequest
         settingsvar.nawpage = 'profilinterview'
         settingsvar.kabinetitem = 'likarlistinterwiev'
         settingsvar.kabinet = 'likarlistinterwiev'
+        settingsvar.backpage = 'likarlistinterwiev'
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
@@ -2469,6 +2514,7 @@ def likarreceptionpacient(request):  # httpRequest
         settingsvar.nawpage = 'profilinterview'
         settingsvar.kabinetitem = 'likarreceptionpacient'
         settingsvar.kabinet = 'likarreceptionpacient'
+        settingsvar.backpage = 'likarreceptionpacient'
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
@@ -2535,6 +2581,7 @@ def likarvisitngdays(request):  # httpRequest
             settingsvar.nawpage = 'likar'
             settingsvar.kabinetitem = 'likarvisitngdays'
             settingsvar.kabinet = 'likarvisitngdays'
+            settingsvar.backpage = 'likarvisitngdays'
             if settingsvar.setpostlikar == False:
                 accountuser(request)
             else:
@@ -2658,6 +2705,7 @@ def likarworkdiagnoz(request):  # httpRequest
         settingsvar.nawpage = 'likarworkdiagnoz'
         settingsvar.kabinetitem = 'likarworkdiagnoz'
         settingsvar.kabinet = 'likarworkdiagnoz'
+        settingsvar.backpage = 'likarworkdiagnoz'
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
@@ -2896,6 +2944,7 @@ def likarlibdiagnoz(request):  # httpRequest
         settingsvar.nawpage = 'listlibdiagnoz'
         settingsvar.kabinetitem = 'likarlibdiagnoz'
         settingsvar.kabinet = 'likarlibdiagnoz'
+        settingsvar.backpage = 'likarlibdiagnoz'
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:

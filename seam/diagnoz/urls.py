@@ -7,13 +7,14 @@ from . import views
 # from diagnoz import views
 
 
+
 urlpatterns = [
     # Предполагаем, что модальное окно находится на главной странице
     path('', views.home_view, name='home'),
 
     path('backpage', views.backmeny.backpage, name='backpage'),
     path('index', views.index, name='index'),
-    path('backindex', views.backindex, name='backindex'),
+    #    path('backindex', views.backindex, name='backindex'),
     path('reception', views.reception, name='reception'),
     path('pacient', views.pacient, name='pacient'),
     path('likar', views.likar, name='likar'),
