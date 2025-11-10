@@ -49,9 +49,10 @@
 
 {% if directdiagnoz %}
     {% else %}
-    <a class="btn btn-primary" href="{% url 'addworkdiagnoz' %}" role="button" style="font-size: 14px;">Додати</a>
+    <a class="btn btn-sm text-white" href="{% url 'addworkdiagnoz' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Додати</a>
     {% endif %}
-    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
+    <!---    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
     </div>
 
 {% endblock %}

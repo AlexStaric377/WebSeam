@@ -103,15 +103,17 @@
             <p></p>
             <div class="container text-center" style="display: inline-block">
                 {% if next %}
-                <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
-                        style="font-size: 14px;"><font style="vertical-align: inherit;">Підтвердити</font></font>
+                <button class="btn btn-sm text-white" type="submit"><font
+                        style="font-size: 12px; background-color: #558787; height=12;">Підтвердити</font>
                 </button>
                 {% else %}
-                <button class="w-40 h-30 btn btn-primary btn-lg" type="submit"><font
-                        style="font-size: 14px;"><font style="vertical-align: inherit;">Зберегти</font></font>
+                <button class="btn btn-sm  text-white" style="font-size: 12px; background-color: #558787;  "
+                        type="submit">
+                    Зберегти
                 </button>
                 {% endif %}
-                <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Скасувати
+                <a class="btn btn-sm text-white" href="{% url backurl %}" role="button"
+                   style="font-size: 12px; background-color: #558787; height=12;">Скасувати
                     запит</a>
 
             </div>

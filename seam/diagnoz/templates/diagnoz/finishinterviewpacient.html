@@ -3,8 +3,9 @@
 
 <div class="container-fluid text-center">
     <p>{{iduser}}</p>
-    <div class="container">
-        <a href="{% url 'contentinterwiev' %}" style="font-size: 14px;">Зміст опитування</a>
+    <div class="container-fluid text-center" style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'contentinterwiev' %}" role="button"
+           style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
     </div>
 </div>
     <table class="table text-center">
@@ -34,8 +35,10 @@
 
 <div class="container-fluid text-center" style="display: inline-block">
         <a>{{ podval }}</a>
-        <a class="btn btn-primary" href="{% url 'saveraceptionlikar' %}" role="button" style="font-size: 14px;">Так</a>
-        <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Ні</a>
+    <a class="btn btn-sm text-white" href="{% url 'saveraceptionlikar' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Так</a>
+    <a class="btn btn-sm text-white" href="{% url backurl %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Ні</a>
     </div>
 
 

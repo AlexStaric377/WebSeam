@@ -11,6 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 
 from diagnoz import settingsvar
+from .backmeny import backpage
 from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient, LikarForm, Reestrvisitngdays
 
 '''

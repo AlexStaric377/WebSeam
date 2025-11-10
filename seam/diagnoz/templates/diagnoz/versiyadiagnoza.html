@@ -3,7 +3,10 @@
 
 <div class="container-fluid text-center">
     {% include 'diagnoz/shablonzaglinterview.html' %}
-    <a class="text-decoration-none" href="{% url 'contentinterwiev' %}">[ Зміст опитування ]</a>
+    <div class="container-fluid text-center" style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'contentinterwiev' %}" role="button"
+           style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
+    </div>
 </div>
     {% block detalinglist %}
 
@@ -53,17 +56,17 @@
         </table>
 
 <div class="container-fluid text-center" style="display: inline-block">
-        <a class="btn btn-primary" href="{% url 'receptprofillmedzaklad' %}" role="button"
-           style="font-size: 14px;">Запис до профільного лікаря</a>
+    <a class="btn btn-sm text-white" href="{% url 'receptprofillmedzaklad' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Запис до профільного лікаря</a>
 
-        <a class="btn btn-primary" href="{% url 'receptfamilylikar' %}" role="button"
-           style="font-size: 14px;">Запис до сімейного лікаря</a>
+    <a class="btn btn-sm text-white" href="{% url 'receptfamilylikar' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Запис до сімейного лікаря</a>
 
-        <a class="btn btn-primary" href="{% url 'savediagnoz' %}" role="button"
-           style="font-size: 14px;">Зберегти опитування</a>
+    <a class="btn btn-sm text-white" href="{% url 'savediagnoz' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Зберегти опитування</a>
 
-        <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button"
-           style="font-size: 14px;">Почати з початку</a>
+    <a class="btn btn-sm text-white" href="{% url 'receptinterwiev' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Почати з початку</a>
     </div>
 
 {% endblock %}

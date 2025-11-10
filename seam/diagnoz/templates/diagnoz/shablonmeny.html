@@ -92,31 +92,31 @@
                         <div class="modal-body">
                             {% csrf_token %}
 
-                            {% if login_form.non_field_errors %}
-                            <div class="alert alert-danger" role="alert">
-                                {% for error in login_form.non_field_errors %}
-                                {{ error }}
-                                {% endfor %}
-                            </div>
-                            {% endif %}
+                            <!---                            {% if login_form.non_field_errors %}
+                                                        <div class="alert alert-danger" role="alert">
+                                                            {% for error in login_form.non_field_errors %}
+                                                            {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                        {% endif %}--->
 
                             <div class="mb-3">
                                 <label class="form-label" for="{{ login_form.username.id_for_label }}">
                                     <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Номер
                                         телефону +xxx xx xxx xx xx</font></font></label>
-                                {{ login_form.username }}
-                                {% for error in login_form.username.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
+                                {{login_form.username }}
+                                <!---                               {% for error in login_form.username.errors %}
+                                                               <div class="invalid-feedback d-block">{{ error }}</div>
+                                                               {% endfor %}--->
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label justify-content-start"
                                        for="{{ login_form.password.id_for_label }}">Пароль</label>
                                 {{ login_form.password }}
-                                {% for error in login_form.password.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
+                                <!---                               {% for error in login_form.password.errors %}
+                                                               <div class="invalid-feedback d-block">{{ error }}</div>
+                                                               {% endfor %}--->
                             </div>
 
                         </div>

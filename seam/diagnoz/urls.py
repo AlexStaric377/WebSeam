@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
-
+from . import backmeny
 # from diagnoz import views
 
 
@@ -12,7 +12,7 @@ urlpatterns = [
     # Предполагаем, что модальное окно находится на главной странице
     path('', views.home_view, name='home'),
 
-    path('backpage', views.backmeny.backpage, name='backpage'),
+    path('backpage', backmeny.backpage, name='backpage'),
     path('index', views.index, name='index'),
     #    path('backindex', views.backindex, name='backindex'),
     path('reception', views.reception, name='reception'),

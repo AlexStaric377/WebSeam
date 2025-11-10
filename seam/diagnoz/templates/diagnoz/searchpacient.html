@@ -52,12 +52,15 @@
 
     <p></p>
         <div class="container-fluid text-center" style="display: inline-block">
-        <button class=" btn btn-primary " type="submit"><font style="font-size: 14px;"><font
-            style="vertical-align: inherit;">Підтвердити</font></font></button>
+            <button class="btn btn-sm  text-white" style="font-size: 12px; background-color: #558787;  "
+                    type="submit">Підтвердити
+            </button>
         {% if reestr %}
-        <a class="btn btn-primary" href="{% url 'pacientprofil' %}" role="button" style="font-size: 14px;">{{compl}}</a>
+            <a class="btn  btn-sm text-white" href="{% url 'pacientprofil' %}" role="button"
+               style="font-size: 12px; background-color: #558787; height=12;">{{compl}}</a>
         {% endif %}
-            <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Скасувати
+            <a class="btn btn-sm text-white" href="{% url backurl %}" role="button"
+               style="font-size: 12px; background-color: #558787; height=12;">Скасувати
                 запит</a>
     </div>
 </form>
