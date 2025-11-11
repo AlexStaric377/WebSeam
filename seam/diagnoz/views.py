@@ -6,12 +6,10 @@ import environ
 import pyodbc
 import requests
 from django.contrib import messages
-from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 
 from diagnoz import settingsvar
-from .backmeny import backpage
 from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient, LikarForm, Reestrvisitngdays
 
 '''
@@ -27,12 +25,12 @@ def home_view(request):  # Или любое другое ваше view
     # Инициализируем форму регистрации логина и пароля для входа в кабинет
     settingsvar.html = 'diagnoz/index.html'
     settingsvar.backpage = 'home_view'
-    login(request)
+    loginuser(request)
 
     return render(request, settingsvar.html, settingsvar.nextstepdata)
 
 
-def login(request):
+def loginuser(request):
     # Инициализируем форму регистрации логина и пароля для входа в кабинет
     if request.method == 'POST':
         # Если форма отправлена, обрабатываем данные
@@ -54,6 +52,7 @@ def login(request):
                         settingsvar.readprofil = True
                         settingsvar.setpostlikar = True
                         settingsvar.html = 'diagnoz/pacient.html'
+
                 case '3' | '4' | '5':  # 3- лікар, 2 - лікар адміністратор, 5- резерв
 
                     settingsvar.kodLikar = Stroka['idUser']
@@ -71,6 +70,7 @@ def login(request):
                         settingsvar.readprofil = True
                         settingsvar.setpostlikar = True
                         settingsvar.html = 'diagnoz/likar.html'
+
         else:
             messages.error(request, 'Неверное имя пользователя или пароль.')
     #        else:
@@ -144,7 +144,7 @@ def rest_api(api_url, data, method):
 
 def index(request):  # httpRequest
     settingsvar.html = 'diagnoz/index.html'
-    login(request)
+    loginuser(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -188,7 +188,7 @@ def pacient(request):  # httpRequest
         settingsvar.setintertview = False
         settingsvar.interviewcompl = False
         settingsvar.html = 'diagnoz/pacient.html'
-        settingsvar.nextstepdata = {}
+
         settingsvar.likar = {}
         settingsvar.datereception = 'не встановлено'
         settingsvar.datedoctor = 'не встановлено'
@@ -204,6 +204,7 @@ def exitkab():
     settingsvar.setpost = False
     settingsvar.likar = {}
     settingsvar.pacient = {}
+    settingsvar.kabinet = {}
     settingsvar.formsearch = {}
     settingsvar.funciya = ''
     return
@@ -212,6 +213,8 @@ def exitkab():
 def exitkabinet(request):  #
     exitkab()
     settingsvar.html = 'diagnoz/index.html'
+
+    loginuser(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def likar(request):  # httpRequest
@@ -229,7 +232,7 @@ def likar(request):  # httpRequest
         settingsvar.setintertview = False
         settingsvar.search = False
         settingsvar.interviewcompl = False
-        settingsvar.nextstepdata = {}
+
         settingsvar.pacient = {}
         settingsvar.datereception = 'не встановлено'
         settingsvar.datedoctor = 'не встановлено'
@@ -812,10 +815,8 @@ def selectmedzaklad(request, statuszaklad):
         case "5":
             settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/" +
                                                settingsvar.icdGrDiagnoz + "/0/0", '', 'GET')  # settingsvar.icddiagnoz
-            if settingsvar.kabinetitem == 'guest':
-                settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad, '',
-                                                     'GET')
-            else:
+
+            if len(settingsvar.grupDiagnoz) > 0:
                 for item in settingsvar.grupDiagnoz:
                     medzaklad = rest_api('/api/MedicalInstitutionController/' + item['kodZaklad'] + '/0/0/0', '', 'GET')
                     if len(medzaklad) > 0:
@@ -827,7 +828,11 @@ def selectmedzaklad(request, statuszaklad):
                         else:
                             apptru = True
                     if apptru == False:  settingsvar.grupmedzaklad.append(medzaklad)
-
+            else:
+                if settingsvar.kabinetitem == 'guest':
+                    settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad,
+                                                         '',
+                                                         'GET')
 
     settingsvar.nawpage = 'receptprofillmedzaklad'
 

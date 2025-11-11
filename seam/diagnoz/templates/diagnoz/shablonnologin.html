@@ -1,4 +1,3 @@
-
 {% load static %}
 <!doctype html>
 <html lang="uk">
@@ -8,12 +7,14 @@
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>{% block title %}{% endblock %}</title>
     <link crossorigin="anonymous"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
           rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="{% static 'diagnoz/css/diagnoz.css' %}" rel="stylesheet">
 </head>
 <body>
+
 <div class="container text-center sticky-top" style="height: 30px; background-color: #558787;">
 
     <div class=row style="height: 30px; background-color: #558787;">
@@ -63,67 +64,14 @@
         </div>
     </div>
 </div>
+
+
 <p></p>
-
-<div aria-hidden="true" aria-labelledby="loginModalLabel" class="modal fade" id="loginModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="loginModalLabel">Увійти / Зареєструватися </h5>
-                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-                    </div>
-
-                    <form action="" method="POST">
-                        <div class="modal-body">
-                            {% csrf_token %}
-
-                            {% if login_form.non_field_errors %}
-                                                        <div class="alert alert-danger" role="alert">
-                                                            {% for error in login_form.non_field_errors %}
-                                                            {{ error }}
-                                                            {% endfor %}
-                                                        </div>
-                            {% endif %}
-
-                            <div class="mb-3">
-                                <label class="form-label" for="{{ login_form.username.id_for_label }}">
-                                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Номер
-                                        телефону +xxx xx xxx xx xx</font></font></label>
-                                {{login_form.username }}
-                                {% for error in login_form.username.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label justify-content-start"
-                                       for="{{ login_form.password.id_for_label }}">Пароль</label>
-                                {{ login_form.password }}
-                                {% for error in login_form.password.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-
-                            <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Скасувати</button>
-                            <button class="btn btn-primary" type="submit">Підтвердити</button>
-
-                        </div>
-
-                    </form>
-
-                </div>
-            </div>
-        </div>
-
-    <p></p>
 <div class="container" style="padding-top: 30px;">
     {% block nav %}
     {% endblock %}
 </div>
-<!---</div>--->
+
 <script src="js/bootstrap.min.js"></script>
 <!---<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -156,4 +104,3 @@
     })
 </script>
 </body>
-</html>
