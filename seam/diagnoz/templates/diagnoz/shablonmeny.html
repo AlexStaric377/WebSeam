@@ -14,15 +14,15 @@
     <link href="{% static 'diagnoz/css/diagnoz.css' %}" rel="stylesheet">
 </head>
 <body>
-<div class="container text-center sticky-top" style="height: 30px; background-color: #558787;">
+<div class="container text-center sticky-top" style="background-color: #558787;">
 
-    <div class=row style="height: 30px; background-color: #558787;">
+    <div class=row style=" background-color: #558787;">
         <div class="col justify-content-start d-flex align-items-start" style=" background-color: #558787;">
             <a aria-expanded="false" class="nav-link dropdown-toggle d-flex align-items-start"
-               data-bs-placement="top" data-bs-toggle="dropdown" data-bs-toggle="tooltip" href="#"
-               id="navbarDropdownMenuLink" role="button" style="background-color: #558787; " title="Закладки">
-                <img alt="" src="/static/diagnoz/img/gamb.png"
-                     style="width: 25px; height: 25px; background-color: #558787;">
+               data-bs-placement="top" data-bs-toggle="tooltip"
+               data-bs-toggle="dropdown" href="#" id="navbarDropdownMenuLink" role="button" title="Закладки">
+                <img alt="" src="/static/diagnoz/img/gamb.png" style="width: 25px;">
+
             </a>
             <ul aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu ">
                 <li><a class="dropdown-item" href="{% url 'index' %}">Головна</a></li>
@@ -34,36 +34,36 @@
         <div class="col justify-content-start d-flex align-items-start" style="  background-color: #558787;">
             <a class="btn justify-content-start d-flex align-items-start" data-bs-placement="top"
                data-bs-toggle="tooltip" href="{% url 'backpage' %}"
-               role="button" style="background-color: #558787; height: 15px; width: 50px;"
+               role="button" style=" background-color: #558787; "
                title="Повернутися до попередньої сторінки">
                 <img alt="" src="/static/diagnoz/img/back2.png"
-                     style="width: 25px; height: 15px; background-color: #558787;">
+                     style="width: 20px; height: 15px;  background-color: #558787;">
             </a>
         </div>
-        <div class="col justify-content-center d-flex align-items-center"
-             style="height: 15px; width: 80px; background-color: #558787;">
-
+        <div class="col justify-content-start d-flex align-items-start">
+            <a class="btn justify-content-start d-flex align-items-start" data-bs-placement="top"
+               data-bs-toggle="tooltip" href="{% url 'index' %}" role="button" title="Головна">
+                <img alt="" src="/static/diagnoz/img/back3.png" style="width: 20px; height: 15px; ">
+            </a>
         </div>
-        <div class="col justify-content-end d-flex align-items-end" style=" background-color: #558787;">
+        <div class="col justify-content-center d-flex align-items-center" style=" width: 380px; ">
+            <a class="btn d-flex align-items-center" role="button"> </a>
+        </div>
+        <div class="col justify-content-end d-flex align-items-end">
             <button class="btn btn-success d-flex align-items-end " data-bs-placement="top" data-bs-target="#loginModal"
                     data-bs-toggle="tooltip" data-bs-toggle="modal"
                     style=" background-color: #558787;" title="Увійти до кабінету" type="button">
-                <img alt="" src="/static/diagnoz/img/myprofil.png"
-                     style="width: 15px; height: 15px; background-color: #558787;">
+                <img alt="" src="/static/diagnoz/img/myprofil.png" style="width: 15px; ">
             </button>
         </div>
-        <div class="col justify-content-end d-flex align-items-end" style=" background-color: #558787;">
+        <div class="col justify-content-end d-flex align-items-end">
             <a class="btn d-flex align-items-end" data-bs-placement="top" data-bs-toggle="tooltip"
-               href="{% url 'proseam' %}"
-               role="button" style=" background-color: #558787; " title="Про СЕАМ">
-                <img alt="" src="/static/diagnoz/img/menykebab.png"
-                     style="width: 15px; height: 15px; background-color: #558787;">
-
+               href="{% url 'proseam' %}" role="button" title="Про СЕАМ">
+                <img alt="" src="/static/diagnoz/img/menykebab.png" style="width: 15px; ">
             </a>
         </div>
     </div>
 </div>
-<p></p>
 
 <div aria-hidden="true" aria-labelledby="loginModalLabel" class="modal fade" id="loginModal" tabindex="-1">
             <div class="modal-dialog">
@@ -118,7 +118,6 @@
             </div>
         </div>
 
-    <p></p>
 <div class="container" style="padding-top: 30px;">
     {% block nav %}
     {% endblock %}

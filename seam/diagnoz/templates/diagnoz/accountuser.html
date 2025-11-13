@@ -15,7 +15,7 @@
     <form class="needs-validation mx-auto" method="POST" novalidate="">
     {% csrf_token %}
     <div class="row g-3">
-        <div class="col-md-4">
+        <div class="col-md-5">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.login.label }}</font></font>
             </label>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <p></p>
-        <div class="col-md-4">
+        <div class="col-md-5">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.password.label }}</font></font></label>
             {{form.password}}

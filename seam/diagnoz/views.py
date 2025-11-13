@@ -40,6 +40,8 @@ def loginuser(request):
         json = "0/" + settingsvar.formsearch['username'] + "/" + settingsvar.formsearch['password'] + '/0'
         Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
         if 'idStatus' in Stroka:
+            request.method = 'GET'
+            login_form = AuthenticationForm()
             match Stroka['idStatus']:
                 case '1':  # 1- адміністратор,
                     settingsvar.setpost = True
@@ -172,6 +174,7 @@ def backreception():
     settingsvar.datedoctor = 'не встановлено'
     settingsvar.html = 'diagnoz/reception.html'
     settingsvar.funciya = ''
+    settingsvar.icdGrDiagnoz = ''
     return
 
 def pacient(request):  # httpRequest
@@ -829,7 +832,7 @@ def selectmedzaklad(request, statuszaklad):
                             apptru = True
                     if apptru == False:  settingsvar.grupmedzaklad.append(medzaklad)
             else:
-                if settingsvar.kabinetitem == 'guest':
+                #                if settingsvar.kabinet == 'guest':
                     settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad,
                                                          '',
                                                          'GET')
@@ -877,12 +880,12 @@ def backreceptprofillmedzaklad(request):
         saveselectlikar(settingsvar.pacient)
     else:
         status = "5"
+        settingsvar.directdiagnoz = True
         if settingsvar.kabinet == 'guest':
-            settingsvar.directdiagnoz = True
             settingsvar.backpage = 'receptprofillmedzaklad'
             if settingsvar.receptitem != 'interwievcomplaint': settingsvar.receptitem = 'receptprofillmedzaklad'
         if settingsvar.kabinet == 'likarinterwiev':
-            settingsvar.directdiagnoz = True
+            settingsvar.backpage = 'likarinterwiev'
             settingsvar.receptitem = 'likarinterwiev'
         selectmedzaklad(request, status)
         json = (
