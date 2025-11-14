@@ -1,10 +1,7 @@
 {% extends 'diagnoz/shablonmeny.html' %}
 {% block nav %}
-
 <div class="container-fluid text-center">
-
 {% if likar %}
-
     <table class="table text-center">
             <tbody>
         <tr>
@@ -14,8 +11,8 @@
             <td><p>{{pacient}}</p></td>
         </tr>
             </tbody>
-        </table>
-        {% else %}
+    </table>
+    {% else %}
     <p>{{iduser}}</p>
     <table class="table text-center">
             <tbody>
@@ -26,29 +23,37 @@
             <td><p>{{adrdzaklad}}</p></td>
         </tr>
             </tbody>
-        </table>
-        {% endif %}
-
+    </table>
+    {% endif %}
     <h5> {{ compl }} </h5>
 </div>
-    {% block list %}
+{% block list %}
 {% if directdiagnoz %}
 <p>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне
     прізвище</p>
+{% else %}
+<p>Для запису до лікаря натисніть на відповідне прізвище</p>
 {% endif %}
 <table class="table table-striped">
         <thead>
         <tr>
-            <th> Ім'я, прізвище</th> <!---style="width: 15%;"--->
+            <th> Ім'я, прізвище</th>
             <th> Телефон</th>
             <th> Професійна діяльність</th>
         </tr>
         </thead>
         <tbody>
-
         {% for item in detalinglist %}
         <tr>
             {% if directdiagnoz %}
+            <td><a aria-current="page" class="nav-link"
+                   href=""><font style="vertical-align: inherit;"> {{item.name}} {{item.surname}} </font></a></td>
+            <td><a aria-current="page" class="nav-link"
+                   href=""><font style="vertical-align: inherit;"> {{item.telefon}}</font></a></td>
+            <td><a aria-current="page" class="nav-link"
+                   href=""><font style="vertical-align: inherit;"> {{item.specialnoct}} {{item.resume}}</font></a></td>
+
+            {% else %}
             <td><a aria-current="page" class="nav-link"
                    href="{% url 'inputprofilpacient' item.kodDoctor  %}"><font style="vertical-align: inherit;">
                 {{item.name}} {{item.surname}} </font></a></td>
@@ -58,23 +63,10 @@
             <td><a aria-current="page" class="nav-link"
                    href="{% url 'inputprofilpacient' item.kodDoctor  %}"><font style="vertical-align: inherit;">
                 {{item.specialnoct}} {{item.resume}}</font></a></td>
-            {% else %}
-            <td><a aria-current="page" class="nav-link"
-                   href=""><font style="vertical-align: inherit;"> {{item.name}} {{item.surname}} </font></a></td>
-            <td><a aria-current="page" class="nav-link"
-                   href=""><font style="vertical-align: inherit;"> {{item.telefon}}</font></a></td>
-            <td><a aria-current="page" class="nav-link"
-                   href=""><font style="vertical-align: inherit;"> {{item.specialnoct}} {{item.resume}}</font></a></td>
             {% endif %}
         </tr>
         {% endfor %}
         </tbody>
     </table>
-    {% endblock %}
-
-<!---    <div style="display: inline-block">
-        <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>
-    </div>--->
-
-
+{% endblock %}
 {% endblock %}

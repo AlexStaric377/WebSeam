@@ -6,12 +6,13 @@
     <div class="col">
         <h6>{{reestrinput}}</h6>
     </div>
-    <a> Для входу до кабінету введіть показники облікового запису</a>
     {% if reestr %}
-    <a> Для створення облікового запису натисніть на кнопку "Реєстрація"</a>
+    <a>Увійти / Зареєструватися"</a>
+    {% else %}
+    <a>Увійти"</a>
     {% endif %}
 </div>
-<div class="d-flex justify-content-center align-items-center ">
+<div class=" container-fluid text-center d-flex justify-content-center align-items-center ">
     <form class="needs-validation mx-auto" method="POST" novalidate="">
     {% csrf_token %}
     <div class="row g-3">
@@ -35,7 +36,7 @@
         </div>
     </div>
     <p></p>
-        <div style="display: inline-block">
+        <div style="container-fluid text-center display: inline-block">
             <button class="btn btn-sm  text-white" style="font-size: 12px; background-color: #558787;  " type="submit">
                 Підтвердити
             </button>
@@ -43,12 +44,10 @@
             <a class="btn btn-sm text-white" href="{% url 'reestraccountuser' %}" role="button"
                style="font-size: 12px; background-color: #558787; height=12;">{{compl}}</a>
             {% endif %}
-            <a class="btn btn-sm text-white" href="{{backurl}}" role="button"
-               style="font-size: 12px; background-color: #558787; height=12;">Скасувати запит</a>
         </div>
 
-
     </form>
+
 </div>
 
 {% endblock %}

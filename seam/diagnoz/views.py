@@ -422,7 +422,8 @@ def funcfeature():
         settingsvar.listfeature = tmplist
 
     else:
-        settingsvar.listfeature = []
+        cleanvars()
+
         settingsvar.nawpage = 'receptinterwiev'
         settingsvar.html = 'diagnoz/receptinterwiev.html'
         api = rest_api('api/ApiControllerComplaint/', '', 'GET')
@@ -448,6 +449,17 @@ def funcfeature():
         nextstepgrdetaling()
     return
 
+
+# ---- чистка переменніх перед поавторным началом диагностика
+def claenvarfuture():
+    settingsvar.listfeature = []
+    settingsvar.DiagnozRecomendaciya = []
+    settingsvar.spisokkeyinterview = []
+    settingsvar.spisokkeyfeature = []
+    settingsvar.spisokselectDetailing = []
+    settingsvar.keyFeature = {}
+    settingsvar.keyComplaint = {}
+    return
 
 # --- 3. Деталізація характеру нездужання
 
@@ -601,8 +613,10 @@ def selectdetaling(request, select_kodDetailing):
             index = index + 1
         enddetaling = 'enddetaling'
         settingsvar.nawpage = 'nextgrdetaling'
-        shablondetaling()
-
+        if len(settingsvar.spisoklistdetaling) > 0:
+            shablondetaling()
+        else:
+            diagnoz()
         return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
     return render(request, 'diagnoz/grdetaling.html', context=settingsvar.nextstepdata)
@@ -624,8 +638,12 @@ def selectgrdetaling(request, select_kodDetailing):
                 settingsvar.spselectnameDetailing.append(item['nameGrDetailing'])
         settingsvar.rest_apiGrDetaling = tmplist
         settingsvar.nawpage = 'nextgrdetaling'
-        shablongrdetaling()
-
+        if len(settingsvar.rest_apiGrDetaling) > 0:
+            shablongrdetaling()
+        else:
+            diagnoz()
+    else:
+        diagnoz()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -656,7 +674,7 @@ def enddetaling(request):
 
                 return render(request, settingsvar.html, context=settingsvar.nextstepdata)
         else:
-            if (settingsvar.itemkeyfeature == settingsvar.spisokkeyfeature[0]):
+            if (settingsvar.itemkeyfeature == settingsvar.spisokkeyfeature[0] and len(settingsvar.spisokkeyfeature) > 0):
                 del settingsvar.spisokkeyfeature[0]
                 del settingsvar.spisoknamefeature[0]
         if len(settingsvar.spisokkeyfeature) > 0:
@@ -862,6 +880,7 @@ def selectmedzaklad(request, statuszaklad):
 
 # --- вибір профільного медзакладу
 def receptprofillmedzaklad(request):
+
     backreceptprofillmedzaklad(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -880,9 +899,10 @@ def backreceptprofillmedzaklad(request):
         saveselectlikar(settingsvar.pacient)
     else:
         status = "5"
-        settingsvar.directdiagnoz = True
+        settingsvar.directdiagnoz = False
         if settingsvar.kabinet == 'guest':
             settingsvar.backpage = 'receptprofillmedzaklad'
+
             if settingsvar.receptitem != 'interwievcomplaint': settingsvar.receptitem = 'receptprofillmedzaklad'
         if settingsvar.kabinet == 'likarinterwiev':
             settingsvar.backpage = 'likarinterwiev'
@@ -917,7 +937,7 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
                     settingsvar.directdiagnoz = True
                 case "5":
 
-                    if settingsvar.kabinet == 'likarinterwiev': settingsvar.directdiagnoz = True
+                    #                    if settingsvar.kabinet == 'likarinterwiev': settingsvar.directdiagnoz = True
                     likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '',
                                                 'GET')
                     for icdgrdiagnoz in settingsvar.grupDiagnoz:
@@ -952,7 +972,7 @@ def shablonlistlikar():
     if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'directiondiagnoz': backurl = 'backlikarworkdiagnoz'
     if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'receptprofillmedzaklad': backurl = 'receptprofillmedzaklad'
     if settingsvar.receptitem == 'directiondiagnoz': directdiagnoz = False
-    if settingsvar.kabinet == 'interwiev': directdiagnoz = True
+    #   if settingsvar.kabinet == 'interwiev': directdiagnoz = True
 
     settingsvar.nextstepdata = {
         'iduser': iduser,
@@ -1000,10 +1020,10 @@ def funcbakurl():
 
 # --- Функція повернення до початку опитування
 def funciduser():
-    iduser = 'Анонімний відвідувач'
+    iduser = 'Реєстратура'
     match settingsvar.kabinet:
         case "guest":
-            iduser = 'Анонімний відвідувач'
+            iduser = 'Реєстратура'
         case "pacient" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth':
             iduser = 'Кабінет пацієнта'
         case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
