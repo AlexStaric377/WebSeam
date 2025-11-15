@@ -411,13 +411,20 @@ def funcfeature():
 
             for itemfeature in settingsvar.dictfeature:
                 if item['keyFeature'] in itemfeature['grDetail']:
-                    tmplist.append(item);
                     if settingsvar.keyFeature == item['keyFeature']:
                         indexfeature = index
                         settingsvar.spisoknamefeature.append(item['name'])
                         settingsvar.spselectnameDetailing.append(item['name'])
                     index = index + 1
-                    break;
+                    break
+
+            for itemfeature in settingsvar.dictfeature:
+                if item['keyFeature'] in itemfeature['grDetail']:
+                    if item not in tmplist:
+                        tmplist.append(item)
+
+
+
 
         settingsvar.listfeature = tmplist
 
