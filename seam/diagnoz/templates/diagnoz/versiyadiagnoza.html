@@ -58,10 +58,10 @@
 <div class="container-fluid text-center" style="display: inline-block">
     <a class="btn btn-sm text-white" href="{% url 'receptprofillmedzaklad' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Запис до профільного лікаря</a>
-
+    {% if fameli %}
     <a class="btn btn-sm text-white" href="{% url 'receptfamilylikar' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Запис до сімейного лікаря</a>
-
+    {% endif %}
     <a class="btn btn-sm text-white" href="{% url 'savediagnoz' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Зберегти опитування</a>
 

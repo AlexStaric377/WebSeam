@@ -87,3 +87,4 @@ funciya = ''
 icdGrDiagnoz = ""
 searchpacient = ""
 backpage = ''
+statuslikar = ""

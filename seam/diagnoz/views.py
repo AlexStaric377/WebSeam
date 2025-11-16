@@ -55,7 +55,7 @@ def loginuser(request):
                         settingsvar.setpostlikar = True
                         settingsvar.html = 'diagnoz/pacient.html'
 
-                case '3' | '4' | '5':  # 3- лікар, 2 - лікар адміністратор, 5- резерв
+                case '3' | '4' | '5':  # 3- лікар, 4 - лікар адміністратор, 5- резерв
 
                     settingsvar.kodLikar = Stroka['idUser']
                     settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
@@ -68,6 +68,7 @@ def loginuser(request):
                         settingsvar.namemedzaklad = medzaklad['name']
                         settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
                         settingsvar.mobtellikar = settingsvar.likar['telefon']
+                        settingsvar.statuslikar = medzaklad['idStatus']
                         settingsvar.setpost = True
                         settingsvar.readprofil = True
                         settingsvar.setpostlikar = True
@@ -693,6 +694,10 @@ def enddetaling(request):
             diagnoz()
     else:
         diagnoz()
+    settingsvar.nextstepdata['fameli'] = True
+    if 'kodDoctor' in settingsvar.likar:
+        if '2' == settingsvar.statuslikar:
+            settingsvar.nextstepdata['fameli'] = False
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -1409,6 +1414,7 @@ def accountuser(request):
                                 settingsvar.namemedzaklad = medzaklad['name']
                                 settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
                                 settingsvar.mobtellikar = settingsvar.likar['telefon']
+                                settingsvar.statuslikar = medzaklad['idStatus']
                                 settingsvar.setpostlikar = True
 
                                 if settingsvar.kabinetitem == 'likarinterwiev':
