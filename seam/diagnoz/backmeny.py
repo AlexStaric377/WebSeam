@@ -7,15 +7,32 @@ from diagnoz import views
 def backpage(request):
     #    views.exitkab()
     match settingsvar.backpage:
+        case "":
+            views.index(request)
         case 'index' | "pacient" | "likar":
             views.index(request)
-        case "checkvisitinglikar" | 'interwievcomplaint' | 'directiondiagnoz' | 'receptprofillmedzaklad':
+
+        case "checkvisitinglikar":
+            if settingsvar.html != 'diagnoz/pacientreceptionlikar.html':
+                settingsvar.search = True
+                views.backshablonselect(request)
+            else:
+                views.backreception()
+        case 'interwievcomplaint' | 'directiondiagnoz':
             views.backreception()
+        case 'profillmedzaklad':
+            views.directiondiagnoz(request)
         case 'guest':
-            if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'directiondiagnoz':
-                views.listworkdiagnoz()
-            if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'receptprofillmedzaklad':
-                views.backreceptprofillmedzaklad(request)
+            match settingsvar.receptitem:
+                case 'directiondiagnoz':
+                    views.listworkdiagnoz()
+                case 'likarworkdiagnoz':
+                    views.shablonlistlikar()
+                case 'receptprofillmedzaklad':
+                    views.backreception()
+                case 'selectedprofillikar':
+                    views.backreceptprofillmedzaklad(request)
+
         case "pacientprofil" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth' | 'pacientinterwiev':
             views.pacient(request)
         case "likarprofil" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':

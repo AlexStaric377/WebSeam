@@ -892,7 +892,7 @@ def selectmedzaklad(request, statuszaklad):
 
 # --- вибір профільного медзакладу
 def receptprofillmedzaklad(request):
-
+    if settingsvar.kabinet == "guest":  settingsvar.backpage = "guest"
     backreceptprofillmedzaklad(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -913,8 +913,6 @@ def backreceptprofillmedzaklad(request):
         status = "5"
         settingsvar.directdiagnoz = False
         if settingsvar.kabinet == 'guest':
-            settingsvar.backpage = 'receptprofillmedzaklad'
-
             if settingsvar.receptitem != 'interwievcomplaint': settingsvar.receptitem = 'receptprofillmedzaklad'
         if settingsvar.kabinet == 'likarinterwiev':
             settingsvar.backpage = 'likarinterwiev'
@@ -978,6 +976,7 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
 def shablonlistlikar():
     settingsvar.nawpage = 'backlistlikar'
     settingsvar.html = 'diagnoz/selectedprofillikar.html'
+    settingsvar.receptitem = 'selectedprofillikar'
     iduser = funciduser()
     backurl = funcbakurl()
     directdiagnoz = settingsvar.directdiagnoz
@@ -1117,13 +1116,17 @@ def inputprofilpacient(request, selected_doctor):
                                     settingsvar.kodDoctor + '/0', '', 'GET')
         iduser = funciduser()
         match settingsvar.receptitem:
-            case 'receptprofillmedzaklad' | 'directiondiagnoz':
+            case 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar':
 
                 backurl = 'receptprofillmedzaklad'
-                directdiagnoz = True
+                #                directdiagnoz = True
                 settingsvar.nawpage = 'receptprofillmedzaklad'
-                if settingsvar.receptitem == 'receptprofillmedzaklad': settingsvar.html = 'diagnoz/likarworkdirection.html'
-                if settingsvar.receptitem == 'directiondiagnoz': settingsvar.html = 'diagnoz/likarworkdiagnoz.html'
+                match settingsvar.receptitem:
+                    case 'receptprofillmedzaklad':
+                        settingsvar.html = 'diagnoz/likarworkdirection.html'
+                    case 'selectedprofillikar' | 'directiondiagnoz':
+                        settingsvar.html = 'diagnoz/likarworkdiagnoz.html'
+                        settingsvar.receptitem = 'likarworkdiagnoz'
                 if len(likarGrupDiagnoz) > 0:
                     settingsvar.nextstepdata = {
                     'iduser': iduser,
@@ -1131,7 +1134,7 @@ def inputprofilpacient(request, selected_doctor):
                     'backurl': backurl,
                     'piblikar': settingsvar.namelikar + " т." + settingsvar.mobtellikar,
                     'medzaklad': settingsvar.namemedzaklad,
-                    'directdiagnoz': directdiagnoz,
+                        'directdiagnoz': settingsvar.directdiagnoz,
                         'listapinull': False,
                         'сontentnull': ''
                     }
@@ -2030,6 +2033,7 @@ def nextprofilinterview():
     dateint = ""
     remove = False
     removefunc = ""
+    backurl = ""
     select_dateDoctor = " не встановлено"
     match settingsvar.kabinet:
         case 'listinterwiev':
@@ -2040,11 +2044,14 @@ def nextprofilinterview():
             removefunc = 'removeinterview'
             remove = True
     match settingsvar.kabinetitem:
+
         case "guest":
             settingsvar.nawpage = 'backprofilinterview'
             backurl = 'checkvisitinglikar'
             removefunc = 'removeinterview'
             remove = True
+            if settingsvar.backurl == 'checkvisitinglikar':
+                settingsvar.backpage = 'checkvisitinglikar'
 
         case "profil" | "pacient" | "interwiev" | 'listinterwiev':
             settingsvar.nawpage = 'backprofilinterview'
@@ -2820,6 +2827,7 @@ def profillmedzaklad(request, select_icd):
                 if itemgrup['kodZaklad'] != item['kodZaklad']:
                     settingsvar.grupmedzaklad.append(medzaklad)
     settingsvar.nawpage = 'backlikarworkdiagnoz'
+    settingsvar.backpage = 'profillmedzaklad'
     iduser = funciduser()
 
     settingsvar.html = 'diagnoz/receptionprofilzaklad.html'

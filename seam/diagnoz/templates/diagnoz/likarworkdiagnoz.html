@@ -2,12 +2,12 @@
 {% block nav %}
 
 <div class="container-fluid text-center">
-        {% if directdiagnoz %}
+    {% if directdiagnoz %}
     <h6>{{iduser}}</h6>
-        {% else %}
+    {% else %}
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
-        {% endif %}
+    {% endif %}
 
     {% if listapinull %}
     <p>{{сontentnull}}</p>
@@ -32,11 +32,11 @@
                 {% for item in complaintlist %}
                 <tr>
                     {% if directdiagnoz %}
-                    <td><a aria-current="page" class="nav-link" href="{% url 'profillmedzaklad'  item.icd  %}"><font
+                    <td><a aria-current="page" class="nav-link" href="{% url 'profillmedzaklad'  item.icdGrDiagnoz  %}"><font
                 style="vertical-align: inherit;"> {{item.icdGrDiagnoz}} </font></a></td>
                     {% else %}
                     <td><a aria-current="page" class="nav-link"
-                           href="{% url 'workdiagnozlikar' item.kodDoctor  item.icd  item.id %}"><font
+                           href="{% url 'workdiagnozlikar' item.kodDoctor  item.icdGrDiagnoz  item.id %}"><font
                 style="vertical-align: inherit;"> {{ item.icdGrDiagnoz }} </font></a></td>
                     {% endif %}
                 </tr>
