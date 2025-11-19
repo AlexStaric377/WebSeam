@@ -13,11 +13,12 @@ def backpage(request):
             views.index(request)
 
         case "checkvisitinglikar":
-            if settingsvar.html != 'diagnoz/pacientreceptionlikar.html':
+            if settingsvar.html == 'diagnoz/pacientreceptionlikar.html' or settingsvar.html == 'diagnoz/searchpacient.html':
+                views.backreception()
+            else:
                 settingsvar.search = True
                 views.backshablonselect(request)
-            else:
-                views.backreception()
+
         case 'interwievcomplaint' | 'directiondiagnoz':
             views.backreception()
         case 'profillmedzaklad':
@@ -37,7 +38,13 @@ def backpage(request):
             views.pacient(request)
         case "likarprofil" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
             views.likar(request)
-    #        case 'likarprofil':
-    #            views.likarprofil(request)
-
+        case 'profilinterview':
+            if settingsvar.kabinet == 'likarlistinterwiev':
+                views.listlikar()
+            if settingsvar.kabinet == 'likarreceptionpacient':
+                views.listreceptionpacient()
+        case 'workdiagnozlikar':
+            views.listworkdiagnoz()
+        case 'libdiagnoz':
+            views.listlibdiagnoz()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)

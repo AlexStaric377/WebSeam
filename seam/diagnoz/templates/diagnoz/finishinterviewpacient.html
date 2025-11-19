@@ -11,9 +11,6 @@
     <table class="table text-center">
             <tbody>
                 <tr>
-                    <td><p>{{ pacient }}</p></td>
-                </tr>
-                <tr>
                     <td><p>{{ shapka }}</p></td>
                 </tr>
                 <tr>
@@ -21,6 +18,9 @@
                 </tr>
                 <tr>
                     <td><p>{{ likar }}</p></td>
+                </tr>
+                <tr>
+                    <td><p>{{ pacient }}</p></td>
                 </tr>
                 <tr>
                     <td><p>{{ datereception }}</p></td>
@@ -34,12 +34,11 @@
 
 
 <div class="container-fluid text-center" style="display: inline-block">
-        <a>{{ podval }}</a>
+    <!---        <a>{{ podval }}</a>--->
     <a class="btn btn-sm text-white" href="{% url 'saveraceptionlikar' %}" role="button"
-       style="font-size: 12px; background-color: #558787; height=12;">Так</a>
-    <a class="btn btn-sm text-white" href="{% url backurl %}" role="button"
-       style="font-size: 12px; background-color: #558787; height=12;">Ні</a>
+       style="font-size: 12px; background-color: #558787; height=12;">Зберегти опитування</a>
+    <a class="btn btn-sm text-white" href="{% url 'receptprofillmedzaklad' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Записати до іншого профільного лікаря</a>
     </div>
-
 
 {% endblock %}

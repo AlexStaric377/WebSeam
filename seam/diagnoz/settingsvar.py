@@ -88,3 +88,4 @@ icdGrDiagnoz = ""
 searchpacient = ""
 backpage = ''
 statuslikar = ""
+selectlikar = False
