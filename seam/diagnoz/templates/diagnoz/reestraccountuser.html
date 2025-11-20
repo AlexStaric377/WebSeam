@@ -3,13 +3,15 @@
 
 <div class="container-fluid text-center">
     <h5>{{reestrinput}}</h5>
-    <a> Для створення облікового запису введіть реєстраційні показники</a>
+    <a> Реєстрація облікового запису.</a>
 </div>
+<p></p>
 <div class="d-flex justify-content-center align-items-center ">
     <form class="needs-validation" method="POST" novalidate="">
     {% csrf_token %}
     <div class="row g-3">
-        <div class="col-md-4">
+        <div class="row text-center d-flex justify-content-center">
+            <div class="col-md-3">
             <label class="form-label"><font style="vertical-align: inherit;"><font
                     style="vertical-align: inherit;">{{ form.login.label }}</font></font>
             </label>
@@ -19,7 +21,7 @@
             </div>
         </div>
         <p></p>
-        <div class="col-md-4">
+            <div class="col-md-3">
             <label class="form-label"><font style="vertical-align: inherit;">
                 <font style="vertical-align: inherit;">{{form.password.label}}</font></font>
             </label>
@@ -29,7 +31,7 @@
             </div>
         </div>
         <p></p>
-        <div class="col-md-4">
+            <div class="col-md-3">
             <label class="form-label"><font style="vertical-align: inherit;">
                 <font style="vertical-align: inherit;">{{form.dwpassword.label}}</font></font>
             </label>
@@ -38,15 +40,16 @@
                     style="vertical-align: inherit;">Вимагається дійсний пароль.</font></font>
             </div>
         </div>
-    </div>
-    <p></p>
-        <div style="display: inline-block">
-            <button class="btn btn-sm text-white" type="submit">
-                <font style="font-size: btn btn-sm text-white">Підтвердити</font>
+
+
+            <p></p>
+            <div style="container-fluid text-center display: inline-block">
+                <button class="btn btn-sm text-white" style="font-size: 12px; background-color: #558787;"
+                        type="submit">Підтвердити
             </button>
-            <a class="btn btn-sm text-white" href="{{backurl}}" role="button"
-               style="font-size: 12px; background-color: #558787; height=12;">Скасувати запит</a>
+            </div>
         </div>
+    </div>
     </form>
 </div>
 

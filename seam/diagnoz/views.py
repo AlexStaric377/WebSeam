@@ -172,8 +172,8 @@ def backreception():
     settingsvar.interviewcompl = False
     settingsvar.setpost = False
     settingsvar.search = False
-    settingsvar.datereception = 'не встановлено'
-    settingsvar.datedoctor = 'не встановлено'
+    settingsvar.datereception = 'призначається за тел.'
+    settingsvar.datedoctor = 'призначається за тел.'
     settingsvar.html = 'diagnoz/reception.html'
     settingsvar.funciya = ''
     settingsvar.icdGrDiagnoz = ''
@@ -982,7 +982,8 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
 def shablonlistlikar():
     settingsvar.nawpage = 'backlistlikar'
     settingsvar.html = 'diagnoz/selectedprofillikar.html'
-    if settingsvar.kabinet != 'likarinterwiev': settingsvar.receptitem = 'selectedprofillikar'
+    if (settingsvar.kabinet != 'likarinterwiev'
+            and settingsvar.kabinet != 'guest' and settingsvar.kabinet != 'interwiev'): settingsvar.receptitem = 'selectedprofillikar'
     iduser = funciduser()
     backurl = funcbakurl()
     directdiagnoz = settingsvar.directdiagnoz
@@ -1041,7 +1042,7 @@ def funciduser():
     match settingsvar.kabinet:
         case "guest":
             iduser = 'Реєстратура'
-        case "pacient" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth':
+        case "pacient" | "pacientprofil" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth':
             iduser = 'Кабінет пацієнта'
         case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
             iduser = 'Кабінет лікаря'
@@ -1327,7 +1328,7 @@ def funcaddaccount(login, password):
 def reestraccountuser(request):
     settingsvar.html = 'diagnoz/reestraccountuser.html'
     settingsvar.readprofil = False
-
+    iduser = funciduser()
     if request.method == 'POST':
         if settingsvar.setReestrAccount == False:
             form = ReestrAccountUserForm(request.POST)
@@ -1356,12 +1357,14 @@ def reestraccountuser(request):
                             'form': form,
                             'next': settingsvar.readprofil,
                             'backurl': backurl,
+                            'iduser': iduser
                         }
         else:
             pacientprofil(request)
 
     else:
-        reestr = 'Реєстрація в кабінеті пацієнта'
+        reestr = 'Кабінет пацієнта'
+        if settingsvar.kabinet == 'guest': reestr = 'Реєстратура'
         if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev':
             reestr = ''
         if settingsvar.setReestrAccount == False:
@@ -1371,6 +1374,7 @@ def reestraccountuser(request):
                 'form': formreestraccount,
                 'backurl': 'accountuser',
                 'reestrinput': reestr,
+                'iduser': iduser
             }
         else:
             pacientprofil(request)
@@ -1734,6 +1738,8 @@ def modformatjson(formdata):
 
 def getpostpacientprofil(request):
     settingsvar.html = 'diagnoz/pacientprofil.html'
+    iduser = funciduser()
+    backurl = funcbakurl()
     if settingsvar.kabinetitem != 'likarinterwiev': settingsvar.kabinetitem = 'profil'
     if request.method == 'POST':
         form = PacientForm(request.POST)
@@ -1791,25 +1797,26 @@ def getpostpacientprofil(request):
                 settingsvar.setpostlikar = True
                 errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')
     else:
-        backurl = funcbakurl()
+
         if settingsvar.kabinetitem == 'likarinterwiev': backurl = 'likar'
         if len(settingsvar.pacient) > 0:
             settingsvar.readprofil = False
             settingsvar.editprofil = True
-            iduser = funciduser()
+
             form = PacientForm(initial=settingsvar.pacient)
             settingsvar.nextstepdata = {
                 'form': form,
                 'next': settingsvar.readprofil,
-                'backurl': backurl
+                'backurl': backurl,
+                'iduser': iduser
             }
         else:
             form = PacientForm()
             settingsvar.nextstepdata = {
                 'form': form,
                 'next': False,
-                'backurl': backurl
-
+                'backurl': backurl,
+                'iduser': iduser
             }
     return
 
@@ -1973,6 +1980,11 @@ def profilpacient(request):  # httpRequest
 
 # --- Провести опитування пациєнта в особистому кабінеті
 def pacientinterwiev(request):  # httpRequest
+    backpacientinterwiev(request)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def backpacientinterwiev(request):
     if (
             settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev'
             or settingsvar.kabinet == 'likarreceptionpacient'
@@ -1996,7 +2008,7 @@ def pacientinterwiev(request):  # httpRequest
     json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientinterwiev')
     unloadlog(json)
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+    return
 
 
 # --- Профіль проведеного інтервью
@@ -2171,6 +2183,11 @@ def removeinterview(request):
 #--- Перегляд проведених інтервью
 
 def pacientlistinterwiev(request):  # httpRequest
+    backpacientlistinterwiev(request)
+    return render(request, settingsvar.html, settingsvar.nextstepdata )
+
+
+def backpacientlistinterwiev(request):
     if (
             settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev' \
             or settingsvar.kabinet == 'likarreceptionpacient'
@@ -2193,7 +2210,7 @@ def pacientlistinterwiev(request):  # httpRequest
     json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientlistinterwiev')
     unloadlog(json)
-    return render(request, settingsvar.html, settingsvar.nextstepdata )
+    return
 
 
 # --- Функція формування шаблону для списку опитувань
@@ -2227,6 +2244,11 @@ def funcshablonlistpacient():
 # --- Запис на обстеження до  лікаря
 
 def pacientreceptionlikar(request):  # httpRequest
+    backpacientreceptionlikar(request)
+    return render(request, settingsvar.html, settingsvar.nextstepdata)
+
+
+def backpacientreceptionlikar(request):
     if (
             settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'likarlistinterwiev'
             or settingsvar.kabinet == 'likarreceptionpacient'
@@ -2249,8 +2271,7 @@ def pacientreceptionlikar(request):  # httpRequest
     json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientreceptionlikar')
     unloadlog(json)
-    return render(request, settingsvar.html, settingsvar.nextstepdata)
-
+    return
 
 # --- Функція формування шаблону  переліку дат обстежень пацієнта у лікаря
 def funcshablonlistreceptionlikar():

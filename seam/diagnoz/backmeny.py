@@ -29,7 +29,7 @@ def backpage(request):
                     views.listworkdiagnoz()
                 case 'likarworkdiagnoz':
                     views.shablonlistlikar()
-                case 'receptprofillmedzaklad':
+                case 'receptprofillmedzaklad' | 'interwievcomplaint':
                     views.backreception()
                 case 'selectedprofillikar':
                     views.backreceptprofillmedzaklad(request)
@@ -39,10 +39,15 @@ def backpage(request):
         case "likarprofil" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
             views.likar(request)
         case 'profilinterview':
-            if settingsvar.kabinet == 'likarlistinterwiev':
-                views.listlikar()
-            if settingsvar.kabinet == 'likarreceptionpacient':
-                views.listreceptionpacient()
+            match settingsvar.kabinet:
+                case 'likarlistinterwiev':
+                    views.listlikar()
+                case 'likarreceptionpacient':
+                    views.listreceptionpacient()
+                case 'listinterwiev':
+                    views.backpacientlistinterwiev(request)
+                case 'listreceptionlikar':
+                    views.backpacientreceptionlikar(request)
         case 'workdiagnozlikar':
             views.listworkdiagnoz()
         case 'libdiagnoz':
