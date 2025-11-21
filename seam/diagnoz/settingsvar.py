@@ -89,3 +89,4 @@ searchpacient = ""
 backpage = ''
 statuslikar = ""
 selectlikar = False
+addinterviewrecept = False

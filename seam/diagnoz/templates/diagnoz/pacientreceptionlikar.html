@@ -6,9 +6,12 @@
   <p>{{pacient}}</p>
   <h6>Перегляд списку записів обстежень до лікаря</h6>
 </div>
-  <p>Для перегляду опису обраного попереднього діагнозу натисніть на відповідний рядок</p>
-
-  <table class="table table-striped">
+<div class="container-fluid text-center" style="display: inline-block">
+  <a class="btn btn-sm text-white" href="{% url 'addreceptpacientlikar' %}" role="button"
+     style="font-size: 12px; background-color: #558787; height=12;">Додати</a>
+</div>
+<p>Для перегляду детальної інформації про попередній діагноз натисніть на відповідний рядок</p>
+<table class="table table-striped">
     <thead>
     <tr>
       <th>Лікар</th>

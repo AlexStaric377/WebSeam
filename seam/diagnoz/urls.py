@@ -2,8 +2,9 @@ from django.urls import include
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from . import views
 from . import backmeny
+from . import views
+
 # from diagnoz import views
 
 
@@ -85,7 +86,8 @@ urlpatterns = [
     path('addvisitingdays', views.addvisitingdays, name='addvisitingdays'),
     path('profillmedzaklad/<str:select_icd>', views.profillmedzaklad, name='profillmedzaklad'),
     path('backlikarworkdiagnoz', views.backlikarworkdiagnoz, name='backlikarworkdiagnoz'),
-    path('checkvisitinglikar', views.checkvisitinglikar, name='checkvisitinglikar')
+    path('checkvisitinglikar', views.checkvisitinglikar, name='checkvisitinglikar'),
+    path('addreceptpacientlikar', views.addreceptpacientlikar, name='addreceptpacientlikar')
 ]
 #
 urlpatterns += [
