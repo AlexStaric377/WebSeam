@@ -1,13 +1,24 @@
 {% extends 'diagnoz/shablonmeny.html' %}
 {% block nav %}
 
-<div class="container-fluid text-center">
-    <h5>{{pacient}}</h5>
+<div class="container-fluid text-center" style="display: inline-block">
     <h6>{{iduser}}</h6>
-
+    <h6>{{pacient}}</h6>
     <h6>Перегляд списку показників стану здоров'я</h6>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'mapanalizkrovi' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Аналіз крові</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'mapanalizurines' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Аналіз сечі</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'pulstisktemp' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Додати</a>
+    </div>
 </div>
-    <table>
+<table class="table table-striped">
         <thead>
         <tr>
             <th>Дта вимірювання</th>
@@ -28,10 +39,5 @@
         {% endfor %}
         </tbody>
     </table>
-<!---    <div style="display: inline-block">
-        <a class="btn btn-primary" href="{{backurl}}" role="button" style="font-size: 14px;">Повернутися</a>
-    </div>--->
-
-
 {% endblock %}
 

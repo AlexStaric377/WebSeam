@@ -1,0 +1,64 @@
+{% extends 'diagnoz/shablonmeny.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+    <h6>{{iduser}}</h6>
+    <h6>{{pacient}}</h6>
+    <h6>Перегляд списку показників аалізу крові</h6>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'addanalizkrovi' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Додати</a>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Дта вимірювання</th>
+        <th>Gender</th>
+        <th>Rbc</th>
+        <th>Hgb</th>
+        <th>Wbc</th>
+        <th>Cp</th>
+        <th>Hct</th>
+        <th>Ret</th>
+        <th>Plt</th>
+        <th>Esr</th>
+        <th>Bas</th>
+        <th>Eo</th>
+        <th>Mot</th>
+        <th>Mtmot</th>
+        <th>Neutp</th>
+        <th>Neuts</th>
+        <th>Lym</th>
+        <th>Mon</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in complaintlist %}
+    <tr>
+        <td><a class="nav-link" href="">{{item.dateAnaliza}}</a></td>
+        <td><a class="nav-link" href="">{{item.gender}}</a></td>
+        <td><a class="nav-link" href="">{{item.rbc}}</a></td>
+        <td><a class="nav-link" href="">{{item.hgb}}</a></td>
+        <td><a class="nav-link" href="">{{item.wbc}}</a></td>
+        <td><a class="nav-link" href="">{{item.cp}}</a></td>
+        <td><a class="nav-link" href="">{{item.hct}}</a></td>
+        <td><a class="nav-link" href="">{{item.ret}}</a></td>
+        <td><a class="nav-link" href="">{{item.plt}}</a></td>
+        <td><a class="nav-link" href="">{{item.esr}}</a></td>
+        <td><a class="nav-link" href="">{{item.bas}}</a></td>
+        <td><a class="nav-link" href="">{{item.eo}}</a></td>
+        <td><a class="nav-link" href="">{{item.mot}}</a></td>
+        <td><a class="nav-link" href="">{{item.mtmot}}</a></td>
+        <td><a class="nav-link" href="">{{item.neutp}}</a></td>
+        <td><a class="nav-link" href="">{{item.neuts}}</a></td>
+        <td><a class="nav-link" href="">{{item.lym}}</a></td>
+        <td><a class="nav-link" href="">{{item.mon}}</a></td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

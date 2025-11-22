@@ -87,7 +87,11 @@ urlpatterns = [
     path('profillmedzaklad/<str:select_icd>', views.profillmedzaklad, name='profillmedzaklad'),
     path('backlikarworkdiagnoz', views.backlikarworkdiagnoz, name='backlikarworkdiagnoz'),
     path('checkvisitinglikar', views.checkvisitinglikar, name='checkvisitinglikar'),
-    path('addreceptpacientlikar', views.addreceptpacientlikar, name='addreceptpacientlikar')
+    path('addreceptpacientlikar', views.addreceptpacientlikar, name='addreceptpacientlikar'),
+    path('pulstisktemp', views.pulstisktemp, name='pulstisktemp'),
+    path('mapanalizkrovi', views.mapanalizkrovi, name='mapanalizkrovi'),
+    path('mapanalizurines', views.mapanalizurines, name='mapanalizurines'),
+    path('addanalizkrovi', views.addanalizkrovi, name='addanalizkrovi')
 ]
 #
 urlpatterns += [

@@ -10,7 +10,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 
 from diagnoz import settingsvar
-from .forms import PacientForm, AccountUserForm, ReestrAccountUserForm, SearchPacient, LikarForm, Reestrvisitngdays
+from .forms import (PacientForm, AccountUserForm, ReestrAccountUserForm,
+                    SearchPacient, LikarForm, Reestrvisitngdays, ReestrPulsTiskForm)
 
 '''
 
@@ -1420,7 +1421,7 @@ def accountuser(request):
                                 settingsvar.setpost = True
                                 settingsvar.readprofil = True
                                 settingsvar.setpostlikar = True
-                                caseprofil()
+                                caseprofil(request)
                             else:
                                 errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль пацієнта не знайдено.')
@@ -1446,7 +1447,7 @@ def accountuser(request):
                                     settingsvar.setpost = True
                                     settingsvar.readprofil = True
                                     iduser = funciduser()
-                                    caseprofil()
+                                    caseprofil(request)
                             else:
                                 errorprofil(
                                 'Шановний користувач! За вказаним обліковим записом профіль лікаря не знайдено.')
@@ -1477,13 +1478,13 @@ def accountuser(request):
                 'reestr': reestr
             }
     else:
-        caseprofil()
+        caseprofil(request)
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 # Case входа в вывод соответсвующих списков меню
-def caseprofil():
+def caseprofil(request):
     match settingsvar.kabinetitem:
         case 'profil':
             profilinfopacient()
@@ -1495,10 +1496,9 @@ def caseprofil():
             shablonforlistinterview()
 
         case 'listreceptionlikar':
-            shablonforlistreceptionandstanhealth()
             funcshablonlistreceptionlikar()
         case 'pacientstanhealth':
-            shablonforlistreceptionandstanhealth()
+            shablonforlistreceptionandstanhealth(request)
 
         case 'likar':
             settingsvar.readprofil = True
@@ -1595,23 +1595,30 @@ def shablonforlistinterview():
     return
 
 
-def shablonforlistreceptionandstanhealth():
+def shablonforlistreceptionandstanhealth(request):
     iduser = funciduser()
     backurl = funcbakurl()
-    listapi = []
+    settingsvar.listapi = []
+    pacientname = settingsvar.pacient['profession'] + ' ' + settingsvar.pacient['name'] + " " + settingsvar.pacient[
+        'surname']
     if settingsvar.kabinetitem == 'pacientstanhealth':
         settingsvar.html = 'diagnoz/pacientstanhealth.html'
-        listapi = rest_api('api/PacientMapAnalizController/' + settingsvar.kodPacienta + '/0', '', 'GET')
+        settingsvar.listapi = rest_api('api/PacientMapAnalizController/' + settingsvar.kodPacienta + '/0', '', 'GET')
     else:
         settingsvar.html = 'diagnoz/pacientreceptionlikar.html'
-        listapi = rest_api('api/RegistrationAppointmentController/' + settingsvar.kodPacienta + '/0', '', 'GET')
-    if len(listapi) > 0:
+        settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + settingsvar.kodPacienta + '/0', '',
+                                       'GET')
+    if len(settingsvar.listapi) > 0:
+        settingsvar.pacienthealth = True
         settingsvar.nextstepdata = {
             'iduser': iduser,
-            'complaintlist': listapi
+            'complaintlist': settingsvar.listapi,
+            'pacient': pacientname
         }
     else:
-        errorprofil('Шановний користувач! За вашим запитом відсутня інформація.')
+        settingsvar.pacienthealth = False
+        addpulstisk(request)
+    #        errorprofil('Шановний користувач! За вашим запитом відсутня інформація.')
     return
 
 # --- пошуку даних пацієнта
@@ -2024,23 +2031,6 @@ def addreceptpacientlikar(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
-def add(request):
-    settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' +
-                                         statuszaklad, '', 'GET')
-
-    backurl = funcbakurl()
-    settingsvar.html = 'diagnoz/receptionprofilzaklad.html'
-    settingsvar.nextstepdata = {
-        'iduser': iduser,
-        'backurl': backurl,
-        'compl': 'Перелік профільних медзакладів',
-        'detalinglist': settingsvar.grupmedzaklad,
-        'piblikar': '',
-        'likar': ''
-    }
-    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-
-
 # --- Вибір медзакладу згідно до діагнозу інтервью
 def selectmedzakladpacien():
     api = rest_api('/api/DependencyDiagnozController/' + "0/" + settingsvar.kodProtokola + "/0", '', 'GET')
@@ -2426,9 +2416,10 @@ def pacientstanhealth(request):  # httpRequest
         errorprofil('Для входу до кабінету пацієнта необхідно вийти з кабінету лікаря.')
     else:
         cleanvars()
+        settingsvar.listapi = []
         settingsvar.readprofil = False
         settingsvar.backurl = funcbakurl()
-        settingsvar.nawpage = 'pacient'  # 'pacientreceptionlikar'
+        settingsvar.nawpage = 'pacient'
         settingsvar.kabinet = 'pacientstanhealth'
         settingsvar.kabinetitem = 'pacientstanhealth'
         settingsvar.backpage = 'pacientstanhealth'
@@ -2436,27 +2427,122 @@ def pacientstanhealth(request):  # httpRequest
             accountuser(request)
         else:
             funcshablonstanhealth()
+            if len(settingsvar.listapi) == 0:
+                addpulstisk(request)
+            else:
+                if request.method == 'POST':
+                    addpulstisk(request)
     return render(request, settingsvar.html, settingsvar.nextstepdata)
-
-    return render(request, '')
-
 
 def funcshablonstanhealth():
     iduser = funciduser()
     backurl = funcbakurl()
-    listapi = []
+    PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
     settingsvar.html = 'diagnoz/pacientstanhealth.html'
-    listapi = rest_api('api/PacientMapAnalizController/' + settingsvar.kodPacienta + '/0', '', 'GET')
-    if len(listapi) > 0:
+    settingsvar.listapi = rest_api('api/PacientMapAnalizController/' + settingsvar.kodPacienta + '/0', '', 'GET')
+    if len(settingsvar.listapi) > 0:
         settingsvar.nextstepdata = {
             'iduser': iduser,
-            'complaintlist': listapi,
-            'backurl': backurl
+            'complaintlist': settingsvar.listapi,
+            'backurl': backurl,
+            'pacient': PacientName
         }
     else:
         errorprofil('Шановний користувач! За вашим запитом відсутня інформація.')
     return
 
+
+# --- Додати новий рядок показників стану здоровья пульс тиск температура
+def pulstisktemp(request):
+    settingsvar.readprofil = True
+    addpulstisk(request)
+    return render(request, settingsvar.html, settingsvar.nextstepdata)
+
+
+def addpulstisk(request):
+    settingsvar.html = 'diagnoz/addpacientpulstisk.html'
+    iduser = funciduser()
+    if settingsvar.readprofil == True and settingsvar.pacienthealth == False: request.method = 'GET'
+    if request.method == 'POST':
+        form = ReestrPulsTiskForm(request.POST)
+        settingsvar.formaccount = form.data
+        if settingsvar.formaccount['pulls'] == None:
+            settingsvar.setReestrAccount = False
+            errorprofil('Шановний користувач! Пульс не введено')
+        else:
+            if settingsvar.formaccount['pressure'] == None:
+                settingsvar.setReestrAccount = False
+                errorprofil('Шановний користувач! Тиск не введено')
+            else:
+                settingsvar.dateInterview = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                json = {'id': 0,
+
+                        'KodPacient': settingsvar.kodPacienta,
+                        'DateAnaliza': settingsvar.dateInterview,
+                        'Pulse': settingsvar.formaccount['pulls'],
+                        'Pressure': settingsvar.formaccount['pressure'],
+                        'Temperature': settingsvar.formaccount['temperature'],
+                        'ResultAnaliza': '',
+                        }
+                settingsvar.listapi = rest_api('/api/PacientMapAnalizController/', json, 'POST')
+                funcshablonstanhealth()
+
+    else:
+        settingsvar.pacienthealth = True
+        formreestraccount = ReestrPulsTiskForm()
+        settingsvar.nextstepdata = {
+            'form': formreestraccount,
+            'backurl': 'pacientstanhealth',
+            'iduser': iduser
+        }
+    return
+
+
+# --- Таблица аналізов крові по датам
+def mapanalizkrovi(request):
+    iduser = funciduser()
+    PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
+    settingsvar.html = 'diagnoz/pacientmapkrovi.html'
+    settingsvar.listapi = rest_api('api/PacientAnalizKroviController/' + settingsvar.kodPacienta + '/0', '', 'GET')
+    if len(settingsvar.listapi) > 0:
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'complaintlist': settingsvar.listapi,
+            'pacient': PacientName
+        }
+    else:
+        errorprofil('Шановний користувач! За вашим запитом відсутня інформація.')
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- Додати аналіз крові
+def addanalizkrovi(request):
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- Таблица аналізов сечі по датам
+def mapanalizurines(request):
+    iduser = funciduser()
+    PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
+    settingsvar.html = 'diagnoz/pacientmapuries.html'
+    settingsvar.listapi = rest_api('api/PacientAnalizUrineController/' + settingsvar.kodPacienta + '/0', '', 'GET')
+    if len(settingsvar.listapi) > 0:
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'complaintlist': settingsvar.listapi,
+            'backurl': backurl,
+            'pacient': PacientName
+        }
+    else:
+        errorprofil('Шановний користувач! За вашим запитом відсутня інформація.')
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- Додати аналіз сечі
+def addanalizuries(request):
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 # --------- Лікар
 # --- Реєстрація до кабінету лікаря

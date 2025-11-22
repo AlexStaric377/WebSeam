@@ -106,3 +106,14 @@ class Reestrvisitngdays(forms.Form):
     duration = forms.CharField(max_length=2, min_length=1, label="Тривалість одного приймання (хв.)",
                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "30"}),
                                initial="30")
+
+
+# --- Форма реєестрації нового стану пульсу тиску температури пацієнта
+class ReestrPulsTiskForm(forms.Form):
+    pulls = forms.CharField(max_length=13, label='Пульс:',
+                            widget=forms.TextInput(
+                                attrs={'class': 'form-control', 'placeholder': " XXX"}))
+    pressure = forms.CharField(max_length=13, label='Тиск:',
+                               widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': " XXX/XXX"}))
+    temperature = forms.CharField(max_length=13, label='Температура тіла:',
+                                  widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': " XX.X C"}))
