@@ -91,7 +91,9 @@ urlpatterns = [
     path('pulstisktemp', views.pulstisktemp, name='pulstisktemp'),
     path('mapanalizkrovi', views.mapanalizkrovi, name='mapanalizkrovi'),
     path('mapanalizurines', views.mapanalizurines, name='mapanalizurines'),
-    path('addanalizkrovi', views.addanalizkrovi, name='addanalizkrovi')
+    path('addanalizkrovi', views.addanalizkrovi, name='addanalizkrovi'),
+    path('stanhealth', views.stanhealth, name='stanhealth'),
+    path('recomentaktikhealing', views.recomentaktikhealing, name='recomentaktikhealing')
 ]
 #
 urlpatterns += [

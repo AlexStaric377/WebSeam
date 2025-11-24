@@ -91,3 +91,4 @@ statuslikar = ""
 selectlikar = False
 addinterviewrecept = False
 pacienthealth = True
+url = 'https://www.google.com'

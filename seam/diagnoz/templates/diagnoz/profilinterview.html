@@ -1,11 +1,23 @@
 {% extends 'diagnoz/shablonmeny.html' %}
 {% block nav %}
 
-<div class="container-fluid text-center">
+<div class="container-fluid text-center" style="display: inline-block">
 
     {% if likar %}
     <h5>{{iduser}}</h5>
-    <p>{{piblikar}}</p>
+
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'mapanalizkrovi' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Аналіз крові</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'mapanalizurines' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Аналіз сечі</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'stanhealth' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Пульс Тиск</a>
+    </div>
     {% else %}
     <h6>{{iduser}}</h6>
     {% endif %}

@@ -2,6 +2,7 @@ import datetime
 import json
 from datetime import datetime, timedelta
 
+# from selenium.webdriver.common.keys import Keys
 import environ
 import pyodbc
 import requests
@@ -12,6 +13,9 @@ from django.shortcuts import render
 from diagnoz import settingsvar
 from .forms import (PacientForm, AccountUserForm, ReestrAccountUserForm,
                     SearchPacient, LikarForm, Reestrvisitngdays, ReestrPulsTiskForm)
+
+# from selenium import webdriver
+# from IPython.display import Javascript
 
 '''
 
@@ -744,6 +748,7 @@ def writediagnoz():
                 settingsvar.nawpage = 'backfromcontent'
                 settingsvar.html = 'diagnoz/versiyadiagnoza.html'
                 iduser = funciduser()
+                settingsvar.url = item['nametInterview'] + 'тактика+лечения'
                 settingsvar.namediagnoz = item['nametInterview']
                 settingsvar.nextstepdata = {
                 'opis': item['opistInterview'],
@@ -752,7 +757,9 @@ def writediagnoz():
                 'compl': settingsvar.namediagnoz,
                 'detalinglist': settingsvar.diagnozStroka,
                 'iduser': iduser,
-                'piblikar': ''
+                    'piblikar': '',
+                    'base_url': 'https://www.google.com/search',
+                    'search_term': settingsvar.url,
                 }
                 if len(settingsvar.pacient) > 0:
                     settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
@@ -1584,7 +1591,7 @@ def shablonforlistinterview():
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
             'backurl': backurl,
-            'likar': True,
+            'likar': False,
             'pacient': 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + settingsvar.pacient['name']
                        + " " + settingsvar.pacient['surname']
         }
@@ -2141,10 +2148,11 @@ def nextprofilinterview():
     remove = False
     removefunc = ""
     backurl = ""
-    select_dateDoctor = " не встановлено"
+    select_dateDoctor = " призначається за тел. :"
     match settingsvar.kabinet:
 
         case 'listinterwiev':
+            settingsvar.setpostlikar = False
             settingsvar.backurl = funcbakurl()
             funcshablonlistpacient()
         case 'likarlistinterwiev':
@@ -2210,6 +2218,7 @@ def nextprofilinterview():
                     case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient':
                         if item['kodPacient'] != None and len(item['kodPacient']) > 0:
                             doc = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
+                            settingsvar.kodPacienta = item['kodPacient']
                             PacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
                         likarName = settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
                         settingsvar.pacient = doc
@@ -2231,6 +2240,7 @@ def nextprofilinterview():
     settingsvar.nextstepdata['backurl'] = backurl
     settingsvar.nextstepdata['remove'] = remove
     settingsvar.nextstepdata['removefunc'] = removefunc
+    settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
     return
 
 
@@ -2264,9 +2274,44 @@ def removeinterview(request):
                 listreceptionpacient()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
+
+def recomentaktikhealing(request):
+    # Открыть Google в браузере по умолчанию
+
+    # Укажите путь к исполняемому файлу браузера
+    #    chrome_path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+    #    webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
+
+    # Используйте зарегистрированный браузер
+    #    webbrowser.get('chrome').open_new_tab('https://www.google.com/search?q=Сердечная+недостаточность+тактика+лечения')
+
+    #    url = settingsvar.url        #"https://www.python.org"
+    #    js_code = f'window.open("{url}", "_blank");'
+    #    display(Javascript(js_code))
+
+    #    driver = webdriver.Chrome()
+    #    driver.get(settingsvar.url)
+
+    #    driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
+    #    b=  webbrowser.get('chrome')
+    #    b.open_new_tab(settingsvar.url)
+    #    webbrowser.open(settingsvar.url)
+
+    #        'https://www.google.com/search?q=Сердечная+недостаточность+тактика+лечения'
+    #    settingsvar.html = 'https: // www.google.com / search?client = opera & q = Сердечная + недостаточность + тактика + лечения & sourceid = opera & ie = UTF - 8 & oe = UTF - 8'
+    #    writediagnoz()
+    #    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+    #    return
+    settingsvar.html = 'diagnoz/google.html'
+    context = {
+        'base_url': 'https://www.google.com/search',
+        'search_term': settingsvar.url,
+    }
+    return render(request, settingsvar.html, context)
 #--- Перегляд проведених інтервью
 
 def pacientlistinterwiev(request):  # httpRequest
+    settingsvar.addinterviewrecept = False
     backpacientlistinterwiev(request)
     return render(request, settingsvar.html, settingsvar.nextstepdata )
 
@@ -2302,7 +2347,7 @@ def funcshablonlistpacient():
     iduser = funciduser()
     settingsvar.html = 'diagnoz/pacientlistinterwiev.html'
     shablonpacient(settingsvar.pacient)
-    settingsvar.nextstepdata['likar'] = True
+    settingsvar.nextstepdata['likar'] = False
     settingsvar.nextstepdata['backurl'] = settingsvar.backurl
 
     settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/0/' + settingsvar.kodPacienta, '', 'GET')
@@ -2450,6 +2495,12 @@ def funcshablonstanhealth():
     else:
         errorprofil('Шановний користувач! За вашим запитом відсутня інформація.')
     return
+
+
+# --- Запит на стан злоровья із кабінету лікаря
+def stanhealth(request):
+    funcshablonstanhealth()
+    return render(request, settingsvar.html, settingsvar.nextstepdata)
 
 
 # --- Додати новий рядок показників стану здоровья пульс тиск температура
@@ -2731,6 +2782,7 @@ def likarinterwiev(request):  # httpRequest
 
 # 1. Вхід до кабінету та запит на виведення переліку проведених опитувань пацієнтів
 def likarlistinterwiev(request):  # httpRequest
+    settingsvar.addinterviewrecept = False
     if inputkabinetlikar(request) == True:
         cleanvars()
         settingsvar.readprofil = False
