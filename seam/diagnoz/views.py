@@ -2135,6 +2135,7 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
             selectmedzakladpacien()
         else:
             nextprofilinterview()
+
     json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: profilinterview')
     unloadlog(json)
@@ -2241,6 +2242,9 @@ def nextprofilinterview():
     settingsvar.nextstepdata['remove'] = remove
     settingsvar.nextstepdata['removefunc'] = removefunc
     settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
+    settingsvar.url = settingsvar.nametInterview + '+тактика+лечения'
+    settingsvar.nextstepdata['base_url'] = 'https://www.google.com/search'
+    settingsvar.nextstepdata['search_term'] = settingsvar.url
     return
 
 
