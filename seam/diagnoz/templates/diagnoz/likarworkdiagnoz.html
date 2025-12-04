@@ -22,7 +22,7 @@
             <h6>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</h6>
             {% endif %}
             {% endif %}
-            <table class="table table-striped">
+<table class="table table-striped table-hover">
                 <thead>
                 <tr>
                     <th scope="col">Перелік робочих напрямків діагностики захворювань</th>
@@ -32,8 +32,13 @@
                 {% for item in complaintlist %}
                 <tr>
                     {% if directdiagnoz %}
+                    {% if listapinull %}
+                    <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                        {{item.icdGrDiagnoz}} </a></td>
+                    {% else %}
                     <td><a aria-current="page" class="nav-link" href="{% url 'profillmedzaklad'  item.icdGrDiagnoz  %}"><font
-                style="vertical-align: inherit;"> {{item.icdGrDiagnoz}} </font></a></td>
+                            style="vertical-align: inherit;"> {{item.icdGrDiagnoz}} </font></a></td>
+                    {% endif %}
                     {% else %}
                     <td><a aria-current="page" class="nav-link"
                            href="{% url 'workdiagnozlikar' item.kodDoctor  item.icdGrDiagnoz  item.id %}"><font
