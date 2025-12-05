@@ -93,7 +93,8 @@ urlpatterns = [
     path('mapanalizurines', views.mapanalizurines, name='mapanalizurines'),
     path('addanalizkrovi', views.addanalizkrovi, name='addanalizkrovi'),
     path('stanhealth', views.stanhealth, name='stanhealth'),
-    path('recomentaktikhealing', views.recomentaktikhealing, name='recomentaktikhealing')
+    path('recomentaktikhealing', views.recomentaktikhealing, name='recomentaktikhealing'),
+    path('backworkdiagnozlikar', views.backworkdiagnozlikar, name='backworkdiagnozlikar'),
 ]
 #
 urlpatterns += [

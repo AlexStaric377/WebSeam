@@ -5,7 +5,10 @@
 
     {% if likar %}
     <h5>{{iduser}}</h5>
-
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'contentinterwiev' %}"
+           style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
+    </div>
     <div style="display: inline-block">
         <a class="btn btn-sm text-white" href="{% url 'mapanalizkrovi' %}" role="button"
            style="font-size: 12px; background-color: #558787;">Аналіз крові</a>
@@ -52,10 +55,6 @@
                 <tr>
                     <td><p>{{ recomendaciya }}</p></td>
                 </tr>
-                <tr>
-                    <td><p>{{ urlinet }} </p></td>
-                </tr>
-
                 </tbody>
     </table>
 
@@ -64,9 +63,6 @@
     <a class="btn btn-sm text-white" href="{% url removefunc %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Видалити</a>
     {% endif %}
-    <a class="btn btn-sm text-white" href="{% url 'contentinterwiev' %}"
-       style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
-    <!---    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
     </div>
 
 {% endblock %}

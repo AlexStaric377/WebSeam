@@ -29,7 +29,13 @@ def backpage(request):
                     views.listworkdiagnoz()
                 case 'likarworkdiagnoz':
                     views.shablonlistlikar()
-                case 'receptprofillmedzaklad' | 'interwievcomplaint':
+                case 'likarworkdirection':
+                    views.shablonlistlikar()
+                case 'receptprofillmedzaklad':
+                    views.backreceptprofillmedzaklad(request)
+                case 'backreceptprofillmedzaklad':
+                    views.backreception()
+                case 'interwievcomplaint':
                     views.backreception()
                 case 'selectedprofillikar':
                     views.backreceptprofillmedzaklad(request)
@@ -38,8 +44,14 @@ def backpage(request):
             views.pacient(request)
         case "likarprofil" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
             views.likar(request)
+        case 'receptinterwiev':
+            views.interwievcomplaint(request)
+
         case 'profilinterview':
             match settingsvar.kabinet:
+                case 'guest':
+                    settingsvar.search = True
+                    views.checkvisitinglikar(request)
                 case 'likarlistinterwiev':
                     views.listlikar()
                 case 'likarreceptionpacient':
@@ -50,6 +62,21 @@ def backpage(request):
                     views.backpacientreceptionlikar(request)
         case 'workdiagnozlikar':
             views.listworkdiagnoz()
+        case 'contentinterview' | 'contentinterwiev':
+            if settingsvar.kabinet == 'guest':
+                views.backworkdiagnozlikar(request)
+            else:
+                views.backprofilinterview(request)
         case 'libdiagnoz':
             views.listlibdiagnoz()
+        case 'mapanalizkrovi' | 'stanhealth':
+            if settingsvar.kabinet == 'pacientstanhealth':
+                views.pacientstanhealth(request)
+            else:
+                views.backprofilinterview(request)
+        case 'mapanalizurines':
+            if settingsvar.kabinet == 'pacientstanhealth':
+                views.pacientstanhealth(request)
+            else:
+                views.backprofilinterview(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
