@@ -63,7 +63,7 @@ def backpage(request):
         case 'workdiagnozlikar':
             views.listworkdiagnoz()
         case 'contentinterview' | 'contentinterwiev':
-            if settingsvar.kabinet == 'guest':
+            if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'likarworkdiagnoz':
                 views.backworkdiagnozlikar(request)
             else:
                 views.backprofilinterview(request)

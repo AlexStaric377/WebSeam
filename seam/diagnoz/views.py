@@ -387,6 +387,7 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# Характер прояву нездужання
 def featurespisok(request, featurespisok_keyComplaint, featurespisok_keyFeature):
 
     settingsvar.DiagnozRecomendaciya.append(featurespisok_keyFeature + ";")
@@ -416,7 +417,6 @@ def funcfeature():
         settingsvar.dictfeature = rest_api('api/InterviewController/' + "0/0/0/0/" + listkeyFeature, '', 'GET')
     if len(settingsvar.dictfeature) > 0:
         for item in settingsvar.listfeature:
-
             for itemfeature in settingsvar.dictfeature:
                 if item['keyFeature'] in itemfeature['grDetail']:
                     if settingsvar.keyFeature == item['keyFeature']:
@@ -425,20 +425,13 @@ def funcfeature():
                         settingsvar.spselectnameDetailing.append(item['name'])
                     index = index + 1
                     break
-
             for itemfeature in settingsvar.dictfeature:
                 if item['keyFeature'] in itemfeature['grDetail']:
                     if item not in tmplist:
                         tmplist.append(item)
-
-
-
-
         settingsvar.listfeature = tmplist
-
     else:
         cleanvars()
-
         settingsvar.nawpage = 'receptinterwiev'
         settingsvar.html = 'diagnoz/receptinterwiev.html'
         api = rest_api('api/ApiControllerComplaint/', '', 'GET')
@@ -449,7 +442,6 @@ def funcfeature():
         }
     settingsvar.nawpage = 'backfeature'
     if len(settingsvar.listfeature) > 1:
-
         settingsvar.html = 'diagnoz/nextfeature.html'
         del settingsvar.listfeature[indexfeature]
         if len(settingsvar.pacient) > 0:
@@ -1819,6 +1811,7 @@ def getpostpacientprofil(request):
                         settingsvar.kodPacienta = settingsvar.pacient['kodPacient']
                         settingsvar.pacient = rest_api('/api/PacientController/', json, 'PUT')
                         settingsvar.editprofil = False
+                    if settingsvar.kabinet == 'pacient': settingsvar.html = 'diagnoz/pacient.html'
             case 'likarinterwiev':
                 if len(settingsvar.pacient) > 0:
                     if settingsvar.readprofil != False:
@@ -2001,11 +1994,12 @@ def profilpacient(request):  # httpRequest
         accountuser(request)
         settingsvar.initialprofil = True
     else:
-        settingsvar.html = 'diagnoz/pacientprofil.html'
+
         if settingsvar.initialprofil == True:
             settingsvar.html = 'diagnoz/pacient.html'
             settingsvar.initialprofil = False
         else:
+            settingsvar.html = 'diagnoz/pacientprofil.html'
             settingsvar.readprofil = True
             settingsvar.initialprofil = True
         profilinfopacient()
@@ -2495,7 +2489,7 @@ def pacientstanhealth(request):  # httpRequest
             accountuser(request)
         else:
             funcshablonstanhealth()
-            if len(settingsvar.listapi) == 0:
+            if len(settingsvar.stanhealth) == 0:
                 addpulstisk(request)
             else:
                 if request.method == 'POST':
@@ -2507,11 +2501,11 @@ def funcshablonstanhealth():
     backurl = funcbakurl()
     PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
     settingsvar.html = 'diagnoz/pacientstanhealth.html'
-    stanhealth = rest_api('api/PacientMapAnalizController/' + settingsvar.kodPacienta + '/0', '', 'GET')
-    if len(stanhealth) > 0:
+    settingsvar.stanhealth = rest_api('api/PacientMapAnalizController/' + settingsvar.kodPacienta + '/0', '', 'GET')
+    if len(settingsvar.stanhealth) > 0:
         settingsvar.nextstepdata = {
             'iduser': iduser,
-            'complaintlist': stanhealth,
+            'complaintlist': settingsvar.stanhealth,
             'backurl': backurl,
             'pacient': PacientName
         }
@@ -3045,13 +3039,13 @@ def addvisitingdaypacient(DaysOfTheWeek, date_string, dtvisit, time_step, dateVi
 # --- Робочі напрямки
 def likarworkdiagnoz(request):  # httpRequest
     settingsvar.directdiagnoz = False
+    settingsvar.nawpage = 'likarworkdiagnoz'
+    settingsvar.kabinetitem = 'likarworkdiagnoz'
+    settingsvar.kabinet = 'likarworkdiagnoz'
+    settingsvar.backpage = 'likarworkdiagnoz'
     if inputkabinetlikar(request) == True:
         cleanvars()
         settingsvar.readprofil = False
-        settingsvar.nawpage = 'likarworkdiagnoz'
-        settingsvar.kabinetitem = 'likarworkdiagnoz'
-        settingsvar.kabinet = 'likarworkdiagnoz'
-        settingsvar.backpage = 'likarworkdiagnoz'
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
