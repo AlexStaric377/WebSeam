@@ -7,6 +7,8 @@ from diagnoz import views
 def backpage(request):
     #    views.exitkab()
     match settingsvar.backpage:
+        case 'home_view':
+            views.pacient(request)
         case "":
             views.index(request)
         case 'index' | "pacient" | "likar":
@@ -63,7 +65,7 @@ def backpage(request):
         case 'workdiagnozlikar':
             views.listworkdiagnoz()
         case 'contentinterview' | 'contentinterwiev':
-            if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'likarworkdiagnoz':
+            if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'likarworkdiagnoz' or settingsvar.kabinet == 'likarprofil':
                 views.backworkdiagnozlikar(request)
             else:
                 views.backprofilinterview(request)

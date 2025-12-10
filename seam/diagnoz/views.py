@@ -190,22 +190,26 @@ def pacient(request):  # httpRequest
             settingsvar.likar) > 0:
         errorprofil('Шановний користувач! Активний кабінет пацієнта. Вхід до кабінету лікаря неможливий.')
     else:
-        json = ('IdUser: pacient,' + 'dateseanse :' +
-                datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacient')
-        unloadlog(json)
-        settingsvar.backpage = 'index'
-        settingsvar.kabinet = 'pacient'
-        settingsvar.setintertview = False
-        settingsvar.interviewcompl = False
-        settingsvar.html = 'diagnoz/pacient.html'
-
-        settingsvar.likar = {}
-        settingsvar.datereception = 'не встановлено'
-        settingsvar.datedoctor = 'не встановлено'
-        settingsvar.funciya = ''
+        funcpacient()
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
+
+def funcpacient():
+    json = ('IdUser: pacient,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacient')
+    unloadlog(json)
+    settingsvar.backpage = 'index'
+    settingsvar.kabinet = 'pacient'
+    settingsvar.setintertview = False
+    settingsvar.interviewcompl = False
+    settingsvar.html = 'diagnoz/pacient.html'
+
+    settingsvar.likar = {}
+    settingsvar.datereception = 'не встановлено'
+    settingsvar.datedoctor = 'не встановлено'
+    settingsvar.funciya = ''
+    return
 
 # --- Вийти з кабінету
 def exitkab():
@@ -263,6 +267,13 @@ def proseam(request):
     settingsvar.backpage = 'index'
     return render(request, 'diagnoz/proseam.html')
 
+
+def rada(request):
+    json = ('IdUser: proseam,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: proseam')
+    unloadlog(json)
+    settingsvar.backpage = 'index'
+    return render(request, 'diagnoz/rada.html')
 
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):
@@ -1005,7 +1016,7 @@ def shablonlistlikar():
     if settingsvar.receptitem == 'likarworkdirection': settingsvar.receptitem = 'receptprofillmedzaklad'
     if settingsvar.receptitem == 'directiondiagnoz': directdiagnoz = False
     #   if settingsvar.kabinet == 'interwiev': directdiagnoz = True
-
+    settingsvar.nextstepdata = {}
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': 'Перелік профільних лікарів',
@@ -1147,12 +1158,12 @@ def inputprofilpacient(request, selected_doctor):
                     dateregistrationappointment(request)
                 else:
                     backurl = 'receptprofillmedzaklad'
-
                     settingsvar.nawpage = 'receptprofillmedzaklad'
                     match settingsvar.receptitem:
                         case 'receptprofillmedzaklad':
                             settingsvar.html = 'diagnoz/likarworkdirection.html'
                             settingsvar.receptitem = 'likarworkdirection'
+                            settingsvar.likar = {}
                         case 'selectedprofillikar' | 'directiondiagnoz':
                             settingsvar.html = 'diagnoz/likarworkdiagnoz.html'
                             settingsvar.receptitem = 'likarworkdiagnoz'
@@ -1340,7 +1351,7 @@ def funcaddaccount(login, password):
                               'AccountCreatDate': settingsvar.dateInterview,
                               'Subscription': details,
                               }
-    saveaccount = rest_api('/api/AccountUserController/', json, 'POST')
+    saveaccount = rest_api('/api/AccountUserController/', settingsvar.jsonstroka, 'POST')
     return
 # --------------------------
 # Реєстрація входу до кабінету пацієнта
@@ -1348,11 +1359,13 @@ def funcaddaccount(login, password):
 def reestraccountuser(request):
     settingsvar.html = 'diagnoz/reestraccountuser.html'
     settingsvar.readprofil = False
+    if settingsvar.kabinet == "": settingsvar.kabinet = 'pacient'
     iduser = funciduser()
     if request.method == 'POST':
         if settingsvar.setReestrAccount == False:
             form = ReestrAccountUserForm(request.POST)
             settingsvar.formaccount = form.data
+            request.method = 'GET'
             if len(settingsvar.formaccount['dwpassword']) == 0:
                 settingsvar.setReestrAccount = False
                 errorprofil('Шановний користувач! Облікові дані не корректно введені')
@@ -1575,12 +1588,13 @@ def deletprofil(request):
         '/api/PacientAnalizUrineController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
     settingsvar.pacient = rest_api(
         '/api/AccountUserController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
-    settingsvar.kabinet = 'pacient'
+    settingsvar.kabinet = ''
     settingsvar.setintertview = False
-    settingsvar.html = 'diagnoz/pacient.html'
+    settingsvar.html = 'diagnoz/index.html'
     settingsvar.nextstepdata = {}
     settingsvar.likar = {}
     settingsvar.pacient = {}
+    settingsvar.setpost = False
     settingsvar.datereception = 'не встановлено'
     settingsvar.datedoctor = 'не встановлено'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -1794,7 +1808,9 @@ def getpostpacientprofil(request):
 
                     Stroka = rest_api('/api/AccountUserController/' + "0/" + form.data['tel'] + "/0/0", '', 'GET')
                     if len(Stroka) == 0:
-                        funcaddaccount(settingsvar.formaccount.data['login'], settingsvar.formaccount.data['password'])
+                        log = settingsvar.formaccount['login']
+                        pas = settingsvar.formaccount['password']
+                        funcaddaccount(log, pas)
 
                     # --- записати в Бд введенний профіль
                     doc = rest_api('api/PacientController/' + '0/0/0/0/' + json['Tel'], '', 'GET')
@@ -1803,7 +1819,10 @@ def getpostpacientprofil(request):
                     else:
                         settingsvar.pacient = doc[0]
                     settingsvar.setpost = True
-                    shablonlikar(settingsvar.pacient)
+                    if settingsvar.backpage == 'home_view':
+                        funcpacient()
+                    else:
+                        shablonlikar(settingsvar.pacient)
                 else:
                     if len(settingsvar.pacient) > 0:
                         json['id'] = settingsvar.pacient['id']

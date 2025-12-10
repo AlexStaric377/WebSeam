@@ -28,7 +28,8 @@
                 <li><a class="dropdown-item" href="{% url 'index' %}">Головна</a></li>
                 <li><a class="dropdown-item" href="{% url 'reception' %}">Гість</a></li>
                 <li><a class="dropdown-item" href="{% url 'pacient' %}">Пацієнт</a></li>
-                <li><a class="dropdown-item" href="{% url 'likar' %}">Лікарь</a></li>
+                <li><a class="dropdown-item" href="{% url 'likar' %}">Лікарь</a>
+
             </ul>
         </div>
         <div class="col justify-content-start d-flex align-items-start" style="  background-color: #558787;">
@@ -56,10 +57,16 @@
             </button>
         </div>
         <div class="col justify-content-end d-flex align-items-end">
-            <a class="btn d-flex align-items-end" data-bs-placement="top" data-bs-toggle="tooltip"
-               href="{% url 'proseam' %}" role="button" title="Про СЕАМ">
-                <img alt="" src="/static/diagnoz/img/menykebab.png" style="width: 15px; ">
+
+            <a aria-expanded="false" class="nav-link dropdown-toggle d-flex align-items-start"
+               data-bs-placement="top" data-bs-toggle="dropdown" data-bs-toggle="tooltip" href="#"
+               id="navbarDropdownMenuLink2" role="button" title="Про СЕАМ">
+                <img alt="" src="/static/diagnoz/img/menykebab.png" style="width: 25px;">
             </a>
+            <ul aria-labelledby="navbarDropdownMenuLink2" class="dropdown-menu ">
+                <li><a class="dropdown-item" href="{% url 'proseam' %}">Про СЕАМ</a></li>
+                <li><a class="dropdown-item" href="{% url 'rada' %}">Наглядова Рада</a></li>
+            </ul>
         </div>
     </div>
 </div>
@@ -68,7 +75,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="loginModalLabel">Увійти / Зареєструватися </h5>
+                        <h5 class="modal-title" id="loginModalLabel">Кабінет: Увійти / Зареєструватися </h5>
                         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                     </div>
 
@@ -105,10 +112,12 @@
 
                         </div>
                         <div class="modal-footer">
-
-                            <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Скасувати</button>
-                            <button class="btn btn-primary" type="submit">Підтвердити</button>
-
+                            <!---                            <button class="btn btn-secondary"  data-bs-dismiss="modal" type="button">Зареєструватися</button> --->
+                            <button class="btn btn-sm text-white" style="font-size: 15px; background-color: #558787; height=15;"
+                                    type="submit">Увійти
+                            </button>
+                            <a class="btn btn-sm text-white" href="{% url 'reestraccountuser' %}" role="button"
+                               style="font-size: 15px; background-color: #558787; height=15;">Зареєструватися</a>
                         </div>
 
                     </form>

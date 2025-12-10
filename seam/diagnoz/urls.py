@@ -59,6 +59,7 @@ urlpatterns = [
     path('inputprofilpacient/<str:selected_doctor>', views.inputprofilpacient, name='inputprofilpacient'),
     path('saveraceptionlikar', views.saveraceptionlikar, name='saveraceptionlikar'),
     path('accountuser', views.accountuser, name='accountuser'),
+    path('rada', views.rada, name='rada'),
 
     path('kabinetpacient', views.kabinetpacient, name='kabinetpacient'),
     path('profilinterview/<str:selected_protokol>,  <str:selected_datevizita>, <str:selected_dateInterview>',
