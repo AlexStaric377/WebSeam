@@ -3249,42 +3249,52 @@ def funcworkdiagnozlikar():
     settingsvar.backpage = 'workdiagnozlikar'
     settingsvar.html = 'diagnoz/workdiagnozlikar.html'
     settingsvar.listworkdiagnoz = rest_api('api/DiagnozController/' + '0/' + settingsvar.select_icd + '/0', '', 'GET')
-
     if len(settingsvar.listworkdiagnoz) > 0:
-        settingsvar.nextstepdata = {
-            'iduser': iduser,
-            'complaintlist': settingsvar.listworkdiagnoz,
-            'backurl': backurl,
-            'piblikar': likar,
-            'medzaklad': medzaklad,
-            'icdgrup': settingsvar.listworkdiagnoz[0]['icdGrDiagnoz'],
-            'directdiagnoz': settingsvar.directdiagnoz,
-            'listnull': False
-        }
-    else:
-        settingsvar.nextstepdata = {
-            'iduser': iduser,
-            'complaintlist': '',
-            'backurl': backurl,
-            'piblikar': likar,
-            'medzaklad': medzaklad,
-            'icdgrup': 'Шановний користувач! За вашим запитом немає робочих діагнозів за ' + settingsvar.select_idigrup,
-            'directdiagnoz': settingsvar.directdiagnoz,
-            'listnull': True
-        }
+        select_kodDiagnoza = settingsvar.listworkdiagnoz[0]['kodDiagnoza']
+        protokol = rest_api('api/DependencyDiagnozController/' + select_kodDiagnoza + "/0/0", '', 'GET')
+        if len(protokol) > 0:
+            workdiagnoz = []
+            for item in protokol:
+                prtitem = rest_api('api/InterviewController/' + item['kodProtokola'] + "/0/0/0/0", '', 'GET')
+                prtitem['kodDiagnoza'] = select_kodDiagnoza
+                workdiagnoz.append(prtitem)
+
+            if len(workdiagnoz) > 0:
+
+                settingsvar.nextstepdata = {
+                    'iduser': iduser,
+                    'complaintlist': workdiagnoz,
+                    'backurl': backurl,
+                    'piblikar': likar,
+                    'medzaklad': medzaklad,
+                    'icdgrup': settingsvar.listworkdiagnoz[0]['icdGrDiagnoz'],
+                    'directdiagnoz': settingsvar.directdiagnoz,
+                    'listnull': False
+                }
+            else:
+                settingsvar.nextstepdata = {
+                    'iduser': iduser,
+                    'complaintlist': '',
+                    'backurl': backurl,
+                    'piblikar': likar,
+                    'medzaklad': medzaklad,
+                    'icdgrup': 'Шановний користувач! За вашим запитом немає робочих діагнозів за ' + settingsvar.select_idigrup,
+                    'directdiagnoz': settingsvar.directdiagnoz,
+                    'listnull': True
+                }
     return
 
 # формування та виведення  переліку діагнозів за вказаним напрямком
-def contentinterview(request, select_kodDiagnoza):
+def contentinterview(request, select_kodProtokola):
     backurl = 'backworkdiagnozlikar'
     settingsvar.backpage = 'contentinterview'
     settingsvar.html = 'diagnoz/contentinterview.html'
-    protokol = rest_api('api/DependencyDiagnozController/' + select_kodDiagnoza + "/0/0", '', 'GET')
+    protokol = rest_api('api/DependencyDiagnozController/' + "0/" + select_kodProtokola + "/0", '', 'GET')
     if len(protokol) > 0:
-        workdiagnoz = rest_api('api/ContentInterviewController/' + protokol['kodProtokola'], '', 'GET')
+        workdiagnoz = rest_api('api/ContentInterviewController/' + protokol[0]['kodProtokola'], '', 'GET')
         if len(workdiagnoz) > 0:
-            for item in settingsvar.listworkdiagnoz:
-                if select_kodDiagnoza == item['kodDiagnoza']: settingsvar.namediagnoz = item['nameDiagnoza']
+            #           for item in settingsvar.listworkdiagnoz:
+            #               if select_kodDiagnoza == item['kodDiagnoza']: settingsvar.namediagnoz = item['nameDiagnoza']
             settingsvar.nextstepdata = {
                 'listwork': workdiagnoz,
                 'medzaklad': settingsvar.namemedzaklad,
@@ -3296,7 +3306,7 @@ def contentinterview(request, select_kodDiagnoza):
             errorprofil('Шановний користувач! За поточним протоколом відсутній зміст опитування.')
     else:
         errorprofil(
-            'Шановний користувач! За поточним кодом діагнозу :' + select_kodDiagnoza + ' відсутній протокол опитування.')
+            'Шановний користувач! За поточним кодом протоколу :' + select_kodProtokola + ' відсутній протокол опитування.')
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 

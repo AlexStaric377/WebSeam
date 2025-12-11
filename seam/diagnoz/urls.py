@@ -75,7 +75,7 @@ urlpatterns = [
     path('workdiagnozlikar/<str:select_kodDoctor>,  <str:select_icd>, <int:select_id>', views.workdiagnozlikar,
          name='workdiagnozlikar'),
     path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz'),
-    path('contentinterview/<str:select_kodDiagnoza>', views.contentinterview, name='contentinterview'),
+    path('contentinterview/<str:select_kodProtokola>', views.contentinterview, name='contentinterview'),
     path('directiondiagnoz', views.directiondiagnoz, name='directiondiagnoz'),
     path('likarnapryamok', views.likarnapryamok, name='likarnapryamok'),
     path('profillikarform', views.profillikarform, name='profillikarform'),

@@ -32,12 +32,12 @@
     {% if directdiagnoz %}
     <tr>
         <td><a aria-current="page" class="nav-link" href=""><font style="vertical-align: inherit;">
-            {{item.nameDiagnoza}} </font></a></td>
+            {{item.nametInterview}} </font></a></td>
     </tr>
     {% else %}
     <tr>
-        <td><a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodDiagnoza  %} "><font
-                style="vertical-align: inherit;"> {{item.nameDiagnoza}} </font></a></td>
+        <td><a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodProtokola  %} "><font
+                style="vertical-align: inherit;"> {{item.nametInterview}} </font></a></td>
     </tr>
     {% endif %}
     {% endfor %}
