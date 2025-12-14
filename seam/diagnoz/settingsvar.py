@@ -93,3 +93,6 @@ addinterviewrecept = False
 pacienthealth = True
 url = 'https://www.google.com'
 stanhealth = []
+select_icd = ""
+nawpage = ""
+selecticdGrDiagnoz = ""

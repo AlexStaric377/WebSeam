@@ -5,6 +5,7 @@
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     <p>Перелік робочих діагнозів за напрямком {{icdgrup}}</p>
+    <h6>Для перегляду змісту опитування, яке визначає попередній діагноз необхідно натиснути на відповідний рядок</h6>
 </div>
     {% block list %}
     <table class="table table-striped">
@@ -16,7 +17,8 @@
         <tbody>
     {% for item in complaintlist %}
     <tr>
-        <td><a aria-current="page" class="nav-link" href=" "><font style="vertical-align: inherit;">
+        <td><a aria-current="page" class="nav-link" href="{% url 'contentinterview'  item.kodProtokola  %}"><font
+                style="vertical-align: inherit;">
             {{item.nameDiagnoza}} </font></a></td>
     </tr>
     {% endfor %}

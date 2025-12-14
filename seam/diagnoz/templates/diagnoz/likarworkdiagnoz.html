@@ -4,6 +4,10 @@
 <div class="container-fluid text-center">
     {% if directdiagnoz %}
     <h6>{{iduser}}</h6>
+    {% if listapinull %}
+    <p>{{medzaklad}}</p>
+    <p>{{piblikar}}</p>
+    {% endif %}
     {% else %}
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
