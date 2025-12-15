@@ -49,7 +49,12 @@ def backpage(request):
 
         case "pacientprofil" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth' | 'pacientinterwiev':
             views.pacient(request)
-        case "likarprofil" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
+        case 'likarinterwiev':
+            if settingsvar.receptitem == 'pacientinterwiev':
+                views.pacient(request)
+            else:
+                views.likar(request)
+        case "likarprofil" | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
             views.likar(request)
         case 'receptinterwiev':
             views.interwievcomplaint(request)
@@ -74,22 +79,28 @@ def backpage(request):
             if settingsvar.receptitem == 'interwievcomplaint' and settingsvar.nawpage != 'backshablonselect':
                 views.writediagnoz()
             else:
-                if settingsvar.kabinet == 'guest' and settingsvar.nawpage == 'backshablonselect':
-                    views.shablonselect(request)
-                else:
-                    if settingsvar.kabinet == 'guest' and settingsvar.nawpage == 'backprofilinterview':
-                        views.backprofilinterview(request)
+                if settingsvar.receptitem == 'pacientinterwiev' and settingsvar.kabinet == 'interwiev':
+                    if settingsvar.nawpage == 'backfromcontent':
+                        views.writediagnoz()
                     else:
-                        if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'likarworkdiagnoz' or settingsvar.kabinet == 'likarprofil':
-                            views.backworkdiagnozlikar(request)
+                        views.saveselectlikar(settingsvar.pacient)
+                else:
+                    if settingsvar.kabinet == 'guest' and settingsvar.nawpage == 'backshablonselect':
+                        views.shablonselect(request)
+                    else:
+                        if settingsvar.kabinet == 'guest' and settingsvar.nawpage == 'backprofilinterview':
+                            views.backprofilinterview(request)
                         else:
-                            if settingsvar.kabinet == 'likarinterwiev':
-                                views.saveselectlikar(settingsvar.pacient)
+                            if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'likarworkdiagnoz' or settingsvar.kabinet == 'likarprofil':
+                                views.backworkdiagnozlikar(request)
                             else:
-                                if settingsvar.kabinet == 'likarlibdiagnoz':
-                                    views.funclibdiagnoz()
+                                if settingsvar.kabinet == 'likarinterwiev':
+                                    views.saveselectlikar(settingsvar.pacient)
                                 else:
-                                    views.backprofilinterview(request)
+                                    if settingsvar.kabinet == 'likarlibdiagnoz':
+                                        views.funclibdiagnoz()
+                                    else:
+                                        views.backprofilinterview(request)
 
         case 'libdiagnoz':
             views.listlibdiagnoz()

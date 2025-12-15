@@ -192,6 +192,8 @@ def pacient(request):  # httpRequest
         errorprofil('Шановний користувач! Активний кабінет пацієнта. Вхід до кабінету лікаря неможливий.')
     else:
         funcpacient()
+        if request.method == 'POST':
+            loginuser(request)
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
