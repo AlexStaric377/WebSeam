@@ -209,8 +209,8 @@ def funcpacient():
     settingsvar.html = 'diagnoz/pacient.html'
 
     settingsvar.likar = {}
-    settingsvar.datereception = 'не встановлено'
-    settingsvar.datedoctor = 'не встановлено'
+    settingsvar.datereception = 'призначається за тел.'
+    settingsvar.datedoctor = 'призначається за тел.'
     settingsvar.funciya = ''
     return
 
@@ -882,9 +882,9 @@ def selectmedzaklad(request, statuszaklad):
                         for itemmedzaklad in settingsvar.grupmedzaklad:
                             if medzaklad['kodZaklad'] not in itemmedzaklad['kodZaklad']:
                                 apptru = False
-                        else:
-                            apptru = True
-                    if apptru == False:  settingsvar.grupmedzaklad.append(medzaklad)
+                            else:
+                                apptru = True
+                            if apptru == False:  settingsvar.grupmedzaklad.append(medzaklad)
             else:
                 #                if settingsvar.kabinet == 'guest':
                     settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad,
@@ -935,7 +935,7 @@ def backreceptprofillmedzaklad(request):
         medzaklad = rest_api('/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '', 'GET')
         settingsvar.namemedzaklad = medzaklad['name']
         settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
-        settingsvar.mobtellikar = settingsvar.likar['telefon']
+#        settingsvar.mobtellikar = settingsvar.likar['telefon']
         saveselectlikar(settingsvar.pacient)
     else:
         status = "5"
@@ -975,8 +975,10 @@ def receptfamilylikar(request):
 def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_name):
     settingsvar.gruplikar = []
     settingsvar.namemedzaklad = selected_name
+
     medzak = rest_api('/api/MedicalInstitutionController/' + selected_kodzaklad + "/0/0/0", '', 'GET')
     settingsvar.adrzaklad = medzak['adres']
+    settingsvar.mobtellikar = medzak['telefon']
     Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_kodzaklad + "/0", '', 'GET')
     if settingsvar.interviewcompl == False and settingsvar.kabinet == 'guest':
         settingsvar.gruplikar = Grupproflikar
@@ -1125,7 +1127,7 @@ def saveselectlikar(pacient):
                 'shapka': 'Увага! сформовано попередній діаноз на прийомі у лікаря.',
                 'pacient': 'Пацієнт: ' + pacient['name'] + " " + pacient['surname'],
                     'medzaklad': settingsvar.namemedzaklad,
-                    'likar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+                    'likar': 'Лікар: ' + settingsvar.namelikar,  #+ " тел.: " + settingsvar.mobtellikar,
                     'datereception': 'Дата прийому: ' + settingsvar.datereception,
                     'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
                 'podval': 'Зберегти опитування?',
@@ -1138,7 +1140,7 @@ def saveselectlikar(pacient):
                 'pacient': 'Увага! ' + pacient['name'] + " " + pacient['surname'],
                 'shapka': 'Ви сформували запит на прийом до лікаря.',
                 'medzaklad': settingsvar.namemedzaklad,
-                'likar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+                'likar': 'Лікар: ' + settingsvar.namelikar, #++ " тел.: ",  settingsvar.mobtellikar,
                 'datereception': 'Дата прийому: ' + settingsvar.datereception,
                 'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
                 'podval': 'Ви підтверджуєте свій вибір?',
@@ -1159,13 +1161,13 @@ def saveselectlikar(pacient):
 # --- введення профілю пацієнта для запису на прийом до лікаря
 def inputprofilpacient(request, selected_doctor):
     settingsvar.namelikar = ""
-    settingsvar.mobtellikar = ""
+#    settingsvar.mobtellikar = ""
     if "DTR" in selected_doctor: settingsvar.kodDoctor = selected_doctor
     settingsvar.setintertview = True
     CmdStroka = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodDoctor + "/0/0", '', 'GET')
     if 'name' in CmdStroka:
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
-        settingsvar.mobtellikar = CmdStroka['telefon']
+#        settingsvar.mobtellikar = CmdStroka['telefon']
         settingsvar.likar = CmdStroka
         likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
                                     settingsvar.kodDoctor + '/0', '', 'GET')
@@ -1195,7 +1197,7 @@ def inputprofilpacient(request, selected_doctor):
                             'iduser': iduser,
                             'complaintlist': likarGrupDiagnoz,
                             'backurl': backurl,
-                            'piblikar': settingsvar.namelikar + " т." + settingsvar.mobtellikar,
+                            'piblikar': settingsvar.namelikar, # + " т." + settingsvar.mobtellikar,
                             'medzaklad': settingsvar.namemedzaklad,
                         'directdiagnoz': settingsvar.directdiagnoz,
                             'listapinull': True,
@@ -1260,7 +1262,7 @@ def dateregistrationappointment(request):
         settingsvar.nextstepdata = {
             'iduser': iduser,
             'likar': settingsvar.setpostlikar,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
             'complaintlist': CmdStroka,
             'backurl': backurl
         }
@@ -1487,7 +1489,7 @@ def accountuser(request):
                                     'GET')
                                 settingsvar.namemedzaklad = medzaklad['name']
                                 settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
-                                settingsvar.mobtellikar = settingsvar.likar['telefon']
+#                               settingsvar.mobtellikar = settingsvar.likar['telefon']
                                 settingsvar.statuslikar = medzaklad['idStatus']
                                 settingsvar.setpostlikar = True
 
@@ -2275,7 +2277,7 @@ def nextprofilinterview():
                             doc = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
                             settingsvar.kodPacienta = item['kodPacient']
                             PacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
-                        likarName = settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+                        likarName = settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar
                         settingsvar.pacient = doc
                 break
     depend = rest_api('api/DependencyDiagnozController/' + '0/' + settingsvar.kodProtokola + '/0', '', 'GET')
@@ -2421,7 +2423,7 @@ def funcshablonlistpacient():
                     'GET')
                 settingsvar.namemedzaklad = medzaklad['name']
                 settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
-                settingsvar.mobtellikar = settingsvar.likar['telefon']
+#                settingsvar.mobtellikar = settingsvar.likar['telefon']
                 settingsvar.nextstepdata[
                     'piblikar'] = settingsvar.namemedzaklad + 'Лікар : ' + settingsvar.namelikar + " " + settingsvar.mobtellikar
         settingsvar.nextstepdata['complaintlist'] = settingsvar.listapi
@@ -2799,7 +2801,7 @@ def search_pacient():
         'form': formsearch,
         'compl': compl,
         'iduser': iduser,
-        'reestrinput': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+        'reestrinput': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
         'medzaklad': settingsvar.namemedzaklad,
         'backurl': backurl,
         'reestr': reestr
@@ -2877,7 +2879,7 @@ def listlikar():
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
             'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad
         }
     else:
@@ -2942,7 +2944,7 @@ def listreceptionpacient():
             'iduser': iduser,
             'complaintlist': listreception,
             'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad
         }
     else:
@@ -2994,7 +2996,7 @@ def listlikarvisitngdays():
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
             'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
         'medzaklad': settingsvar.namemedzaklad,
         'error': error,
         'profil': profil,
@@ -3045,7 +3047,7 @@ def addvisitingdays(request):
         settingsvar.nextstepdata = {
             'form': settingsvar.formvisiting,
             'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad,
 
         }
@@ -3120,7 +3122,7 @@ def listworkdiagnoz():
             'iduser': iduser,
             'complaintlist': settingsvar.listapi,
             'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad,
             'directdiagnoz': settingsvar.directdiagnoz,
             'listapinull': listapinull,
@@ -3194,7 +3196,7 @@ def addworkdiagnoz(request):
             'iduser': iduser,
             'complaintlist': settingsvar.listGrupDiagnoz,
             'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad,
         }
 
@@ -3266,7 +3268,7 @@ def funcworkdiagnozlikar():
     settingsvar.nawpage = 'likarworkdiagnoz'
 
     if settingsvar.directdiagnoz == False:
-        likar = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+        likar = 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar
         medzaklad = settingsvar.namemedzaklad
     else:
         backurl = 'directiondiagnoz'
@@ -3326,7 +3328,7 @@ def contentinterview(request, select_kodProtokola):
             settingsvar.nextstepdata = {
                 'listwork': workdiagnoz,
                 'medzaklad': settingsvar.namemedzaklad,
-                'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+                'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
                 'namediagnoz': settingsvar.namediagnoz,
                 'backurl': backurl
             }
@@ -3377,7 +3379,7 @@ def listlibdiagnoz():
             'iduser': iduser,
             'complaintlist': listgrdiagnoz,
             'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad
         }
     else:
@@ -3413,7 +3415,7 @@ def funclibdiagnoz():
             'iduser': iduser,
             'complaintlist': listworkdiagnoz,
             'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar,
+            'piblikar': 'Лікар: ' + settingsvar.namelikar, # + " тел.: " + settingsvar.mobtellikar,
             'medzaklad': settingsvar.namemedzaklad,
             'icdgrup': settingsvar.selecticdGrDiagnoz
         }

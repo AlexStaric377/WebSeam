@@ -7,18 +7,24 @@
         <p>{{piblikar}}</p>
     </div>
 </div>
-<div class="container-fluid">
-    <p>Перелік робочих напрямків діагностики захворювань</p>
+<table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Перелік робочих напрямків діагностики захворювань</th>
+                </tr>
+                </thead>
+                <tbody>
+
 
     {% block list %}
     {% for item in complaintlist %}
-
-    <a aria-current="page" class="nav-link" href="{% url 'addgrupdiagnoz'  item.icd  %} "><font
-            style="vertical-align: inherit;"> {{item.nameGrDiagnoz}} </font></a>
-
+    <tr>
+    <td><a aria-current="page" class="nav-link" href="{% url 'addgrupdiagnoz'  item.icd  %} "><font
+            style="vertical-align: inherit;"> {{item.nameGrDiagnoz}} </font></a></td>
+    </tr>
     {% endfor %}
+    </tbody>
+</table>
     {% endblock %}
-</div>
-<!---<a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
 
 {% endblock %}
