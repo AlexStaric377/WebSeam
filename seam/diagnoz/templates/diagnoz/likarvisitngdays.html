@@ -1,0 +1,45 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+    <p>{{medzaklad}}</p>
+    <p>{{piblikar}}</p>
+    <p>Розклад приймання пацієнтів для обстеження</p>
+</div>
+{% if error %}
+<div class="container-fluid text-center">
+    <p>{{errmsg}}</p>
+</div>
+{% else %}
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th>День неділі</th>
+        <th>Дата прийому</th>
+        <th>Час прийому</th>
+        <th>Прийом дійсний</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in complaintlist %}
+    <tr>
+        <td><a class="nav-link" href="">{{item.daysOfTheWeek }}</a></td>
+        <td><a class="nav-link" href="">{{item.dateVizita }}</a></td>
+        <td><a class="nav-link" href="">{{item.timeVizita }}</a></td>
+        <td><a class="nav-link" href="">{{item.onOff }}</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endif %}
+<div class="container-fluid text-center" style="display: inline-block">
+    {% if profil != "guest" %}
+    <a class="btn btn-sm text-white" href="{% url 'addvisitingdays' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Додати</a>
+    {% endif %}
+    <!---    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
+</div>
+
+{% endblock %}
+

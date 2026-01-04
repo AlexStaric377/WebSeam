@@ -1,0 +1,51 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+    <h6>{{iduser}}</h6>
+</div>
+<table class="table text-center">
+    <thead>
+    <tr>
+        <th scope="col">Профіль пацієнта</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><p style="height=12;">{{ namesurname }}</p></td>
+    </tr>
+    <tr>
+        <td><p style="height=12;">{{ gender }}</p></td>
+    </tr>
+    <tr>
+        <td><p style="height=12;">{{ age }} </p></td>
+    </tr>
+    <tr>
+        <td><p style="height=12;">{{ weight }}</p></td>
+    </tr>
+    <tr>
+        <td><p style="height=12;">{{ growth }}</p></td>
+    </tr>
+    <tr>
+        <td><p style="height=12;">{{ profession }}</p></td>
+    </tr>
+    <tr>
+        <td><p style="height=12;">{{ pind }} </p></td>
+    </tr>
+    <tr>
+        <td><p style="height=12;">{{ email }} </p></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="container-fluid text-center" style="display: inline-block">
+
+    <a class="btn btn-sm text-white" href="{% url 'pacientprofil' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Корегувати</a>
+    <a class="btn btn-sm text-white" href="{% url 'deletprofil' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Видалити
+        профіль</a>
+    <!---        <a class="btn btn-primary" href="{% url 'pacient'  %}" role="button" style="font-size: 14px;">Далі</a>--->
+</div>
+
+{% endblock %}

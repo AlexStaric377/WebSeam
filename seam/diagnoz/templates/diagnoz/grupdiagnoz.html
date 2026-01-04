@@ -1,0 +1,28 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+    <div class="col">
+        <p>{{medzaklad}}</p>
+        <p>{{piblikar}}</p>
+    </div>
+</div>
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Перелік робочих напрямків діагностики захворювань</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% block list %}
+    {% for item in complaintlist %}
+    <tr>
+        <td><a aria-current="page" class="nav-link" href="{% url 'addgrupdiagnoz'  item.icd  %} "><font
+                style="vertical-align: inherit;"> {{item.nameGrDiagnoz}} </font></a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% endblock %}

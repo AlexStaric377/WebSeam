@@ -1,0 +1,70 @@
+{{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+
+    <div class="col">
+        {% if reestr %}
+        <p>{{medzaklad}}</p>
+        <p>{{reestrinput}}</p>
+        <p>Введіть будь-яку комбінацію нижче наведених показників пошуку облікового запису<br>
+            пацієнта в БД, або зареєструйте його профіль.</p>
+        {% else %}
+        <p>{{iduser}}</p>
+        <p>Введіть будь-яку комбінацію нижче наведених показників для пошуку <br>
+            запису обстеження до лікаря.</p>
+        {% endif %}
+    </div>
+
+</div>
+<div class=" container-fluid text-center d-flex justify-content-center align-items-center ">
+    <form class="needs-validation mx-auto " method="POST" novalidate="">
+        {% csrf_token %}
+
+        <div class="row g-3 text-center">
+            <div class="row text-center d-flex justify-content-center">
+                <div class="col-md-4">
+                    <label class="form-label"><font style="vertical-align: inherit;"><font
+                            style="vertical-align: inherit;">{{ form.telefon.label }}</font></font></label>
+                    {{form.telefon}}
+                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                            style="vertical-align: inherit;">Вимагається дійсний номер.</font></font>
+                    </div>
+                </div>
+
+                <p></p>
+                <div class="col-md-4">
+                    <label class="form-label"><font style="vertical-align: inherit;"><font
+                            style="vertical-align: inherit;">{{ form.name.label }}</font></font>
+                    </label>
+                    {{form.name}}
+                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                            style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label"><font style="vertical-align: inherit;"><font
+                            style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
+                    {{form.surname}}
+                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
+                            style="vertical-align: inherit;">Вимагається дійсне прізвище.</font></font>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+        <div class="container-fluid text-center" style="display: inline-block">
+            <button class="btn btn-sm  text-white" style="font-size: 12px; background-color: #558787;  "
+                    type="submit">Підтвердити
+            </button>
+            {% if reestr %}
+            <a class="btn  btn-sm text-white" href="{% url 'pacientprofil' %}" role="button"
+               style="font-size: 12px; background-color: #558787; height=12;">{{compl}}</a>
+            {% endif %}
+
+        </div>
+    </form>
+</div>
+
+{% endblock %}

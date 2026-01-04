@@ -1,0 +1,76 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center" style="display: inline-block">
+
+    {% if likar %}
+    <h6>{{iduser}}</h6>
+
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'mapanalizkrovi' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Аналіз крові</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'mapanalizurines' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Аналіз сечі</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'stanhealth' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Пульс Тиск</a>
+    </div>
+
+    {% else %}
+    <h6>{{iduser}}</h6>
+    {% endif %}
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'contentinterwiev' %}"
+           style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{{ base_url }}?q={{ search_term }}" rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Рекомендації
+            щодо
+            тактики лікування
+        </a>
+    </div>
+</div>
+<table class="table text-center">
+    <thead>
+    <tr>
+        <th scope="col">Інформація для обстеження пацієнта</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><p>{{ namepacient }}</p></td>
+    </tr>
+    <tr>
+        <td><p>{{ medzaklad }}</p></td>
+    </tr>
+    <tr>
+        <td><p>{{ namelikar }} </p></td>
+    </tr>
+
+    <tr>
+        <td><p>{{ dateinterv }}</p></td>
+    </tr>
+    <tr>
+        <td><p>{{ datereception }}</p></td>
+    </tr>
+    <tr>
+        <td><p>{{ diagnoz }} </p></td>
+    </tr>
+    <tr>
+        <td><p>{{ recomendaciya }}</p></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="container-fluid text-center" style="display: inline-block">
+    {% if remove %}
+    <a class="btn btn-sm text-white" href="{% url removefunc %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Видалити</a>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+    <div class="col">
+        <h6>{{iduser}}</h6>
+        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
+    </div>
+</div>
+<div class="container-fluid">
+    <h6> {{ pacient }} </h6>
+    <h6>{{ shapka }}</h6>
+    <h6> {{ medzaklad }} </h6>
+    <h6> {{ likar }} </h6>
+    <h6> {{ datereception }} </h6>
+    <h6> {{ diagnoz }} </h6>
+    <h6> {{ podval }} </h6>
+</div>
+<div class="container-fluid text-center" style="display: inline-block">
+    <p></p>
+    <a class="btn btn-sm text-white" href="{% url 'saveraceptionlikar' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Так</a>
+    <a class="btn btn-sm text-white" href="{% url 'reception' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Ні</a>
+</div>
+
+
+{% endblock %}

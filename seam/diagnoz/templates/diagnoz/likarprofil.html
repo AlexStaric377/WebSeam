@@ -1,0 +1,42 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+    <h6>{{medzaklad}}</h6>
+    <table class="table text-center">
+        <thead>
+        <tr>
+            <th scope="col">Профіль лікаря</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><p>{{name}}</p></td>
+        </tr>
+        <tr>
+            <td><p>{{specialnoct}}</p></td>
+        </tr>
+        <tr>
+            <td><p>{{uriwebDoctor}} </p></td>
+        </tr>
+        <tr>
+            <td><p>{{telefon}}</p></td>
+        </tr>
+        <tr>
+            <td><p>{{email}}</p></td>
+        </tr>
+        <!---                <tr>
+                            <td><a class="text-decoration-none" href="{% url 'likarnapryamok' %}">{{napryamok}}</a></td>
+                        </tr>--->
+
+        </tbody>
+    </table>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'likarnapryamok' %}" role="button"
+           style="font-size: 12px; background-color: #558787; height=12;">{{napryamok}}</a>
+        <a class="btn btn-sm text-white" href="{% url 'profillikarform' %}" role="button"
+           style="font-size: 12px; background-color: #558787; height=12;">Корегувати</a>
+        <!---    <a class="btn btn-primary" href="{% url 'likar' %}" role="button" style="font-size: 14px;">Повернутися</a>--->
+    </div>
+</div>
+{% endblock %}

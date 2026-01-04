@@ -1,0 +1,43 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center" style="display: inline-block">
+    <h6>{{iduser}}</h6>
+    <h6>{{pacient}}</h6>
+    <h6>Перегляд списку показників стану здоров'я</h6>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'mapanalizkrovi' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Аналіз крові</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'mapanalizurines' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Аналіз сечі</a>
+    </div>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'pulstisktemp' %}" role="button"
+           style="font-size: 12px; background-color: #558787;">Додати</a>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Дта вимірювання</th>
+        <th>Пульс</th>
+        <th>Тиск</th>
+        <th>Температура тіла</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in complaintlist %}
+    <tr>
+        <td><a class="nav-link" href="">{{item.dateAnaliza}}</a></td>
+        <td><a class="nav-link" href="">{{item.pulse}}</a></td>
+        <td><a class="nav-link" href="">{{item.pressure}}</a></td>
+        <td><a class="nav-link" href="">{{item.temperature}}</a></td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

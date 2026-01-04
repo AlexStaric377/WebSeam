@@ -1,0 +1,78 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+    {% include 'diagnoz/shablonzaglinterview.html' %}
+    <div class="container-fluid text-center" style="display: inline-block">
+        <a class="btn btn-sm text-white" href="{% url 'contentinterwiev' %}" role="button"
+           style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
+        <a class="btn btn-sm text-white" href="{{ base_url }}?q={{ search_term }}" rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Рекомендації
+            щодо методів лікування
+        </a>
+
+    </div>
+
+</div>
+{% block detalinglist %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Перелік попередніх діагнозів</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in detalinglist %}
+    <tr>
+        <td><a aria-current="page" class="nav-link"
+               href="{% url 'selectdiagnoz' item.kodProtokola item.nametInterview  %}"><font
+                style="vertical-align: inherit;">{{item.nametInterview}}</font></a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Назва попереднього діагнозу {{compl}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><p><h6>Короткий опис діагнозу:</h6></td>
+    </tr>
+    <tr>
+        <td><p> {{opis}} </p></td>
+    </tr>
+    <tr>
+        <td><p><h6>Посилання на опис в інтернеті:</h6></td>
+    </tr>
+    <tr>
+        <td><p> {{http}} </p></td>
+    </tr>
+    <tr>
+        <td><p><h6>Рекомендації щодо подальших дій:</h6></td>
+    </tr>
+    <tr>
+        <td><p> {{rekomendaciya}} </p></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="container-fluid text-center" style="display: inline-block">
+    <a class="btn btn-sm text-white" href="{% url 'receptprofillmedzaklad' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Запис до профільного лікаря</a>
+    {% if fameli %}
+    <a class="btn btn-sm text-white" href="{% url 'receptfamilylikar' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Запис до сімейного лікаря</a>
+    {% endif %}
+    <a class="btn btn-sm text-white" href="{% url 'savediagnoz' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Зберегти опитування</a>
+
+    <a class="btn btn-sm text-white" href="{% url 'receptinterwiev' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Почати з початку</a>
+</div>
+
+{% endblock %}

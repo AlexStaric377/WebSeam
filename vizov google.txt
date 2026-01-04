@@ -1,0 +1,86 @@
+1. Через контекст у views.py (Python)
+# views.py
+from django.shortcuts import render
+def my_view(request):
+    context = {
+        'google_link': 'https://www.google.com/',
+        'search_query': 'django documentation',
+    }
+    return render(request, 'template.html', context)
+У шаблоні (template.html):
+
+<a class="btn btn-sm text-white" 
+   href="{{ google_link }}" 
+   target="_blank"
+   rel="noopener noreferrer"
+   role="button"
+   style="font-size: 12px; background-color: #558787;">
+    Посилання на Google
+</a>
+
+
+
+2. Динамічна побудова URL з параметрами
+# views.py
+def my_view(request):
+    context = {
+        'base_url': 'https://www.google.com/search',
+        'search_term': 'Django tutorials',
+    }
+    return render(request, 'template.html', context)
+У шаблоні:
+
+<a href="{{ base_url }}?q={{ search_term }}" target="_blank">
+    Пошук: {{ search_term }}
+</a>
+
+
+3. Використання Django URL patterns
+# urls.py
+from django.urls import path
+from . import views
+urlpatterns = [
+    path('recommendations/', views.recommendations_view, name='recommendations'),
+]
+
+# views.py
+def recommendations_view(request):
+    # Ваша логіка
+    return render(request, 'recommendations.html')
+У шаблоні:
+
+<a href="{% url 'recommendations' %}" target="_blank">
+    Рекомендації
+</a>
+
+<!-- З параметрами -->
+<a href="{% url 'recommendations' pk=object.id %}" target="_blank">
+    Деталі
+</a>
+
+
+
+4. Комбінований підхід (для зовнішніх посилань)
+# settings.py
+EXTERNAL_LINKS = {
+    'google': 'https://www.google.com/',
+    'recommendations': 'https://example.com/recommendations/',
+}
+
+
+
+# views.py
+from django.conf import settings
+def my_view(request):
+    context = {
+        'links': settings.EXTERNAL_LINKS,
+    }
+    return render(request, 'template.html', context)
+У шаблоні:
+
+<a href="{{ links.google }}" target="_blank" rel="noopener noreferrer">
+    Google
+</a>
+<a href="{{ links.recommendations }}" target="_blank" rel="noopener noreferrer">
+    Рекомендації
+</a>

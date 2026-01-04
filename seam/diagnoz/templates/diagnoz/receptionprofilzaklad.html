@@ -1,0 +1,32 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block nav %}
+
+<div class="container-fluid text-center">
+
+    <p>{{iduser}}</p>
+    {% if likar %}
+    <p>{{piblikar}}</p>
+    <p>{{pacient}}</p>
+    {% endif %}
+    <h6>{{ compl }}</h6>
+</div>
+{% block detalinglist %}
+<p>Для перегляду профільних лікарів натисніть на рядок відповідного закладу</p>
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in detalinglist %}
+    <tr>
+        <td><a aria-current="page" class="nav-link"
+               href="{% url 'selectdprofillikar' item.kodZaklad  item.idStatus  item.name%}"><font
+                style="vertical-align: inherit;">{{item.name}}</font></a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+{% endblock %}

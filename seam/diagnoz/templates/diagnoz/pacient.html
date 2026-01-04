@@ -1,0 +1,40 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<!--{% include 'diagnoz/kaducey.html' %}-->
+<div class="container text-center">
+    <div class="col justify-content-md-center">
+        <p></p>
+        <div class="col-md-auto">
+            <h2>Кабінет пацієнта</h2>
+        </div>
+        <p><br></p>
+        <div class="col-md-auto">
+            <a class="text-primary text-decoration-none" href="{% url 'profilpacient' %}">
+                <font style="font-size: 25px;"><font style="vertical-align: inherit;">Профіль</font></font></a>
+        </div>
+        <p></p>
+        <div class="col-md-auto">
+            <a class="text-primary text-decoration-none" href="{% url 'pacientinterwiev' %}"
+               style="font-size: 25px;">Провести діагностику</a>
+        </div>
+        <p></p>
+        <div class="col-md-auto">
+            <a class="text-primary text-decoration-none" href="{% url 'pacientlistinterwiev' %}"
+               style="font-size: 25px;">Перегляд опитувань</a>
+        </div>
+        <p></p>
+        <div class="col-md-auto">
+            <a class="text-primary text-decoration-none" href="{% url 'pacientreceptionlikar' %}"
+               style="font-size: 25px;">Запис на обстеження до лікаря</a>
+        </div>
+        <p></p>
+        <div class="col-md-auto">
+            <a class="text-primary text-decoration-none" href="{% url 'pacientstanhealth' %}"
+               style="font-size: 25px;">Тиск, пульс, аналізи</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
