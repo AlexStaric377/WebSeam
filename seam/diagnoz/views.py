@@ -290,6 +290,12 @@ def pronas(request):
     return render(request, 'diagnoz/pronas.html')
 
 
+def zgoda(request):
+    json = ('IdUser: zgoda,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: zgoda')
+    unloadlog(json)
+    return render(request, 'diagnoz/persondata.html')
+
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):
     json = ('IdUser: directiondiagnoz,' + 'dateseanse :' +

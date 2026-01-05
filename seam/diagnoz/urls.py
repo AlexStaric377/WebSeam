@@ -71,6 +71,7 @@ urlpatterns = [
          views.selectvisitingdays, name='selectvisitingdays'),
     path('proseam', views.proseam, name='proseam'),
     path('pronas', views.pronas, name='pronas'),
+    path('zgoda', views.zgoda, name='zgoda'),
     path('workdiagnozlikar/<str:select_kodDoctor>,  <str:select_icd>, <int:select_id>', views.workdiagnozlikar,
          name='workdiagnozlikar'),
     path('libdiagnoz/<str:select_icdGrDiagnoz>', views.libdiagnoz, name='libdiagnoz'),
