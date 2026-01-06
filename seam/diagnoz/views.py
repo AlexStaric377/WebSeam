@@ -179,6 +179,7 @@ def backreception():
     settingsvar.interviewcompl = False
     settingsvar.setpost = False
     settingsvar.search = False
+    settingsvar.zgodayes = False
     settingsvar.datereception = 'призначається за тел.'
     settingsvar.datedoctor = 'призначається за тел.'
     settingsvar.html = 'diagnoz/reception.html'
@@ -208,6 +209,7 @@ def funcpacient():
     settingsvar.kabinet = 'pacient'
     settingsvar.setintertview = False
     settingsvar.interviewcompl = False
+    settingsvar.zgodayes = False
     settingsvar.html = 'diagnoz/pacient.html'
 
     settingsvar.likar = {}
@@ -227,6 +229,7 @@ def exitkab():
     settingsvar.kabinet = {}
     settingsvar.formsearch = {}
     settingsvar.funciya = ''
+    settingsvar.pacient = {}
     return
 
 
@@ -290,11 +293,7 @@ def pronas(request):
     return render(request, 'diagnoz/pronas.html')
 
 
-def zgoda(request):
-    json = ('IdUser: zgoda,' + 'dateseanse :' +
-            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: zgoda')
-    unloadlog(json)
-    return render(request, 'diagnoz/persondata.html')
+
 
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):
@@ -335,6 +334,7 @@ def cleanvars():
     settingsvar.rest_apiGrDetaling = ""
     settingsvar.viewdetaling = False
     settingsvar.viewgrdetaling = False
+    settingsvar.zgodayes = False
     settingsvar.DiagnozRecomendaciya = []
     settingsvar.rest_apisetdiagnoz = ""
 
@@ -346,7 +346,7 @@ def cleanvars():
     settingsvar.kodProtokola = ""
     settingsvar.setintertview = False
     settingsvar.interviewcompl = False
-
+    settingsvar.pacient = {}
     settingsvar.nextstepdata = {}
     settingsvar.searchaccount = False
     return
@@ -1525,7 +1525,6 @@ def reestraccountuser(request):
                         settingsvar.setpostlikar = True
                         settingsvar.html = 'diagnoz/pacientprofil.html'
                         form = PacientForm()
-                        settingsvar.html == 'diagnoz/pacientprofil.html'
                         settingsvar.nextstepdata = {
                             'form': form,
                             'next': settingsvar.readprofil,
@@ -1533,6 +1532,7 @@ def reestraccountuser(request):
                             'iduser': iduser
                         }
         else:
+
             pacientprofil(request)
 
     else:
@@ -1550,6 +1550,7 @@ def reestraccountuser(request):
                 'iduser': iduser
             }
         else:
+
             pacientprofil(request)
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -1696,7 +1697,7 @@ def profilinfopacient():
     settingsvar.readprofil = True
     settingsvar.html = 'diagnoz/pacientinfoprofil.html'
     email = ""
-    if settingsvar.pacient['email'] != None: email = settingsvar.pacient['email']
+    if len(settingsvar.pacient['email']) != "": email = settingsvar.pacient['email']
     settingsvar.nextstepdata = {
         'namesurname': "Імя, прізвище: " + settingsvar.pacient['name'] + " " + settingsvar.pacient['surname'],
         'gender': 'Стать : ' + settingsvar.pacient['gender'],
@@ -1893,13 +1894,46 @@ def Pacientinitial():
     return json
 
 
+# Надання згоди на вкористання персональних даних
+def zgoda(request):
+    json = ('IdUser: zgoda,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: zgoda')
+    unloadlog(json)
+    return render(request, 'diagnoz/persondata.html')
+
 def pacientprofil(request):  # httpRequest
-    getpostpacientprofil(request)
+    if settingsvar.zgodayes == False and request.method == 'POST':
+        settingsvar.html = 'diagnoz/persondata.html'
+        settingsvar.nextstepdata = {}
+        settingsvar.zgodayes = True
+        if request.method == 'POST':
+            form = PacientForm(request.POST)
+            settingsvar.formpacient = form.data
+            # if settingsvar.formpacient['age'] == '': settingsvar.formpacient['age'] = 0
+            # if settingsvar.formpacient['weight'] == '': settingsvar.formpacient['weight'] = 0
+            # if settingsvar.formpacient['growth'] == '': settingsvar.formpacient['growth'] = 0
+            settingsvar.jsonformpacient = {'id': 0,
+                                           'KodPacient': newpacientprofil(),
+                                           'KodKabinet': "",
+                                           'Age': settingsvar.formpacient['age'],
+                                           'Weight': settingsvar.formpacient['weight'],
+                                           'Growth': settingsvar.formpacient['growth'],
+                                           'Gender': settingsvar.formpacient['gender'],
+                                           'Tel': settingsvar.formpacient['tel'],
+                                           'Email': settingsvar.formpacient['email'],
+                                           'Name': settingsvar.formpacient['name'],
+                                           'Surname': settingsvar.formpacient['surname'],
+                                           'Pind': settingsvar.formpacient['pind'],
+                                           'Profession': settingsvar.formpacient['profession']
+                                           }
+        else:
+            getpostpacientprofil(request)
+    else:
+        getpostpacientprofil(request)
     json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientprofil')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-
 
 # функція запису введених показників профілю пацієнта в форматі масиву для вдображення в шаблонах
 def modformatjson(formdata):
@@ -1926,51 +1960,59 @@ def getpostpacientprofil(request):
     iduser = funciduser()
     backurl = funcbakurl()
     if settingsvar.kabinetitem != 'likarinterwiev': settingsvar.kabinetitem = 'profil'
-    if request.method == 'POST':
-        form = PacientForm(request.POST)
-        json = {'id': 0,
-                'KodPacient': newpacientprofil(),
-                'KodKabinet': "",
-                'Age': form.data['age'],
-                'Weight': form.data['weight'],
-                'Growth': form.data['growth'],
-                'Gender': form.data['gender'],
-                'Tel': form.data['tel'],
-                'Email': form.data['email'],
-                'Name': form.data['name'],
-                'Surname': form.data['surname'],
-                'Pind': form.data['pind'],
-                'Profession': form.data['profession']
-                }
+    if request.method == 'POST' or settingsvar.zgodayes == True:
+        if request.method == 'POST':
+            form = PacientForm(request.POST)
+            settingsvar.formpacient = form.data
+            # if settingsvar.formpacient['age'] == '': settingsvar.formpacient['age'] = 0
+            # if settingsvar.formpacient['weight'] == '': settingsvar.formpacient['weight'] = 0
+            # if settingsvar.formpacient['growth'] == '': settingsvar.formpacient['growth'] = 0
+            settingsvar.jsonformpacient = {'id': 0,
+                                           'KodPacient': newpacientprofil(),
+                                           'KodKabinet': "",
+                                           'Age': settingsvar.formpacient['age'],
+                                           'Weight': settingsvar.formpacient['weight'],
+                                           'Growth': settingsvar.formpacient['growth'],
+                                           'Gender': settingsvar.formpacient['gender'],
+                                           'Tel': settingsvar.formpacient['tel'],
+                                           'Email': settingsvar.formpacient['email'],
+                                           'Name': settingsvar.formpacient['name'],
+                                           'Surname': settingsvar.formpacient['surname'],
+                                           'Pind': settingsvar.formpacient['pind'],
+                                           'Profession': settingsvar.formpacient['profession']
+                                           }
+
         match settingsvar.kabinet:
             case 'guest':
-                modformatjson(form.data)
+                modformatjson(settingsvar.formpacient)
                 saveselectlikar(settingsvar.pacient)
             case 'pacient' | 'interwiev':
                 if settingsvar.editprofil == False:
                     # --- записати в Бд облікові дані
 
-                    Stroka = rest_api('/api/AccountUserController/' + "0/" + form.data['tel'] + "/0/0", '', 'GET')
+                    Stroka = rest_api('/api/AccountUserController/' + "0/" + settingsvar.formpacient['tel'] + "/0/0",
+                                      '', 'GET')
                     if len(Stroka) == 0:
                         log = settingsvar.formaccount['login']
                         pas = settingsvar.formaccount['password']
                         funcaddaccount(log, pas)
 
                     # --- записати в Бд введенний профіль
-                    doc = rest_api('api/PacientController/' + '0/0/0/0/' + json['Tel'], '', 'GET')
+                    doc = rest_api('api/PacientController/' + '0/0/0/0/' + settingsvar.jsonformpacient['Tel'], '',
+                                   'GET')
                     if len(doc) == 0:
-                        settingsvar.pacient = rest_api('/api/PacientController/', json, 'POST')
+                        settingsvar.pacient = rest_api('/api/PacientController/', settingsvar.jsonformpacient, 'POST')
                     else:
                         settingsvar.pacient = doc[0]
                     settingsvar.setpost = True
                     if settingsvar.backpage == 'home_view':
                         funcpacient()
                     else:
-                        shablonlikar(settingsvar.pacient)
+                        shablonlikar(request, settingsvar.pacient)
                 else:
                     if len(settingsvar.pacient) > 0:
-                        json['id'] = settingsvar.pacient['id']
-                        json['KodPacient'] = settingsvar.pacient['kodPacient']
+                        settingsvar.jsonformpacient['id'] = settingsvar.pacient['id']
+                        settingsvar.jsonformpacient['KodPacient'] = settingsvar.pacient['kodPacient']
                         settingsvar.kodPacienta = settingsvar.pacient['kodPacient']
                         settingsvar.pacient = rest_api('/api/PacientController/', json, 'PUT')
                         settingsvar.editprofil = False
@@ -1980,10 +2022,10 @@ def getpostpacientprofil(request):
                     if settingsvar.readprofil != False:
                         saveselectlikar(settingsvar.pacient)
                 else:
-                    modformatjson(form.data)
-                    shablonlikar(settingsvar.pacient)
+                    modformatjson(settingsvar.formpacient)
+                    shablonlikar(request, settingsvar.pacient)
             case _:
-                modformatjson(form.data)
+                modformatjson(settingsvar.formpacient)
                 settingsvar.setpost = True
                 settingsvar.setpostlikar = True
                 errorprofil('Шановний користувач!  Ваш обліковий запис та профіль збережено.')

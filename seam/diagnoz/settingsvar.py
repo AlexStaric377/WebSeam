@@ -105,3 +105,6 @@ itemstep = ""
 enddetaling = ""
 kodLikar = ""
 statuszaklad = ""
+zgodayes = False
+jsonformpacient = {}
+formpacient = {}
