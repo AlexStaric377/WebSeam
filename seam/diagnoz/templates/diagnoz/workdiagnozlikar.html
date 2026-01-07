@@ -44,13 +44,12 @@
     </tbody>
 </table>
 {% endblock %}
-<div style="display: inline-block">
+<div class="container-fluid text-center" style="display: inline-block">
     {% if directdiagnoz %}
     {% else %}
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'deleteworkdiagnoz' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Видалити поточний напрямок</a>
     {% endif %}
-    <!---    <a class="btn btn-primary" href="{% url backurl %}" role="button" style="font-size: 14px;">Повернутися</a>--->
 
 </div>
 

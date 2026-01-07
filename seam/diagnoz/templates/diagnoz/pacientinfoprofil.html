@@ -1,17 +1,14 @@
 {% extends 'diagnoz/shablonnologin.html' %}
 {% block nav %}
 
-<div class="container-fluid text-center">
+<div class="container text-center">
     <h6>{{iduser}}</h6>
-</div>
-<div class="card shadow">
-    <div class="card-body">
-        <div class="col-mb-3  text-center">
-<table class="table text-center">
+    <h6>Профіль пацієнта</h6>
+    <div class="card shadow ">
+        <div class="card-body ">
+            <table class=" table text-start">
     <thead>
-    <tr>
-        <th scope="col">Профіль пацієнта</th>
-    </tr>
+    <tr></tr>
     </thead>
     <tbody>
     <tr>
@@ -46,11 +43,10 @@
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'pacientprofil' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Корегувати</a>
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'deletprofil' %}" role="button"
-       style="font-size: 12px; background-color: #558787; height=12;">Видалити
-        профіль</a>
-    <!---        <a class="btn btn-primary" href="{% url 'pacient'  %}" role="button" style="font-size: 14px;">Далі</a>--->
+       style="font-size: 12px; background-color: #558787; height=12;">Видалити профіль</a>
 </div>
         </div>
     </div>
 </div>
+
 {% endblock %}

@@ -2,42 +2,37 @@
 {% block nav %}
 
 <div class="container-fluid text-center" style="display: inline-block">
-
-    {% if likar %}
     <h6>{{iduser}}</h6>
 
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="col-mb-3  text-center">
     <div style="display: inline-block">
-        <a class="btn btn-sm text-white" href="{% url 'mapanalizkrovi' %}" role="button"
+        <a class="btn btn-sm text-white rounded-pill" href="{% url 'mapanalizkrovi' %}" role="button"
            style="font-size: 12px; background-color: #558787;">Аналіз крові</a>
     </div>
     <div style="display: inline-block">
-        <a class="btn btn-sm text-white" href="{% url 'mapanalizurines' %}" role="button"
+        <a class="btn btn-sm text-white rounded-pill" href="{% url 'mapanalizurines' %}" role="button"
            style="font-size: 12px; background-color: #558787;">Аналіз сечі</a>
     </div>
     <div style="display: inline-block">
-        <a class="btn btn-sm text-white" href="{% url 'stanhealth' %}" role="button"
+        <a class="btn btn-sm text-white rounded-pill" href="{% url 'stanhealth' %}" role="button"
            style="font-size: 12px; background-color: #558787;">Пульс Тиск</a>
     </div>
 
-    {% else %}
-    <h6>{{iduser}}</h6>
-    {% endif %}
     <div style="display: inline-block">
-        <a class="btn btn-sm text-white" href="{% url 'contentinterwiev' %}"
+        <a class="btn btn-sm text-white rounded-pill" href="{% url 'contentinterwiev' %}"
            style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
     </div>
     <div style="display: inline-block">
-        <a class="btn btn-sm text-white" href="{{ base_url }}?q={{ search_term }}" rel="noopener noreferrer"
+        <a class="btn btn-sm text-white rounded-pill" href="{{ base_url }}?q={{ search_term }}"
+           rel="noopener noreferrer"
            role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Рекомендації
-            щодо
-            тактики лікування
+            щодо тактики лікування
         </a>
     </div>
-</div>
-<div class="card shadow">
-    <div class="card-body">
-        <div class="col-mb-3  text-center">
-<table class="table text-center">
+
+                <table class="table text-start">
     <thead>
     <tr>
         <th scope="col">Інформація для обстеження пацієнта</th>
@@ -67,13 +62,14 @@
         <td><p>{{ recomendaciya }}</p></td>
     </tr>
     </tbody>
-</table>
+                </table>
 
-<div class="container-fluid text-center" style="display: inline-block">
+                <div class="container-fluid text-center" style="display: inline-block">
     {% if remove %}
-    <a class="btn btn-sm text-white rounded-pill" href="{% url removefunc %}" role="button"
+                    <a class="btn btn-sm text-white rounded-pill" href="{% url removefunc %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Видалити</a>
     {% endif %}
+                </div>
 </div>
         </div>
     </div>

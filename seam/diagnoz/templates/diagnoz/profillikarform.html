@@ -5,6 +5,9 @@
     <h6>Кабінет лікаря</h6>
     <h6 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль лікаря</font></font>
     </h6>
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="col-mb-3  text-center">
     <form action="" method="POST">
         {% csrf_token %}
         <div class="row g-3">
@@ -79,6 +82,9 @@
     <div style="display: inline-block">
         <a class="btn btn-sm text-white rounded-pill" href="{% url 'likar' %}" role="button"
            style="font-size: 12px; background-color: #558787; height=12;">Скасувати запит</a>
+    </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -229,14 +229,12 @@ def exitkab():
     settingsvar.kabinet = {}
     settingsvar.formsearch = {}
     settingsvar.funciya = ''
-    settingsvar.pacient = {}
     return
 
 
 def exitkabinet(request):  #
     exitkab()
     settingsvar.html = 'diagnoz/index.html'
-
     loginuser(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -346,7 +344,6 @@ def cleanvars():
     settingsvar.kodProtokola = ""
     settingsvar.setintertview = False
     settingsvar.interviewcompl = False
-    settingsvar.pacient = {}
     settingsvar.nextstepdata = {}
     settingsvar.searchaccount = False
     return
@@ -1714,7 +1711,7 @@ def profilinfopacient():
 
 # Видалити профіль пацієнта
 def deletprofil(request):
-    settingsvar.pacient['id']
+    # settingsvar.pacient['id']
     settingsvar.pacient = rest_api(
         '/api/PacientController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
     settingsvar.pacient = rest_api(
