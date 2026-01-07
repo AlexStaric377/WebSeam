@@ -2,12 +2,19 @@
 {% block nav %}
 
 <div class="container-fluid text-center">
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="col-mb-3  text-center">
     <div class="col">
         <h6>{{iduser}}</h6>
-        <a href="{% url 'contentinterwiev' %}">Зміст опитування</a>
+        <div class="container-fluid text-center" style="display: inline-block">
+            <a class="btn btn-sm text-white rounded-pill" href="{% url 'contentinterwiev' %}" role="button"
+               style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
+        </div>
     </div>
-</div>
-<div class="container-fluid">
+
+
+                <div class="container-fluid text-start">
     <h6> {{ pacient }} </h6>
     <h6>{{ shapka }}</h6>
     <h6> {{ medzaklad }} </h6>
@@ -18,10 +25,14 @@
 </div>
 <div class="container-fluid text-center" style="display: inline-block">
     <p></p>
-    <a class="btn btn-sm text-white" href="{% url 'saveraceptionlikar' %}" role="button"
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'saveraceptionlikar' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Так</a>
-    <a class="btn btn-sm text-white" href="{% url 'reception' %}" role="button"
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'reception' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Ні</a>
+</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 

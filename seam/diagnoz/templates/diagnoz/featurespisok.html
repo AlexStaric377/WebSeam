@@ -24,12 +24,14 @@
 </table>
 {% endblock %}
 
-<div class="container-fluid text-center" style="display: inline-block">
+<div class="container-fluid text-center justify-content-center d-flex align-items-center" style="display: inline-block">
     <p></p>
     <!---        <a class="btn btn-primary" href="{% url 'receptinterwiev' %}" role="button" style="font-size: 14px;">Початок
                 опитування</a> --->
-    <a aria-current="page" class="btn btn-sm text-white " href="{% url 'nextgrdetaling' %}" role="button"
-       style="font-size: 12px; background-color: #558787; height=12;">{{next}}</a>
+    <a aria-current="page"
+       class="btn btn-sm text-white rounded-pill text-center justify-content-center d-flex align-items-center"
+       href="{% url 'nextgrdetaling' %}" role="button"
+       style="font-size: 13px; background-color: #558787; width: 90px; height: 20px; background-color: #558787; ">{{next}}</a>
 </div>
 
 {% endblock %}

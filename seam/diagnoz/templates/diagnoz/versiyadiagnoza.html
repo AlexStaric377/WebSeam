@@ -4,9 +4,10 @@
 <div class="container-fluid text-center">
     {% include 'diagnoz/shablonzaglinterview.html' %}
     <div class="container-fluid text-center" style="display: inline-block">
-        <a class="btn btn-sm text-white" href="{% url 'contentinterwiev' %}" role="button"
+        <a class="btn btn-sm text-white rounded-pill" href="{% url 'contentinterwiev' %}" role="button"
            style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
-        <a class="btn btn-sm text-white" href="{{ base_url }}?q={{ search_term }}" rel="noopener noreferrer"
+        <a class="btn btn-sm text-white rounded-pill" href="{{ base_url }}?q={{ search_term }}"
+           rel="noopener noreferrer"
            role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Рекомендації
             щодо методів лікування
         </a>
@@ -62,16 +63,16 @@
 </table>
 
 <div class="container-fluid text-center" style="display: inline-block">
-    <a class="btn btn-sm text-white" href="{% url 'receptprofillmedzaklad' %}" role="button"
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'receptprofillmedzaklad' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Запис до профільного лікаря</a>
     {% if fameli %}
-    <a class="btn btn-sm text-white" href="{% url 'receptfamilylikar' %}" role="button"
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'receptfamilylikar' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Запис до сімейного лікаря</a>
     {% endif %}
-    <a class="btn btn-sm text-white" href="{% url 'savediagnoz' %}" role="button"
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'savediagnoz' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Зберегти опитування</a>
 
-    <a class="btn btn-sm text-white" href="{% url 'receptinterwiev' %}" role="button"
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'receptinterwiev' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Почати з початку</a>
 </div>
 
