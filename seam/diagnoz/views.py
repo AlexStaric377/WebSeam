@@ -881,7 +881,10 @@ def writediagnoz():
         settingsvar.nextstepdata['fameli'] = True
         if 'kodDoctor' in settingsvar.likar:
             settingsvar.nextstepdata['fameli'] = False
-        return
+    json = ('IdUser:  ' + settingsvar.kabinet + ', ' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: writediagnoz')
+    unloadlog(json)
+    return
 
 
 def diagnoz():
@@ -945,6 +948,9 @@ def contentinterwiev(request):  # httpRequest
         'pacient': PacientName,
 
     }
+    json = ('IdUser:  ' + settingsvar.kabinet + ', ' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: contentinterwiev')
+    unloadlog(json)
     return render(request, settingsvar.html, data)
 
 
@@ -1906,9 +1912,6 @@ def pacientprofil(request):  # httpRequest
         if request.method == 'POST':
             form = PacientForm(request.POST)
             settingsvar.formpacient = form.data
-            # if settingsvar.formpacient['age'] == '': settingsvar.formpacient['age'] = 0
-            # if settingsvar.formpacient['weight'] == '': settingsvar.formpacient['weight'] = 0
-            # if settingsvar.formpacient['growth'] == '': settingsvar.formpacient['growth'] = 0
             settingsvar.jsonformpacient = {'id': 0,
                                            'KodPacient': newpacientprofil(),
                                            'KodKabinet': "",
@@ -1927,7 +1930,7 @@ def pacientprofil(request):  # httpRequest
             getpostpacientprofil(request)
     else:
         getpostpacientprofil(request)
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientprofil')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -2055,8 +2058,6 @@ def getpostpacientprofil(request):
 def shablonlikar(request, profilpacient):
     settingsvar.readprofil = True
     backurl = funcbakurl()
-
-    #    api = rest_api('api/ApiControllerComplaint/', '', 'GET')
     settingsvar.html = 'diagnoz/receptinterwiev.html'
     shablonpacient(profilpacient)
     funsearchcomplform(request)
@@ -2212,7 +2213,7 @@ def profilpacient(request):  # httpRequest
             settingsvar.readprofil = True
             settingsvar.initialprofil = True
         profilinfopacient()
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kodPacienta + ', ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: profilpacient')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -2246,7 +2247,7 @@ def backpacientinterwiev(request):
         else:
             shablonlikar(request, settingsvar.pacient)
 
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientinterwiev')
     unloadlog(json)
     return
@@ -2359,7 +2360,8 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_da
         else:
             nextprofilinterview(request)
 
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = (
+                'IdUser: ' + settingsvar.kabinet + ' ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: profilinterview')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -2577,7 +2579,7 @@ def backpacientlistinterwiev(request):
             accountuser(request)
         else:
             funcshablonlistpacient()
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientlistinterwiev')
     unloadlog(json)
     return
@@ -2641,7 +2643,7 @@ def backpacientreceptionlikar(request):
             accountuser(request)
         else:
             funcshablonlistreceptionlikar()
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: pacientreceptionlikar')
     unloadlog(json)
     return
@@ -2889,7 +2891,7 @@ def likarprofil(request):  # httpRequest
                 settingsvar.html = 'diagnoz/likar.html'
                 settingsvar.initialprofil = True
 
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kabinet + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarprofil')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -3032,7 +3034,7 @@ def likarinterwiev(request):  # httpRequest
                 if settingsvar.receptitem != 'receptinterwiev': request.method = 'GET'
                 funcsearchpacient(request, settingsvar.formsearch)
             settingsvar.nextstepdata['backurl'] = backurl
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kabinet + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarinterwiev')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -3097,7 +3099,7 @@ def likarreceptionpacient(request):  # httpRequest
             accountuser(request)
         else:
             listreceptionpacient()
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kabinet + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarreceptionpacient')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -3166,7 +3168,7 @@ def likarvisitngdays(request):  # httpRequest
                 accountuser(request)
             else:
                 listlikarvisitngdays()
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kabinet + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarvisitngdays')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -3293,7 +3295,7 @@ def likarworkdiagnoz(request):  # httpRequest
             accountuser(request)
         else:
             listworkdiagnoz()
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kabinet + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarworkdiagnoz')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -3569,7 +3571,7 @@ def likarlibdiagnoz(request):  # httpRequest
             accountuser(request)
         else:
             listlibdiagnoz()
-    json = ('IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
+    json = ('IdUser: ' + settingsvar.kabinet + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarlibdiagnoz')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
