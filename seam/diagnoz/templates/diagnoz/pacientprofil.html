@@ -1,11 +1,14 @@
 {% extends 'diagnoz/shablonnologin.html' %}
 {% block nav %}
+<div class=" container-fluid text-center d-flex justify-content-center align-items-center ">
 
-<div class="container-fluid text-center">
     <h6>{{iduser}}</h6>
     <h5 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
         пацієнта</font></font></h5>
     <p></p>
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="col-mb-3  text-center">
     <form class="needs-validation" method="POST" novalidate="">
         {% csrf_token %}
         <div class="row g-2">
@@ -119,6 +122,9 @@
             </div>
         </div>
     </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

@@ -58,7 +58,7 @@ urlpatterns = [
     path('saveraceptionlikar', views.saveraceptionlikar, name='saveraceptionlikar'),
     path('accountuser', views.accountuser, name='accountuser'),
     path('rada', views.rada, name='rada'),
-
+    path('newsseam', views.newsseam, name='newsseam'),
     path('kabinetpacient', views.kabinetpacient, name='kabinetpacient'),
     path('profilinterview/<str:selected_protokol>,  <str:selected_datevizita>, <str:selected_dateInterview>',
          views.profilinterview, name='profilinterview'),

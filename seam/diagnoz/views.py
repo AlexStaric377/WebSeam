@@ -291,6 +291,11 @@ def pronas(request):
     return render(request, 'diagnoz/pronas.html')
 
 
+def newsseam(request):
+    json = ('IdUser: newsseam,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: newsseam')
+    unloadlog(json)
+    return render(request, 'diagnoz/newsseam.html')
 
 
 # напрямки проведення діагностики в системі
