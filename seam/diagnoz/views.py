@@ -660,22 +660,10 @@ def nextstepgrdetaling():
         if len(settingsvar.spisoklistdetaling) == 0 and len(settingsvar.spisokGrDetailing) == 0 and len(
                 settingsvar.spisokkeyfeature) == 0:
             diagnoz()
-
-    # if len(keyfeature) == 0 and len(settingsvar.spisokkeyfeature) > 0: del settingsvar.spisokkeyfeature[0]
     return
-    # else:
-    #     settingsvar.DiagnozRecomendaciya = []
-    #     cleanvars()
-    #     iduser = funciduser()
-    #     settingsvar.nextstepdata = {
-    #         'complaintlist': rest_api('api/ApiControllerComplaint/', '', 'GET'),
-    #         'iduser': iduser
-    #     }
-    #     settingsvar.html = 'diagnoz/receptinterwiev.html'
-    # return
 
 
-# ---  вибір деталізації симптому нездужання
+# --- вибір деталізації симптому нездужання
 def selectdetaling(request, select_kodDetailing):
     settingsvar.spisokkeyinterview.append(select_kodDetailing + ";")
     settingsvar.spisokselectDetailing.append(select_kodDetailing)
@@ -1032,6 +1020,7 @@ def receptprofillmedzaklad(request):
         settingsvar.backpage = "guest"
         settingsvar.kabinetitem = 'receptprofillmedzaklad'
 
+
     backreceptprofillmedzaklad(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -1293,8 +1282,8 @@ def inputprofilpacient(request, selected_doctor):
                                     settingsvar.kodDoctor + '/0', '', 'GET')
         iduser = funciduser()
         match settingsvar.receptitem:
-            case 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar':
-                if settingsvar.addinterviewrecept == True and settingsvar.receptitem == 'selectedprofillikar':
+            case 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
+                if settingsvar.addinterviewrecept == True and settingsvar.receptitem != 'directiondiagnoz':
                     dateregistrationappointment(request)
                 else:
                     backurl = 'receptprofillmedzaklad'
@@ -1318,7 +1307,7 @@ def inputprofilpacient(request, selected_doctor):
                             'complaintlist': likarGrupDiagnoz,
                             'backurl': backurl,
                             'piblikar': settingsvar.namelikar,  # + " т." + settingsvar.mobtellikar,
-                            'medzaklad': settingsvar.namemedzaklad,
+                            'medzaklad': settingsvar.namemedzaklad + " " + settingsvar.adrzaklad,
                             'directdiagnoz': settingsvar.directdiagnoz,
                             'listapinull': True,
                             'сontentnull': ''
@@ -1558,7 +1547,6 @@ def reestraccountuser(request):
                 'iduser': iduser
             }
         else:
-
             pacientprofil(request)
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -2077,13 +2065,11 @@ def shablonlikar(request, profilpacient):
 def shablonpacient(profilpacient):
     iduser = funciduser()
     backurl = funcbakurl()
-    tel = ''
-    mail = ''
-    pind = ''
+    pind = mail = tel = ''
     if len(profilpacient) > 0:
-        if profilpacient['tel'] != None: tel = profilpacient['tel']
-        if profilpacient['email'] != None: mail = profilpacient['email']
-        if profilpacient['pind'] != None: pind = profilpacient['pind']
+        if profilpacient['tel'] != "": tel = profilpacient['tel']
+        if profilpacient['email'] != "": mail = profilpacient['email']
+        if profilpacient['pind'] != "": pind = profilpacient['pind']
         tel_email_pind = 'Тел.: ' + tel + ' Ел.Пошта: ' + mail + ' Пошт.індекс: ' + pind
         settingsvar.nextstepdata = {
             'likar': settingsvar.setpostlikar,
@@ -2270,8 +2256,8 @@ def addreceptpacientlikar(request):
 def selectmedzakladpacien():
     api = rest_api('/api/DependencyDiagnozController/' + "0/" + settingsvar.kodProtokola + "/0", '', 'GET')
     if len(api) > 0:
-        settingsvar.kodDiagnoz = api['kodDiagnoz']
-        apiicd = rest_api('/api/DiagnozController/' + api['kodDiagnoz'] + "/0/0", '', 'GET')
+        settingsvar.kodDiagnoz = api[0]['kodDiagnoz']
+        apiicd = rest_api('/api/DiagnozController/' + api[0]['kodDiagnoz'] + "/0/0", '', 'GET')
         settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
         settingsvar.icdGrDiagnoz = apiicd['icdGrDiagnoz']
 
@@ -2608,7 +2594,7 @@ def funcshablonlistpacient():
                 medzaklad = rest_api(
                     '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
                     'GET')
-                settingsvar.namemedzaklad = medzaklad['name']
+                settingsvar.namemedzaklad = medzaklad['name'] + ' ' + medzaklad['adres']
                 settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
                 #                settingsvar.mobtellikar = settingsvar.likar['telefon']
                 settingsvar.nextstepdata[
@@ -2661,6 +2647,7 @@ def funcshablonlistreceptionlikar():
     listAdmissionlikar = []
     diagnoz = []
     PacientName = ""
+    settingsvar.receptitem = 'receptprofillmedzaklad'
     shablonpacient(settingsvar.pacient)
     settingsvar.nextstepdata['backurl'] = settingsvar.backurl
     settingsvar.listapi = rest_api('api/RegistrationAppointmentController/' + settingsvar.kodPacienta + '/0', '', 'GET')
@@ -2681,7 +2668,7 @@ def funcshablonlistreceptionlikar():
                 medzak = {}
                 medzak = rest_api('/api/MedicalInstitutionController/' + likar['edrpou'] + "/0/0/0", '', 'GET')
                 medzaklad = ''
-                if len(medzak) > 0: medzaklad = medzak['name']
+                if len(medzak) > 0: medzaklad = medzak['name'] + ' ' + medzak['adres']
                 if item['kodDiagnoz'] != None:
                     diagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
 

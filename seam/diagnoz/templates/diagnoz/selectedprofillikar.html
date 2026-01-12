@@ -26,17 +26,18 @@
     </table>
     {% endif %}
     <h5> {{ compl }} </h5>
-</div>
-{% block list %}
-{% if directdiagnoz %}
-{% if likar %}
-<p>Для запису до лікаря натисніть на відповідне прізвище</p>
-{% endif %}
-{% else %}
-<p>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне
-    прізвище</p>
 
-{% endif %}
+    {% block list %}
+    {% if directdiagnoz %}
+    {% if likar %}
+    <p>Для запису до лікаря натисніть на відповідне прізвище</p>
+    {% endif %}
+    {% else %}
+    <p>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне
+        прізвище</p>
+    {% endif %}
+</div>
+<div class=" col vh-100 overflow-auto container-fluid text-start">
 <table class="table table-striped table-hover">
     <thead>
     <tr>
@@ -71,5 +72,6 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
 {% endblock %}
 {% endblock %}
