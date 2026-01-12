@@ -11,8 +11,12 @@
        href="{% url 'addreceptpacientlikar' %}" role="button"
        style="font-size: 13px; background-color: #558787; width: 90px; height: 20px;">Додати</a>
 </div>
-<p><br>Для перегляду детальної інформації про попередній діагноз натисніть на відповідний рядок</p>
-<table class="table table-striped table-hover">
+<div class="container-fluid text-center">
+    <p>Для перегляду детальної інформації про попередній діагноз натисніть на відповідний рядок</p>
+</div>
+
+<div class=" col vh-100 overflow-auto container-fluid text-center">
+    <table class="table table-striped table-hover ">
     <thead>
     <tr>
         <th>Лікар</th>
@@ -45,7 +49,7 @@
     {% endfor %}
     </tbody>
 </table>
-
+</div>
 {% endblock %}
 
 
