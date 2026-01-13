@@ -8,13 +8,13 @@
     <p>{{namediagnoz}}</p>
 
 </div>
+
 {% block detalinglist %}
-<table class="table table-striped table-hover">
-    <thead>
-    <tr>
-        <th scope="col">Характер прояву</th>
-    </tr>
-    </thead>
+<H6>Характер прояву</H6>
+<div class="table-container" style="max-height: 400px; overflow-y: auto;">
+    <!--<div class="col vh-100 overflow-auto container-fluid text-start">-->
+    <table class="table table-striped table-hover table-bordered">
+
     <tbody>
     {% for item in detalinglist %}
     <tr>

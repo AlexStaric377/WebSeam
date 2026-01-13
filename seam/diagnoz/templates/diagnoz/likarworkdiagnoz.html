@@ -9,6 +9,7 @@
     <p>{{piblikar}}</p>
     {% endif %}
     {% else %}
+    <h6>{{iduser}}</h6>
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     {% endif %}
@@ -38,8 +39,10 @@
     {% endif %}
     {% endif %}
 </div>
-<div class=" col vh-100 overflow-auto container-fluid text-start">
-<table class="table table-striped table-hover">
+<div class="table-container" style="max-height: 400px; overflow-y: auto;">
+    <!--<div class="col vh-100 overflow-auto container-fluid text-start">-->
+    <table class="table table-striped table-hover table-bordered">
+
     <tbody>
     {% for item in complaintlist %}
     <tr>

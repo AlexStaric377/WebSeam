@@ -2,14 +2,15 @@
 {% block nav %}
 
 <div class="container-fluid text-center">
+    <h6>{{iduser}}</h6>
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     <h6>Розклад обстеження пацієнтів</h6>
     <p>Для перегляду деталей обстеження необхідного пацієнта натисніть на відповідний рядок</p>
 </div>
-
-<div class=" col vh-100 overflow-auto container-fluid text-start">
-<table class="table table-striped table-hover">
+<div class="table-container" style="max-height: 400px; overflow-y: auto;">
+    <!--<div class="col vh-100 overflow-auto container-fluid text-start">-->
+    <table class="table table-striped table-hover table-bordered">
     <thead>
     <tr>
         <th>Дата візиту</th>

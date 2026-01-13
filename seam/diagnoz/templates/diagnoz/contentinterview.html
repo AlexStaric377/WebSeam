@@ -2,17 +2,17 @@
 {% block nav %}
 
 <div class="container-fluid  text-center">
+    <h6>{{iduser}}</h6>
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     <p>Поточний діагноз : {{namediagnoz}}</p>
 </div>
 {% block list %}
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th scope="col">Перелік питань належної симптоматики, які визначають попередній діагноз</th>
-    </tr>
-    </thead>
+<p>Перелік питань належної симптоматики, які визначають попередній діагноз</p>
+<div class="table-container" style="max-height: 400px; overflow-y: auto;">
+    <!--<div class="col vh-100 overflow-auto container-fluid text-start">-->
+    <table class="table table-striped table-hover table-bordered">
+
     <tbody>
     {% for item in listwork %}
     <tr>
@@ -22,6 +22,7 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
 {% endblock %}
 <div class="container-fluid  text-center" style="display: inline-block ">
     <a class="btn btn-sm text-white rounded-pill" href="{% url backurl %}" role="button"

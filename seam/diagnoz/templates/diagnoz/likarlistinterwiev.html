@@ -2,13 +2,16 @@
 {% block nav %}
 
 <div class="container-fluid text-center">
+    <h6>{{iduser}}</h6>
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     <h6>Перегляд проведених опитувань</h6>
 </div>
-<h6>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</h6>
+<p>Для перегляду деталей необхідного опитування натисніть на відповідний рядок</p>
+<div class="table-container" style="max-height: 400px; overflow-y: auto;">
+    <!--<div class="col vh-100 overflow-auto container-fluid text-start">-->
+    <table class="table table-striped table-hover table-bordered">
 
-<table class="table table-striped table-hover">
     <thead>
     <tr>
         <th>Дата опитування</th>

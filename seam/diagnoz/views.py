@@ -1191,7 +1191,7 @@ def funciduser():
             iduser = 'Реєстратура'
         case "pacient" | "pacientprofil" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth':
             iduser = 'Кабінет пацієнта'
-        case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
+        case "likar" | 'likarprofil' | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
             iduser = 'Кабінет лікаря'
 
     return iduser
@@ -2890,7 +2890,9 @@ def likarprofil(request):  # httpRequest
 
 
 def likarinfoprofil():
+    iduser = funciduser()
     settingsvar.nextstepdata = {
+        'iduser': iduser,
         'medzaklad': settingsvar.namemedzaklad,
         'name': "Ім'я, прівище  :   " + settingsvar.likar['name'] + " " + settingsvar.likar['surname'],
         'specialnoct': "Спеціальність  :   " + settingsvar.likar['specialnoct'],
@@ -3523,6 +3525,7 @@ def funcworkdiagnozlikar():
 # формування та виведення  переліку діагнозів за вказаним напрямком
 def contentinterview(request, select_kodProtokola):
     backurl = 'backworkdiagnozlikar'
+    iduser = funciduser()
     settingsvar.backpage = 'contentinterview'
     settingsvar.html = 'diagnoz/contentinterview.html'
     protokol = rest_api('api/DependencyDiagnozController/' + "0/" + select_kodProtokola + "/0", '', 'GET')
@@ -3535,11 +3538,13 @@ def contentinterview(request, select_kodProtokola):
             #           for item in settingsvar.listworkdiagnoz:
             #               if select_kodDiagnoza == item['kodDiagnoza']: settingsvar.namediagnoz = item['nameDiagnoza']
             settingsvar.nextstepdata = {
+                'iduser': iduser,
                 'listwork': workdiagnoz,
                 'medzaklad': settingsvar.namemedzaklad,
                 'piblikar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
                 'namediagnoz': settingsvar.namediagnoz,
                 'backurl': backurl
+
             }
             settingsvar.namediagnoz = ""
         else:
