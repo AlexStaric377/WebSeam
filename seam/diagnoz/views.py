@@ -411,19 +411,22 @@ def funcinterwiev(request):
                         settingsvar.backpage = 'likarinterwiev'
                 else:
                     settingsvar.backpage = 'likar'
-
-
+    pacient = ""
+    likar = False
+    if len(settingsvar.pacient) > 0:
+        pacient = settingsvar.pacient['profession'] + ' ' + settingsvar.pacient['name'] + " " + settingsvar.pacient[
+            'surname'],
+        likar = True
     settingsvar.nawpage = 'receptinterwiev'
     settingsvar.html = 'diagnoz/receptinterwiev.html'
     settingsvar.nextstepdata = {
         'complaintlist': settingsvar.сomplaintselect,
         'iduser': iduser,
-        'likar': True,
+        'likar': likar,
         'backurl': 'reception',
         'backpage': settingsvar.backpage,
         'complsearh': settingsvar.complate,
-        'pacient': 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + settingsvar.pacient['name'] +
-                   " " + settingsvar.pacient['surname'],
+        'pacient': 'Пацієнт: ' + pacient,
         'form': settingsvar.formsearchtext
     }
     return
