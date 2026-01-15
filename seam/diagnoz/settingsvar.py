@@ -108,3 +108,4 @@ statuszaklad = ""
 zgodayes = False
 jsonformpacient = {}
 formpacient = {}
+selectbackmeny = False

@@ -23,7 +23,7 @@ def backpage(request):
                 views.backshablonselect(request)
 
         case 'interwievcomplaint':
-            if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev':
+            if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm':
                 views.funcinterwiev(request)
             else:
                 views.backreception()
@@ -53,22 +53,40 @@ def backpage(request):
                     views.backreceptprofillmedzaklad(request)
 
         case "pacientprofil" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth' | 'pacientinterwiev':
+
             if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev':
                 views.funcinterwiev(request)
+                settingsvar.selectbackmeny = True
             else:
-                views.pacient(request)
+                if settingsvar.receptitem == 'getsearchcomplateForm' and settingsvar.selectbackmeny == True:
+                    views.funcinterwiev(request)
+                    settingsvar.selectbackmeny = False
+                else:
+                    views.pacient(request)
         case 'likarinterwiev':
             if settingsvar.receptitem == 'pacientinterwiev':
                 views.pacient(request)
             else:
                 if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev':
                     views.funcinterwiev(request)
+                    # settingsvar.receptitem = 'getsearchcomplateForm'
                 else:
-                    views.likar(request)
+                    if settingsvar.receptitem == 'getsearchcomplateForm':
+                        views.funcinterwiev(request)
+                        # if settingsvar.receptitem == 'InputsearchcomplateForm':
+                        #     settingsvar.receptitem = 'getsearchcomplateForm'
+                        # else:
+                        # if settingsvar.receptitem == 'getsearchcomplateForm':
+                        # settingsvar.receptitem = 'likar'
+                    else:
+                        views.likar(request)
         case "likarprofil" | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
             views.likar(request)
         case 'receptinterwiev':
-            views.funcinterwiev(request)
+            if settingsvar.receptitem == 'InputsearchcomplateForm':  # or settingsvar.receptitem == 'getsearchcomplateForm':
+                views.funcinterwiev(request)
+            else:
+                views.likar(request)
 
         case 'profilinterview':
             match settingsvar.kabinet:

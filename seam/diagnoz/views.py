@@ -345,7 +345,7 @@ def cleanvars():
     settingsvar.spisoknameinterview = []
     settingsvar.strokagrdetaling = ""
     settingsvar.diagnozStroka = []
-    interwievpacient = False
+
     settingsvar.kodProtokola = ""
     settingsvar.setintertview = False
     settingsvar.interviewcompl = False
@@ -367,7 +367,7 @@ def interwievcomplaint(request):
             case 'guest':
                 settingsvar.setpostlikar = False
                 settingsvar.interviewcompl = True
-                settingsvar.backpage = 'interwievcomplaint'
+                settingsvar.backpage = 'reception'
 
             case 'pacient' | 'interwiev' | 'likar' | 'likarinterwiev':
                 settingsvar.setpostlikar = True
@@ -379,25 +379,51 @@ def interwievcomplaint(request):
 def funcinterwiev(request):
     settingsvar.complate = 'funcsearchcomplate'
     iduser = funciduser()
+    settingsvar.сomplaintselect = []
     funsearchcomplform(request)
     match settingsvar.kabinet:
         case 'guest':
-            settingsvar.backpage = 'reception'
+            if settingsvar.receptitem == 'getsearchcomplateForm':
+                if settingsvar.backpage == 'interwievcomplaint': settingsvar.backpage = 'reception'
+            else:
+                if settingsvar.receptitem == 'InputsearchcomplateForm':
+                    if settingsvar.backpage == 'interwievcomplaint':
+                        settingsvar.backpage = 'reception'
+                    else:
+                        settingsvar.backpage = 'interwievcomplaint'
+                else:
+                    settingsvar.backpage = 'reception'
+
         case 'pacientinterwiev':
-            settingsvar.receptitem == 'pacient'
+            settingsvar.receptitem = 'pacient'
         case 'interwiev':
-            settingsvar.receptitem == 'pacientinterwiev'
+            if settingsvar.receptitem != 'getsearchcomplateForm' and settingsvar.selectbackmeny != True:
+                settingsvar.receptitem = 'pacientinterwiev'
+
         case 'likar':
-            settingsvar.backpage = 'likarinterwiev'
-            settingsvar.receptitem == 'likarinterwiev'
+            if settingsvar.receptitem == 'getsearchcomplateForm':
+                if settingsvar.backpage == 'likarinterwiev': settingsvar.backpage = 'likar'
+            else:
+                if settingsvar.receptitem == 'InputsearchcomplateForm':
+                    if settingsvar.backpage == 'likarinterwiev':
+                        settingsvar.backpage = 'likar'
+                    else:
+                        settingsvar.backpage = 'likarinterwiev'
+                else:
+                    settingsvar.backpage = 'likar'
+
+
     settingsvar.nawpage = 'receptinterwiev'
     settingsvar.html = 'diagnoz/receptinterwiev.html'
     settingsvar.nextstepdata = {
         'complaintlist': settingsvar.сomplaintselect,
         'iduser': iduser,
+        'likar': True,
         'backurl': 'reception',
         'backpage': settingsvar.backpage,
         'complsearh': settingsvar.complate,
+        'pacient': 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + settingsvar.pacient['name'] +
+                   " " + settingsvar.pacient['surname'],
         'form': settingsvar.formsearchtext
     }
     return
@@ -417,6 +443,11 @@ def funsearchcomplform(request):
         request.method = 'GET'
         settingsvar.formsearchtext = InputsearchcomplateForm(initial=settingsvar.searchtext)
     else:
+        if settingsvar.receptitem == 'getsearchcomplateForm':
+            settingsvar.receptitem = 'likar'
+            settingsvar.selectbackmeny = False
+        else:
+            settingsvar.receptitem = 'getsearchcomplateForm'
         settingsvar.apiсomplaint = rest_api('api/ApiControllerComplaint/', '', 'GET')
         settingsvar.сomplaintselect = settingsvar.apiсomplaint
         settingsvar.formsearchtext = InputsearchcomplateForm()
@@ -1623,10 +1654,10 @@ def accountuser(request):
             backurl = 'pacient'
             compl = 'Реєстрація'
             reestr = True
-            if (settingsvar.kabinetitem == "likar" or settingsvar.kabinetitem == 'likarinterwiev' \
-                    or settingsvar.kabinetitem == 'likarlistinterwiev' \
-                    or settingsvar.kabinetitem == 'likarreceptionpacient' \
-                    or settingsvar.kabinetitem == 'likarworkdiagnoz' \
+            if (settingsvar.kabinetitem == "likar" or settingsvar.kabinetitem == 'likarinterwiev'
+                    or settingsvar.kabinetitem == 'likarlistinterwiev'
+                    or settingsvar.kabinetitem == 'likarreceptionpacient'
+                    or settingsvar.kabinetitem == 'likarworkdiagnoz'
                     or settingsvar.kabinetitem == 'likarvisitngdays'
                     or settingsvar.kabinetitem == 'likarlibdiagnoz'):
                 cab = 'Кабінет лікаря'
@@ -3025,7 +3056,7 @@ def likarinterwiev(request):  # httpRequest
                     settingsvar.setpost = False
                     search_pacient()
             else:
-                if settingsvar.receptitem != 'receptinterwiev': request.method = 'GET'
+                if settingsvar.receptitem != 'receptinterwiev' and settingsvar.receptitem != 'likarinterwiev': request.method = 'GET'
                 funcsearchpacient(request, settingsvar.formsearch)
             settingsvar.nextstepdata['backurl'] = backurl
     json = ('IdUser: ' + settingsvar.kabinet + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
