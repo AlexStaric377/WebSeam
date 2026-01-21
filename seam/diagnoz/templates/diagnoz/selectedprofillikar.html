@@ -14,6 +14,7 @@
     </table>
     {% else %}
     <h6>{{iduser}}</h6>
+
     <table class="table text-center">
         <tbody>
         <tr>
@@ -29,12 +30,13 @@
 
     {% block list %}
     {% if directdiagnoz %}
-    {% if likar %}
-    <p>Для запису до лікаря натисніть на відповідне прізвище</p>
-    {% endif %}
     {% else %}
+    {% if workdirection %}
     <p>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне
         прізвище</p>
+    {% else %}
+    <p>Для запису до лікаря натисніть на відповідне прізвище</p>
+    {% endif %}
     {% endif %}
 </div>
 <div class="table-container" style="max-height: 400px; overflow-y: auto;">
