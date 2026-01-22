@@ -94,17 +94,6 @@ def backpage(request):
             else:
                 views.likar(request)
 
-            # if settingsvar.receptitem == 'InputsearchpacientForm' and settingsvar.backpage == 'likarreceptionpacient' :
-            #     settingsvar.pacientselect = []
-            #     views.listreceptionpacient(request)
-            #     settingsvar.selectbackmeny = True
-            # else:
-            #     if settingsvar.receptitem == 'getsearchpacientForm' and settingsvar.backpage == 'likarreceptionpacient' and settingsvar.selectbackmeny == True:
-            #         # views.listreceptionpacient(request)
-            #         settingsvar.selectbackmeny = False
-            #         views.likar(request)
-            #     else:
-            #         views.likar(request)
         case 'receptinterwiev':
             if settingsvar.receptitem == 'InputsearchcomplateForm':  # or settingsvar.receptitem == 'getsearchcomplateForm':
                 views.funcinterwiev(request)
@@ -138,10 +127,12 @@ def backpage(request):
                             views.shablonselect(request)
                         case _:
                             views.writediagnoz()
-
+                else:
+                    views.writediagnoz()
             else:
 
-                if settingsvar.receptitem == 'pacientinterwiev' and settingsvar.kabinet == 'interwiev':
+                if settingsvar.kabinet == 'interwiev' and (
+                        settingsvar.receptitem == 'pacientinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm'):
                     if settingsvar.nawpage == 'backfromcontent':
                         views.writediagnoz()
                     else:

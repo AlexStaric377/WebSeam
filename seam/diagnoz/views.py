@@ -2456,6 +2456,7 @@ def nextprofilinterview(request):
 
     iduser = funciduser()
     likarName = ""
+    medzaklad = ''
     for item in settingsvar.listapi:
 
         booldatevizita = False
@@ -2465,6 +2466,7 @@ def nextprofilinterview(request):
         else:
             booldatevizita = True
         if booldatevizita == True:
+
             if settingsvar.kodProtokola == item['kodProtokola'] and settingsvar.dateInterview == item['dateInterview']:
                 match settingsvar.kabinetitem:
                     case 'likarreceptionpacient':
@@ -2487,7 +2489,7 @@ def nextprofilinterview(request):
                         PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
 
                         medzak = rest_api('/api/MedicalInstitutionController/' + doc['edrpou'] + "/0/0/0", '', 'GET')
-                        medzaklad = ''
+
                         if len(medzak) > 0: medzaklad = medzak['name']
 
                     case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient':
