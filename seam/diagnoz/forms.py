@@ -121,3 +121,8 @@ class ReestrPulsTiskForm(forms.Form):
 class InputsearchcomplateForm(forms.Form):
     searchcomplate = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control' 'form-control-sm',
                                                                    'placeholder': "Запит на пошук..."}))
+
+
+class InputsearchpacientForm(forms.Form):
+    searchpacient = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control' 'form-control-sm',
+                                                                  'placeholder': "Прізвище..."}))

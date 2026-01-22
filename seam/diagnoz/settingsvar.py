@@ -109,3 +109,7 @@ zgodayes = False
 jsonformpacient = {}
 formpacient = {}
 selectbackmeny = False
+searchsurname = ""
+formsearchpacient = {}
+listreception = []
+pacientselect = []

@@ -13,7 +13,7 @@ from django.shortcuts import render
 from diagnoz import settingsvar
 from .forms import (PacientForm, AccountUserForm, ReestrAccountUserForm,
                     SearchPacient, LikarForm, Reestrvisitngdays, ReestrPulsTiskForm,
-                    InputsearchcomplateForm)
+                    InputsearchcomplateForm, InputsearchpacientForm)
 
 # from selenium import webdriver
 # from IPython.display import Javascript
@@ -1123,11 +1123,11 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
             settingsvar.gruplikar = Grupproflikar
         else:
             for item in Grupproflikar:
-            match selected_idstatus:
-                case "2":
-                    settingsvar.gruplikar.append(item)
-                    settingsvar.directdiagnoz = True
-                case "5":
+                match selected_idstatus:
+                    case "2":
+                        settingsvar.gruplikar.append(item)
+                        settingsvar.directdiagnoz = True
+                    case "5":
 
                     #                    if settingsvar.kabinet == 'likarinterwiev': settingsvar.directdiagnoz = True
                     likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '',
@@ -1731,7 +1731,7 @@ def caseprofil(request):
         case 'likarlistinterwiev':
             listlikar()
         case 'likarreceptionpacient':
-            listreceptionpacient()
+            listreceptionpacient(request)
         case 'likarworkdiagnoz':
             listworkdiagnoz()
         case 'likarlibdiagnoz':
@@ -3143,35 +3143,36 @@ def likarreceptionpacient(request):  # httpRequest
         if settingsvar.setpostlikar == False:
             accountuser(request)
         else:
-            listreceptionpacient()
+            listreceptionpacient(request)
     json = ('IdUser: ' + settingsvar.kabinet + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likarreceptionpacient')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
-def listreceptionpacient():
+def listreceptionpacient(request):
     iduser = funciduser()
     backurl = funcbakurl()
-    strreception = {}
-    listreception = []
-    settingsvar.listprofpacient = []
     settingsvar.backpage = 'likarreceptionpacient'
     settingsvar.nawpage = 'likarreceptionpacient'
     settingsvar.html = 'diagnoz/likarreceptionpacient.html'
-    settingsvar.listapi = rest_api('api/ControllerAdmissionPatients/' + '0/' + settingsvar.kodDoctor + '/0/0', '',
+    funsearchpacientform(request)
+    if len(settingsvar.pacientselect) == 0:
+        settingsvar.listapi = rest_api('api/ControllerAdmissionPatients/' + '0/' + settingsvar.kodDoctor + '/0/0', '',
                                    'GET')
-    if len(settingsvar.listapi) > 0:
+        if len(settingsvar.listapi) > 0:
+            settingsvar.listreception = []
+            settingsvar.listprofpacient = []
         for item in settingsvar.listapi:
 
             if len(item['dateVizita']) > 0:
                 profpacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
                 if len(profpacient) > 0:
+
                     settingsvar.listprofpacient.append(profpacient)
-                    kodDiagnoz = ''
+
                     if item['kodDiagnoz'] != None and len(item['kodDiagnoz']) > 0:
                         profdiagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
-                        nameDiagnoza = ''
                         if len(profdiagnoz) > 0:
                             nameDiagnoza = profdiagnoz['nameDiagnoza']
                             kodDiagnoz = item['kodDiagnoz']
@@ -3184,18 +3185,46 @@ def listreceptionpacient():
                                             'kodDiagnoz': kodDiagnoz,
                                             'nameDiagnoza': nameDiagnoza,
                                             }
-                            listreception.append(strreception)
-        settingsvar.nextstepdata = {
-            'iduser': iduser,
-            'complaintlist': listreception,
-            'backurl': backurl,
-            'piblikar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
-            'medzaklad': settingsvar.namemedzaklad
-        }
-    else:
-        errorprofil('Шановний користувач! За вашим запитом немає пацієнтів записаних для обстеження  .')
+                            settingsvar.listreception.append(strreception)
+
+            settingsvar.pacientselect = settingsvar.listreception
+            settingsvar.selectbackmeny = False
+        else:
+            errorprofil('Шановний користувач! За вашим запитом немає пацієнтів записаних для обстеження  .')
+
+    settingsvar.nextstepdata = {
+        'iduser': iduser,
+        'complaintlist': settingsvar.pacientselect,
+        'backurl': backurl,
+        'piblikar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
+        'medzaklad': settingsvar.namemedzaklad,
+        'form': settingsvar.formsearchpacient,
+    }
     return
 
+
+def funsearchpacientform(request):
+    if request.method == 'POST':
+        form = InputsearchpacientForm(request.POST)
+        settingsvar.searchsurname = form.data
+        tmp = []
+        settingsvar.receptitem = 'InputsearchpacientForm'
+        complate = settingsvar.searchsurname['searchpacient'].rstrip()
+        for item in settingsvar.listreception:
+            if complate.upper() in item['namePacient'].upper():
+                tmp.append(item)
+        settingsvar.pacientselect = tmp
+        settingsvar.nextstepdata['complaintlist'] = tmp
+        request.method = 'GET'
+        settingsvar.receptitem = 'InputsearchpacientForm'
+        settingsvar.selectbackmeny = False
+        settingsvar.formsearchpacient = InputsearchpacientForm(initial=settingsvar.searchsurname)
+    else:
+        if settingsvar.receptitem == 'InputsearchpacientForm': settingsvar.pacientselect = []
+        settingsvar.receptitem = 'getsearchpacientForm'
+        settingsvar.formsearchpacient = InputsearchpacientForm()
+
+    return
 
 # --- Розклад роботи
 def likarvisitngdays(request):  # httpRequest

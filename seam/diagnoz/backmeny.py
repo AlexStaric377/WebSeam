@@ -84,7 +84,27 @@ def backpage(request):
                     else:
                         views.likar(request)
         case "likarprofil" | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
-            views.likar(request)
+
+            if settingsvar.backpage == 'likarreceptionpacient':
+
+                settingsvar.selectbackmeny = True
+                views.listreceptionpacient(request)
+                if settingsvar.selectbackmeny == True:
+                    views.likar(request)
+            else:
+                views.likar(request)
+
+            # if settingsvar.receptitem == 'InputsearchpacientForm' and settingsvar.backpage == 'likarreceptionpacient' :
+            #     settingsvar.pacientselect = []
+            #     views.listreceptionpacient(request)
+            #     settingsvar.selectbackmeny = True
+            # else:
+            #     if settingsvar.receptitem == 'getsearchpacientForm' and settingsvar.backpage == 'likarreceptionpacient' and settingsvar.selectbackmeny == True:
+            #         # views.listreceptionpacient(request)
+            #         settingsvar.selectbackmeny = False
+            #         views.likar(request)
+            #     else:
+            #         views.likar(request)
         case 'receptinterwiev':
             if settingsvar.receptitem == 'InputsearchcomplateForm':  # or settingsvar.receptitem == 'getsearchcomplateForm':
                 views.funcinterwiev(request)
@@ -99,7 +119,7 @@ def backpage(request):
                 case 'likarlistinterwiev':
                     views.listlikar()
                 case 'likarreceptionpacient':
-                    views.listreceptionpacient()
+                    views.listreceptionpacient(request)
                 case 'listinterwiev':
                     views.backpacientlistinterwiev(request)
                 case 'listreceptionlikar':
