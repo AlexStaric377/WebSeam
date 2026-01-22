@@ -1131,7 +1131,7 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
                         likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '',
                                                 'GET')
                         for icdgrdiagnoz in settingsvar.grupDiagnoz:
-                        for likargrdz in likarGrupDiagnoz:
+                            for likargrdz in likarGrupDiagnoz:
                             if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
                                     selected_kodzaklad in icdgrdiagnoz['kodZaklad']):
                                 if len(settingsvar.gruplikar) > 0:
