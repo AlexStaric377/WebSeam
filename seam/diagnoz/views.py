@@ -1134,17 +1134,17 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
                             for likargrdz in likarGrupDiagnoz:
                                 if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
                                     selected_kodzaklad in icdgrdiagnoz['kodZaklad']):
-                                if len(settingsvar.gruplikar) > 0:
-                                    apptru = False
-                                    for itemgruplikar in settingsvar.gruplikar:
-                                        if itemgruplikar['kodDoctor'] != likargrdz['kodDoctor']:
-                                            apptru = False
-                                        else:
-                                            apptru = True
-                                    if apptru == False: settingsvar.gruplikar.append(item)
-                                else:
-                                    settingsvar.gruplikar.append(item)
-                                break
+                                    if len(settingsvar.gruplikar) > 0:
+                                        apptru = False
+                                        for itemgruplikar in settingsvar.gruplikar:
+                                            if itemgruplikar['kodDoctor'] != likargrdz['kodDoctor']:
+                                                apptru = False
+                                            else:
+                                                apptru = True
+                                        if apptru == False: settingsvar.gruplikar.append(item)
+                                    else:
+                                        settingsvar.gruplikar.append(item)
+                                    break
         if len(settingsvar.gruplikar) > 0:
             shablonlistlikar()
         else:
