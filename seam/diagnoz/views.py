@@ -1132,7 +1132,7 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
                                                 'GET')
                         for icdgrdiagnoz in settingsvar.grupDiagnoz:
                             for likargrdz in likarGrupDiagnoz:
-                            if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
+                                if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
                                     selected_kodzaklad in icdgrdiagnoz['kodZaklad']):
                                 if len(settingsvar.gruplikar) > 0:
                                     apptru = False
