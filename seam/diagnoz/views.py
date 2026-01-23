@@ -609,7 +609,7 @@ def nextstepgrdetaling():
                                                                 itemkeyfeature['keyFeature'] + ";")
                         else:
                             if len(itemkeyfeature['keyGrDetailing']) > 5:
-                                settingsvar.detalingname.append(itemkeyfeature['nameDetailing'])
+                                # settingsvar.detalingname.append(itemkeyfeature['nameDetailing'])
                                 if itemkeyfeature['keyFeature'] in settingsvar.strokagrdetaling:
                                     if itemkeyfeature['keyGrDetailing'] not in settingsvar.strokagrdetaling:
                                         set = settingsvar.strokagrdetaling + itemkeyfeature['keyGrDetailing'] + ";"
@@ -674,7 +674,8 @@ def nextstepgrdetaling():
                     '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/", '', 'GET')
                 settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
                 settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
-                settingsvar.itemdetalingname = settingsvar.detalingname[0]
+                settingsvar.itemdetalingname = ""
+                if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 iduser = funciduser()
 
                 if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
@@ -689,7 +690,7 @@ def nextstepgrdetaling():
                 settingsvar.nawpage = 'nextgrdetaling'
                 settingsvar.html = 'diagnoz/grdetaling.html'
                 del settingsvar.spisokGrDetailing[0]
-                del settingsvar.detalingname[0]
+                if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
 
         if len(settingsvar.spisoklistdetaling) == 0 and len(settingsvar.spisokGrDetailing) == 0 and len(
                 settingsvar.spisokkeyfeature) == 0:
@@ -740,7 +741,7 @@ def selectdetaling(request, select_kodDetailing):
                         '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/", '', 'GET')
                     settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
                     settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
-                    settingsvar.itemdetalingname = settingsvar.detalingname[0]
+                    if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
                     iduser = funciduser()
 
                     if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
@@ -755,7 +756,7 @@ def selectdetaling(request, select_kodDetailing):
                     settingsvar.nawpage = 'nextgrdetaling'
                     settingsvar.html = 'diagnoz/grdetaling.html'
                     del settingsvar.spisokGrDetailing[0]
-                    del settingsvar.detalingname[0]
+                    if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
@@ -803,18 +804,19 @@ def enddetaling(request):
                 settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
                 settingsvar.rest_apiGrDetaling = rest_api('/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/",
                                                           '', 'GET')
-                settingsvar.itemdetalingname = settingsvar.detalingname[0]
+                if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 shablongrdetaling()
                 settingsvar.nawpage = 'nextgrdetaling'
-                del settingsvar.detalingname[0]
+                if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
                 del settingsvar.spisokGrDetailing[0]
 
                 return render(request, settingsvar.html, context=settingsvar.nextstepdata)
         else:
-            if (settingsvar.itemkeyfeature == settingsvar.spisokkeyfeature[0] and len(
-                    settingsvar.spisokkeyfeature) > 0):
-                del settingsvar.spisokkeyfeature[0]
-                del settingsvar.spisoknamefeature[0]
+            if len(settingsvar.spisokkeyfeature) > 0:
+                if (settingsvar.itemkeyfeature == settingsvar.spisokkeyfeature[0] and len(
+                        settingsvar.spisokkeyfeature) > 0):
+                    del settingsvar.spisokkeyfeature[0]
+                    del settingsvar.spisoknamefeature[0]
         if len(settingsvar.spisokkeyfeature) > 0:
             settingsvar.itemstep = 'spisokkeyfeature'
             nextstepgrdetaling()
@@ -1632,7 +1634,7 @@ def accountuser(request):
                             settingsvar.pacient = rest_api(
                                 '/api/PacientController/' + settingsvar.kodPacienta + '/0/0/0/0',
                                 '', 'GET')
-                            if len(settingsvar.pacient) > 0:
+                            if 'tel' in settingsvar.pacient:
                                 settingsvar.setpost = True
                                 settingsvar.readprofil = True
                                 settingsvar.setpostlikar = True

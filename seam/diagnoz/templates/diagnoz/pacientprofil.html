@@ -17,10 +17,14 @@
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{form.tel.label}}</font></font>
                     </label>
-                    {{form.tel}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Вимагається допустимий номер.</font></font>
+                    {{ form.tel }}
+                    {% if form.tel.errors %}
+                    <div class="invalid-feedback d-block"><font
+                            style="vertical-align: inherit;">Вкажіть номер телефону.</font>
+                        {{ form.tel.errors|striptags }}
                     </div>
+                    {% endif %}
+
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
