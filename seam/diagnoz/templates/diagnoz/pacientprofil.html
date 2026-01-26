@@ -9,7 +9,7 @@
     <div class="card shadow">
         <div class="card-body">
             <div class="col-mb-3  text-center">
-    <form class="needs-validation" method="POST" novalidate="">
+                <form class="needs-validation" id="form" method="POST" novalidate="">
         {% csrf_token %}
         <div class="row g-2">
             <div class="row text-center d-flex justify-content-center">
@@ -18,13 +18,6 @@
                             style="vertical-align: inherit;">{{form.tel.label}}</font></font>
                     </label>
                     {{ form.tel }}
-                    {% if form.tel.errors %}
-                    <div class="invalid-feedback d-block"><font
-                            style="vertical-align: inherit;">Вкажіть номер телефону.</font>
-                        {{ form.tel.errors|striptags }}
-                    </div>
-                    {% endif %}
-
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
@@ -33,17 +26,12 @@
                             style="vertical-align: inherit;">{{ form.name.label }}</font></font>
                     </label>
                     {{form.name}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
-                    </div>
+
                 </div>
                 <div class="col-sm-3">
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
                     {{form.surname}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Вимагається дійсне ім'я.</font></font>
-                    </div>
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
@@ -51,26 +39,17 @@
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{form.gender.label}}</font></font></label>
                     {{form.gender}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Будь ласка зробіть правильний вибір.
-                    </font></font></div>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{form.age.label}}</font></font>
                     </label>
                     {{form.age}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Вкажіть допустимий вік.</font></font>
-                    </div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{form.profession.label}}</font></font></label>
                     {{form.profession}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Вимагається назва професії.</font></font>
-                    </div>
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
@@ -78,18 +57,12 @@
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{form.weight.label}}</font></font></label>
                     {{form.weight}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Вкажіть допустиму вагу.</font></font>
-                    </div>
                 </div>
 
                 <div class="col-md-2">
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{form.growth.label}}</font></font></label>
                     {{form.growth}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Вимагається допустима зріст.</font></font>
-                    </div>
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
@@ -97,18 +70,11 @@
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{form.pind.label}}</font></font></label>
                     {{form.pind}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">Вкажіть допустимий індекс.</font></font>
-                    </div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label"><font style="vertical-align: inherit;"><font
                             style="vertical-align: inherit;">{{form.email.label}} </font></font></label>
                     {{form.email}}
-                    <div class="invalid-feedback"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">
-                        Ввеіть дійсну адресу электронної пошти для отримання повідомлення про підтвердження реєстрації.
-                    </font></font></div>
                 </div>
             </div>
             <p></p>
@@ -119,7 +85,8 @@
                 </button>
                 {% else %}
                 <button class="btn btn-sm  text-white rounded-pill"
-                        style="font-size: 12px; background-color: #558787;  " type="submit">Згода на обробку
+                        id="submitBtn" style="font-size: 12px; background-color: #558787;  " type="submit">Згода на
+                    обробку
                     персональних даних
                 </button>
                 {% endif %}
@@ -132,3 +99,4 @@
 </div>
 
 {% endblock %}
+

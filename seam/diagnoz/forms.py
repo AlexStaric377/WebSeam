@@ -6,12 +6,12 @@ class PacientForm(forms.Form):
     Typegender = [("чол.", "чол."), ("жін.", "жін.")]
 
     name = forms.CharField(max_length=37, min_length=3, label="Ім'я", required=True,
-                           widget=forms.TextInput(attrs={'class': 'form-control'}))
+                           widget=forms.TextInput(attrs={'class': 'form-control is-invalid'}))
     surname = forms.CharField(max_length=37, min_length=3, label="Прізвище", required=True,
-                              widget=forms.TextInput(attrs={'class': 'form-control'}))
+                              widget=forms.TextInput(attrs={'class': 'form-control is-invalid'}))
     gender = forms.ChoiceField(choices=Typegender, label="Стать", widget=forms.Select(attrs={'class': 'form-control'}))
-    age = forms.IntegerField(max_value=120, min_value=5, label="Вік(р.)", required=True, initial=0,
-                             widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    age = forms.IntegerField(max_value=120, min_value=0, label="Вік(р.)", required=True, initial=5,
+                             widget=forms.NumberInput(attrs={'class': 'form-control '}))
     profession = forms.CharField(max_length=70, label="Професія", required=False,
                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
     weight = forms.IntegerField(max_value=250, min_value=15, label="Вага(кг.)", required=False, initial=0,
@@ -20,9 +20,7 @@ class PacientForm(forms.Form):
                                 widget=forms.NumberInput(attrs={'class': 'form-control'}))
     pind = forms.CharField(max_length=5, min_length=5, label="Поштовий індекс",
                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "xxxxx"}))
-    tel = forms.CharField(label="Телефон", required=True,
-                          error_messages={'required': 'Пожалуйста, заполните это поле.'},
-                          widget=forms.TextInput(
+    tel = forms.CharField(label="Телефон", required=True, widget=forms.TextInput(
                               attrs={'class': 'form-control is-invalid', 'placeholder': " +xxx xx xx xxx xx"}))
     email = forms.EmailField(label="Эл.пошта (Email)", required=False,
                              widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "ви@example.com"}))
@@ -32,7 +30,7 @@ class PacientForm(forms.Form):
 class AccountUserForm(forms.Form):
     login = forms.CharField(max_length=13, label='Телефон:',
                             widget=forms.TextInput(
-                                attrs={'class': 'form-control', 'placeholder': " +xxx xx xx xxx xx"}))
+                                attrs={'class': 'form-control ', 'placeholder': " +xxx xx xx xxx xx"}))
     password = forms.CharField(max_length=13, label='Пароль:',
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 

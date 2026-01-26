@@ -113,3 +113,4 @@ searchsurname = ""
 formsearchpacient = {}
 listreception = []
 pacientselect = []
+error = False

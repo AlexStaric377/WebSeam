@@ -210,6 +210,7 @@ def funcpacient():
     settingsvar.setintertview = False
     settingsvar.interviewcompl = False
     settingsvar.zgodayes = False
+    settingsvar.formpacient = ""
     settingsvar.html = 'diagnoz/pacient.html'
 
     settingsvar.likar = {}
@@ -379,7 +380,12 @@ def interwievcomplaint(request):
 def funcinterwiev(request):
     settingsvar.complate = 'funcsearchcomplate'
     iduser = funciduser()
+    settingsvar.DiagnozRecomendaciya = []
+    settingsvar.spisokkeyinterview = []
+    settingsvar.spisokkeyfeature = []
+    settingsvar.spisokselectDetailing = []
     settingsvar.сomplaintselect = []
+    settingsvar.strokagrdetaling = ""
     funsearchcomplform(request)
     match settingsvar.kabinet:
         case 'guest':
@@ -447,7 +453,9 @@ def funsearchcomplform(request):
         settingsvar.formsearchtext = InputsearchcomplateForm(initial=settingsvar.searchtext)
     else:
         if settingsvar.receptitem == 'getsearchcomplateForm':
+
             settingsvar.receptitem = 'likar'
+
             settingsvar.selectbackmeny = False
         else:
             settingsvar.receptitem = 'getsearchcomplateForm'
@@ -1954,11 +1962,15 @@ def pacientprofil(request):  # httpRequest
     if settingsvar.zgodayes == False and request.method == 'POST':
         settingsvar.html = 'diagnoz/persondata.html'
         settingsvar.nextstepdata = {}
+
         settingsvar.zgodayes = True
         if request.method == 'POST':
             form = PacientForm(request.POST)
             settingsvar.formpacient = form.data
-            settingsvar.jsonformpacient = {'id': 0,
+            if len(settingsvar.formpacient['tel']) > 0 and len(settingsvar.formpacient['name']) > 0 and len(
+                    settingsvar.formpacient['surname']) > 0:
+
+                settingsvar.jsonformpacient = {'id': 0,
                                            'KodPacient': newpacientprofil(),
                                            'KodKabinet': "",
                                            'Age': settingsvar.formpacient['age'],
@@ -1971,7 +1983,12 @@ def pacientprofil(request):  # httpRequest
                                            'Surname': settingsvar.formpacient['surname'],
                                            'Pind': settingsvar.formpacient['pind'],
                                            'Profession': settingsvar.formpacient['profession']
-                                           }
+                                               }
+            else:
+                settingsvar.error = True
+                request.method = 'GET'
+                settingsvar.zgodayes = False
+                errorprofil("Шановний користувач!  Не введено обов'язкові показника реєстрції профілю.")
         else:
             getpostpacientprofil(request)
     else:
@@ -2089,6 +2106,9 @@ def getpostpacientprofil(request):
             }
         else:
             form = PacientForm()
+            if settingsvar.error == True:
+                form = PacientForm(initial=settingsvar.formpacient)
+                settingsvar.error = False
             settingsvar.nextstepdata = {
                 'form': form,
                 'next': False,
@@ -2148,6 +2168,8 @@ def errorprofil(compl):
     iduser = funciduser()
     backurl = funcbakurl()
     if settingsvar.kabinet == "guest": backurl = 'backshablonselect'
+    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'listinterwiev' \
+            or settingsvar.kabinet == 'listreceptionlikar' or settingsvar.kabinet == 'pacientstanhealth': backurl = 'reestraccountuser'
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': compl,
