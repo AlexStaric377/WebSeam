@@ -30,7 +30,14 @@ def backpage(request):
                     views.backreception()
                 else:
                     views.writediagnoz()
-                    settingsvar.receptitem = 'reception'
+                    if settingsvar.selectbackmeny == True and settingsvar.receptitem == 'interwievcomplaint':
+                        settingsvar.selectbackmeny = False
+                        settingsvar.receptitem = 'reception'
+                    if settingsvar.receptitem != 'interwievcomplaint':
+                        settingsvar.receptitem = 'reception'
+                        settingsvar.selectbackmeny = False
+                    else:
+                        settingsvar.selectbackmeny = True
         case 'directiondiagnoz':
             views.backreception()
         case 'profillmedzaklad':

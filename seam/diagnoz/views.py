@@ -874,6 +874,7 @@ def writediagnoz():
     else:
         if settingsvar.kabinet == 'guest':
             settingsvar.backpage = 'interwievcomplaint'
+
         if settingsvar.kabinet == 'pacient':
             settingsvar.backpage = 'interwiev'
         for item in settingsvar.diagnozStroka:
@@ -883,10 +884,11 @@ def writediagnoz():
                 if len(api) > 0:
                     settingsvar.kodDiagnoz = api[0]['kodDiagnoz']
                     apiicd = rest_api('/api/DiagnozController/' + api[0]['kodDiagnoz'] + "/0/0", '', 'GET')
-                    settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
-                    settingsvar.icdGrDiagnoz = apiicd['icdGrDiagnoz']
-                    api = rest_api('/api/RecommendationController/' + api[0]['kodRecommend'] + "/0", '', 'GET')
-                    contentRecommendation = api['contentRecommendation']
+                    if len(apiicd) > 0:
+                        if len(apiicd['keyIcd']) > 0: settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
+                        settingsvar.icdGrDiagnoz = apiicd['icdGrDiagnoz']
+                    apiRecommen = rest_api('/api/RecommendationController/' + api[0]['kodRecommend'] + "/0", '', 'GET')
+                    if len(apiRecommen) > 0: contentRecommendation = apiRecommen['contentRecommendation']
                 settingsvar.nawpage = 'backfromcontent'
                 settingsvar.html = 'diagnoz/versiyadiagnoza.html'
 
@@ -1854,7 +1856,7 @@ def shablonforlistreceptionandstanhealth(request):
 def funcsearchpacient(request, formsearch):
     settingsvar.search = False
     settingsvar.formsearch = ''
-    profilpacient = {}
+    settingsvar.pacient = profilpacient = {}
     json = ""
     if len(formsearch) > 0:
         if len(formsearch['name']) > 0 and len(formsearch['surname']) > 0 and len(
@@ -1899,6 +1901,7 @@ def funcsearchpacient(request, formsearch):
                     settingsvar.setintertview = True
                     saveselectlikar(settingsvar.pacient)
         else:
+            settingsvar.searchpacient = settingsvar.formsearch = ""
             errorprofil('Шановний користувач! За вашим запитом відсутні дані про пацієнта.')
     else:
 
