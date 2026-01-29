@@ -29,15 +29,17 @@ def backpage(request):
                 if settingsvar.receptitem == 'reception':
                     views.backreception()
                 else:
-                    views.writediagnoz()
                     if settingsvar.selectbackmeny == True and settingsvar.receptitem == 'interwievcomplaint':
-                        settingsvar.selectbackmeny = False
-                        settingsvar.receptitem = 'reception'
-                    if settingsvar.receptitem != 'interwievcomplaint':
                         settingsvar.receptitem = 'reception'
                         settingsvar.selectbackmeny = False
+                        views.backreception()
                     else:
-                        settingsvar.selectbackmeny = True
+                        views.writediagnoz()
+                        if settingsvar.receptitem != 'interwievcomplaint':
+                            settingsvar.receptitem = 'reception'
+                            settingsvar.selectbackmeny = False
+                        else:
+                            settingsvar.selectbackmeny = True
         case 'directiondiagnoz':
             views.backreception()
         case 'profillmedzaklad':
@@ -59,7 +61,14 @@ def backpage(request):
                 case 'backreceptprofillmedzaklad':
                     views.backreception()
                 case 'interwievcomplaint':
-                    views.listworkdiagnoz()
+                    if settingsvar.selectbackmeny == True:
+                        settingsvar.selectbackmeny = False
+                        views.backreception()
+                    else:
+                        settingsvar.selectbackmeny = True
+                        views.funcinterwiev(request)
+                case 'getsearchcomplateForm':
+                    views.backreception()
                 case 'selectedprofillikar':
                     views.backreceptprofillmedzaklad(request)
 
