@@ -32,13 +32,10 @@ def backpage(request):
                     if settingsvar.selectbackmeny == True and settingsvar.receptitem == 'interwievcomplaint':
                         settingsvar.receptitem = 'reception'
                         settingsvar.selectbackmeny = False
-                        views.backreception()
+                        views.funcinterwiev(request)
                     else:
                         views.writediagnoz()
-                        if settingsvar.receptitem != 'interwievcomplaint':
-                            settingsvar.receptitem = 'reception'
-                            settingsvar.selectbackmeny = False
-                        else:
+                        if settingsvar.selectbackmeny == False and settingsvar.receptitem == 'interwievcomplaint':
                             settingsvar.selectbackmeny = True
         case 'directiondiagnoz':
             views.backreception()
@@ -107,6 +104,7 @@ def backpage(request):
                 views.listreceptionpacient(request)
                 if settingsvar.selectbackmeny == True:
                     views.likar(request)
+                    settingsvar.selectbackmeny = False
             else:
                 views.likar(request)
 

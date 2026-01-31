@@ -417,11 +417,11 @@ def funcinterwiev(request):
                         settingsvar.backpage = 'likarinterwiev'
                 else:
                     settingsvar.backpage = 'likar'
-    pacient = ""
+    pacient = " "
     likar = False
     if len(settingsvar.pacient) > 0:
-        pacient = settingsvar.pacient['profession'] + ' ' + settingsvar.pacient['name'] + " " + settingsvar.pacient[
-            'surname'],
+        pacient = settingsvar.pacient['profession'] + "  " + settingsvar.pacient['name'] + " " + settingsvar.pacient[
+            'surname']
         likar = True
     settingsvar.nawpage = 'receptinterwiev'
     settingsvar.html = 'diagnoz/receptinterwiev.html'
