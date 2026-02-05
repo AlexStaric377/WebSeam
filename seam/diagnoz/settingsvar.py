@@ -114,3 +114,7 @@ formsearchpacient = {}
 listreception = []
 pacientselect = []
 error = False
+likarGrupDiagnoz = []
+Diagnozmedgrup = []
+kodzaklad = ""
+idstatus = ""

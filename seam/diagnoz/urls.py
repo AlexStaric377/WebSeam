@@ -50,7 +50,7 @@ urlpatterns = [
     path('savediagnoz', views.savediagnoz, name='savediagnoz'),
     path('backdiagnoz', views.backdiagnoz, name='backdiagnoz'),
     path('receptprofillmedzaklad', views.receptprofillmedzaklad, name='receptprofillmedzaklad'),
-    path('selectdprofillikar/<str:selected_kodzaklad>,  <str:selected_idstatus>,  <str:selected_name>',
+    path('selectdprofillikar/<str:selected_kodzaklad>, <str:selected_idstatus>, <str:selected_name>',
          views.selectdprofillikar, name='selectdprofillikar'),
     path('backlistlikar', views.backlistlikar, name='backlistlikar'),
     path('backshablonselect', views.backshablonselect, name='backshablonselect'),

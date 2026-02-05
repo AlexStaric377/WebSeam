@@ -711,7 +711,6 @@ def selectdetaling(request, select_kodDetailing):
     settingsvar.spisokkeyinterview.append(select_kodDetailing + ";")
     settingsvar.spisokselectDetailing.append(select_kodDetailing)
 
-    select_nameDetailing = ""
     index = 0
     settingsvar.nawpage = 'receptinterwiev'
     if len(settingsvar.spisoklistdetaling) > 0:
@@ -773,9 +772,7 @@ def selectgrdetaling(request, select_kodDetailing):
     settingsvar.DiagnozRecomendaciya.append(select_kodDetailing + ";")
     settingsvar.spisokkeyinterview.append(select_kodDetailing + ";")
     settingsvar.spisokselectDetailing.append(select_kodDetailing)
-
     tmplist = []
-
     if len(settingsvar.rest_apiGrDetaling) > 0:
         for item in settingsvar.rest_apiGrDetaling:
             if select_kodDetailing != item['kodDetailing']:
@@ -787,7 +784,10 @@ def selectgrdetaling(request, select_kodDetailing):
         if len(settingsvar.rest_apiGrDetaling) > 0:
             shablongrdetaling()
         else:
-            diagnoz()
+            if len(settingsvar.spisokGrDetailing) == 0:
+                diagnoz()
+            else:
+                enddetaling(request)
     else:
         diagnoz()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -1018,7 +1018,7 @@ def selectmedzaklad(request, statuszaklad):
         case "5":
             settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/" +
                                                settingsvar.icdGrDiagnoz + "/0/0", '', 'GET')  # settingsvar.icddiagnoz
-
+            settingsvar.Diagnozmedgrup = settingsvar.grupDiagnoz
             if len(settingsvar.grupDiagnoz) > 0:
                 for item in settingsvar.grupDiagnoz:
                     medzaklad = rest_api('/api/MedicalInstitutionController/' + item['kodZaklad'] + '/0/0/0', '', 'GET')
@@ -1030,9 +1030,9 @@ def selectmedzaklad(request, statuszaklad):
                                 apptru = False
                             else:
                                 apptru = True
-                            if apptru == False:  settingsvar.grupmedzaklad.append(medzaklad)
+                        if apptru == False:  settingsvar.grupmedzaklad.append(medzaklad)
             else:
-                #                if settingsvar.kabinet == 'guest':
+
                 settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad,
                                                      '',
                                                      'GET')
@@ -1047,7 +1047,9 @@ def selectmedzaklad(request, statuszaklad):
         'compl': 'Перелік профільних медзакладів',
         'detalinglist': settingsvar.grupmedzaklad,
         'piblikar': '',
-        'likar': ''
+        'likar': '',
+        # 'icdgr': settingsvar.icdGrDiagnoz,
+        # 'grupdiagnoz': settingsvar.grupDiagnoz
     }
     if len(settingsvar.pacient) > 0:
         settingsvar.nextstepdata['likar'] = True
@@ -1124,28 +1126,30 @@ def receptfamilylikar(request):
 # --- Вибір лікаря у профільному мед закладі
 def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_name):
     settingsvar.gruplikar = []
+    settingsvar.kodzaklad = selected_kodzaklad.strip()
     settingsvar.namemedzaklad = selected_name
-
-    medzak = rest_api('/api/MedicalInstitutionController/' + selected_kodzaklad + "/0/0/0", '', 'GET')
+    settingsvar.idstatus = selected_idstatus.strip()
+    medzak = rest_api('/api/MedicalInstitutionController/' + settingsvar.kodzaklad + "/0/0/0", '', 'GET')
     settingsvar.adrzaklad = medzak['adres']
     settingsvar.mobtellikar = medzak['telefon']
-    Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + selected_kodzaklad + "/0", '', 'GET')
+    Grupproflikar = rest_api('/api/ApiControllerDoctor/' + "0/" + settingsvar.kodzaklad + "/0", '', 'GET')
     if len(Grupproflikar) > 0:
         if settingsvar.interviewcompl == False and settingsvar.kabinet == 'guest':
             settingsvar.gruplikar = Grupproflikar
         else:
             for item in Grupproflikar:
-                match selected_idstatus:
+                match settingsvar.idstatus:
                     case "2":
                         settingsvar.gruplikar.append(item)
                         settingsvar.directdiagnoz = True
                     case "5":
-                        likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '',
+                        settingsvar.likarGrupDiagnoz = rest_api(
+                            '/api/LikarGrupDiagnozController/' + item['kodDoctor'] + '/0', '',
                                                 'GET')
-                        for icdgrdiagnoz in settingsvar.grupDiagnoz:
-                            for likargrdz in likarGrupDiagnoz:
+                        for icdgrdiagnoz in settingsvar.Diagnozmedgrup:
+                            for likargrdz in settingsvar.likarGrupDiagnoz:
                                 if (likargrdz['icdGrDiagnoz'] in icdgrdiagnoz['icdGrDiagnoz'] and
-                                    selected_kodzaklad in icdgrdiagnoz['kodZaklad']):
+                                        settingsvar.kodzaklad in icdgrdiagnoz['kodZaklad']):
                                     if len(settingsvar.gruplikar) > 0:
                                         apptru = False
                                         for itemgruplikar in settingsvar.gruplikar:
@@ -1160,7 +1164,13 @@ def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_
         if len(settingsvar.gruplikar) > 0:
             shablonlistlikar()
         else:
+
             errorprofil('Шановний користувач! За вашим запитом відсутні профільні лікарі.')
+            settingsvar.nextstepdata['gruplikar'] = settingsvar.Diagnozmedgrup
+            settingsvar.nextstepdata['likargrupdiagnoz'] = settingsvar.likarGrupDiagnoz
+            settingsvar.nextstepdata['icdGrDiagnoz'] = settingsvar.icdGrDiagnoz
+            settingsvar.nextstepdata['grupproflikar'] = Grupproflikar
+            settingsvar.nextstepdata['gruplikar'] = settingsvar.gruplikar
     else:
         errorprofil('Шановний користувач! За вашим запитом відсутні профільні лікарі.')
     json = ('IdUser:  ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
@@ -2176,7 +2186,8 @@ def errorprofil(compl):
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': compl,
-        'backurl': backurl
+        'backurl': backurl,
+
     }
     return
 
