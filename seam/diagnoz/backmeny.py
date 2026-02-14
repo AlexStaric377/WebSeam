@@ -23,7 +23,7 @@ def backpage(request):
                 views.backshablonselect(request)
 
         case 'interwievcomplaint':
-            if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm':
+            if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm' or settingsvar.receptitem == 'likar':
                 views.funcinterwiev(request)
             else:
                 if settingsvar.receptitem == 'reception':

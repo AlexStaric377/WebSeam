@@ -623,8 +623,7 @@ def nextstepgrdetaling():
                                         set = settingsvar.strokagrdetaling + itemkeyfeature['keyGrDetailing'] + ";"
                                 else:
                                     set = settingsvar.strokagrdetaling + itemkeyfeature['keyFeature'] + ";" + \
-                                          itemkeyfeature[
-                                              'keyGrDetailing'] + ";"
+                                          itemkeyfeature['keyGrDetailing'] + ";"
                                 if len(set) != 0:
                                     CmdStroka = rest_api('/api/InterviewController/' + "0/0/0/0/" + set, '', 'GET')
                                     if len(CmdStroka) > 0:
@@ -642,6 +641,11 @@ def nextstepgrdetaling():
                                                     settingsvar.spisokGrDetailing.append(
                                                         itemkeyfeature['keyGrDetailing'])
                                                     break
+                                            else:
+                                                settingsvar.strokagrdetaling = set
+                                                settingsvar.spisokGrDetailing.append(
+                                                    itemkeyfeature['keyGrDetailing'])
+                                                break
                             else:
                                 settingsvar.spisoklistdetaling.append(itemkeyfeature)
                                 if itemkeyfeature['keyFeature'] not in settingsvar.strokagrdetaling:
@@ -833,8 +837,6 @@ def enddetaling(request):
                 diagnoz()
         else:
             diagnoz()
-    # else:
-    #     diagnoz()
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
