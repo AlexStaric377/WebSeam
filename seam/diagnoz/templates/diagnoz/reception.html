@@ -3,30 +3,38 @@
 {% block nav %}
 <!--{% include 'diagnoz/kaducey.html' %}-->
 <div class="container text-center">
-    <div class="col justify-content-md-center">
+    <div class="row">
+        <div class="col justify-content-md-center">
         <p></p>
         <div class="col-md-auto">
-            <h2>Реєстратура</h2>
+            <h3>Реєстратура</h3>
         </div>
         <p><br></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'receptinterwiev' %}">
-                <font style="font-size: 25px;"><font style="vertical-align: inherit;">Провести діагностику</font></font></a>
-        </div>
-        <p></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'checkvisitinglikar' %}"
-               style="font-size: 25px;">Перегляд запису до лікаря</a>
-        </div>
-        <p></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'receptprofillmedzaklad' %}"
-               style="font-size: 25px;">Профільні лікарні</a>
-        </div>
-        <p></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'directiondiagnoz' %}"
-               style="font-size: 25px;">Напрямки діагностики</a>
+
+            <div class="col-md-auto">
+                <a class="text-primary text-decoration-none " href="{% url 'applicregulat' %}"
+                   style="font-size: 25px;">Положення про застосування</a>
+            </div>
+            <p></p>
+            <div class="col-md-auto">
+                <a class="text-primary text-decoration-none " href="{% url 'receptinterwiev' %}"
+                   style="font-size: 25px;">Проведення діагностики</a>
+            </div>
+            <p></p>
+            <div class="col-md-auto">
+                <a class="text-primary text-decoration-none " href="{% url 'directiondiagnoz' %}"
+                   style="font-size: 25px;">Напрямки діагностики</a>
+            </div>
+            <p></p>
+            <div class="col-md-auto">
+                <a class="text-primary text-decoration-none " href="{% url 'receptprofillmedzaklad' %}"
+                   style="font-size: 25px;">Профільні лікарні</a>
+            </div>
+            <p></p>
+            <div class="col-md-auto">
+                <a class="text-primary text-decoration-none " href="{% url 'checkvisitinglikar' %}"
+                   style="font-size: 25px;">Запит про обстеження пацієнта</a>
+            </div>
         </div>
 
     </div>

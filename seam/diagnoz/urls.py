@@ -96,6 +96,7 @@ urlpatterns = [
     path('stanhealth', views.stanhealth, name='stanhealth'),
     path('recomentaktikhealing', views.recomentaktikhealing, name='recomentaktikhealing'),
     path('backworkdiagnozlikar', views.backworkdiagnozlikar, name='backworkdiagnozlikar'),
+    path('applicregulat', views.applicregulat, name='applicregulat'),
 
 ]
 #

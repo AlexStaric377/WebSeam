@@ -13,16 +13,16 @@
         </tbody>
     </table>
     {% else %}
-    <h6>{{iduser}}</h6>
+    <!--    <h6>{{iduser}}</h6>-->
 
     <table class="table text-center">
         <tbody>
         <tr>
             <td><p>{{namedzaklad}}</p></td>
         </tr>
-        <tr>
-            <td><p>{{adrdzaklad}}</p></td>
-        </tr>
+        <!--        <tr>-->
+        <!--            <td><p>{{adrdzaklad}}</p></td>-->
+        <!--        </tr>-->
         </tbody>
     </table>
     {% endif %}
@@ -32,8 +32,9 @@
     {% if directdiagnoz %}
     {% else %}
     {% if workdirection %}
-    <p>Для перегляду робочих напрямків захворювань, з якими працює лікар, натисніть на відповідне
-        прізвище</p>
+    <p class="fst-italic" style="font-size: 12px;">(Для перегляду робочих напрямків захворювань, з якими працює лікар,
+        натисніть на відповідне
+        прізвище)</p>
     {% else %}
     <p>Для запису до лікаря натисніть на відповідне прізвище</p>
     {% endif %}

@@ -3,13 +3,13 @@
 
 <div class="container-fluid text-center">
     {% if directdiagnoz %}
-    <h6>{{iduser}}</h6>
+    <!--    <h6>{{iduser}}</h6>-->
     {% if listapinull %}
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     {% endif %}
     {% else %}
-    <h6>{{iduser}}</h6>
+    <!--    <h6>{{iduser}}</h6>-->
     <p>{{medzaklad}}</p>
     <p>{{piblikar}}</p>
     {% endif %}
@@ -33,9 +33,11 @@
     {% if listapinull %}
     {% else %}
     {% if directdiagnoz %}
-    <p>Для перегляду профільних медзакладів за напрямком необхідно натиснути на відповідний рядок</p>
+    <p class="fst-italic" style="font-size: 12px;">(Для перегляду профільних медзакладів за напрямком необхідно
+        натиснути на відповідний рядок)</p>
     {% else %}
-    <p>Для перегляду діагнозів за напрямком необхідно натиснути на відповідний рядок</p>
+    <p class="fst-italic" style="font-size: 12px;">(Для перегляду діагнозів за напрямком необхідно натиснути на
+        відповідний рядок)</p>
     {% endif %}
     {% endif %}
 </div>

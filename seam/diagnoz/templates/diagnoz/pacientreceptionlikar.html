@@ -2,9 +2,9 @@
 {% block nav %}
 
 <div class="container-fluid text-center">
-    <h6>{{iduser}}</h6>
-    <p>{{pacient}}</p>
-    <h6>Перегляд списку записів обстежень до лікаря</h6>
+    <!--    <h6>{{iduser}}</h6>-->
+    <p class="fw-bold">{{pacient}}</p>
+    <p class="fs-6">Перелік записів на обстеження пацієнта у лікаря</p>
 </div>
 <div class="container-fluid text-center justify-content-center d-flex align-items-center" style="display: inline-block">
     <a class="btn btn-sm text-white rounded-pill text-center justify-content-center d-flex align-items-center"
@@ -12,7 +12,8 @@
        style="font-size: 13px; background-color: #558787; width: 90px; height: 20px;">Додати</a>
 </div>
 <div class="container-fluid text-center">
-    <p>Для перегляду детальної інформації про попередній діагноз натисніть на відповідний рядок</p>
+    <p class="fst-italic" style="font-size: 12px;">(Для перегляду детальної інформації про попередній діагноз натисніть
+        на відповідний рядок.)</p>
 </div>
 
 <div class="table-container" style="max-height: 400px; overflow-y: auto;">

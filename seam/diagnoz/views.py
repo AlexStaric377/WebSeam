@@ -299,6 +299,12 @@ def newsseam(request):
     return render(request, 'diagnoz/newsseam.html')
 
 
+def applicregulat(request):
+    json = ('IdUser: applicregulat,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: applicregulat')
+    unloadlog(json)
+    return render(request, 'diagnoz/applicregulat.html')
+
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):
     json = ('IdUser: directiondiagnoz,' + 'dateseanse :' +
@@ -1382,7 +1388,7 @@ def inputprofilpacient(request, selected_doctor):
                             'complaintlist': likarGrupDiagnoz,
                             'backurl': backurl,
                             'piblikar': settingsvar.namelikar,  # + " т." + settingsvar.mobtellikar,
-                            'medzaklad': settingsvar.namemedzaklad + " " + settingsvar.adrzaklad,
+                            'medzaklad': settingsvar.namemedzaklad,  # + " " + settingsvar.adrzaklad,
                             'directdiagnoz': settingsvar.directdiagnoz,
                             'listapinull': True,
                             'сontentnull': ''
@@ -3074,7 +3080,7 @@ def search_pacient():
     compl = 'Реєстрація'
     if settingsvar.funciya == 'checkvisitinglikar':
         reestr = False
-        iduser = 'Реєстратура'
+        iduser = 'Запит про обстеження пацієнта'
     formsearch = SearchPacient()
     settingsvar.nextstepdata = {
         'form': formsearch,
