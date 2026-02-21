@@ -1082,11 +1082,18 @@ def receptprofillmedzaklad(request):
 
 
 def backreceptprofillmedzaklad(request):
+    likargrupdiagnoz = []
     if len(settingsvar.icdGrDiagnoz) > 0:
-        likargrupdiagnoz = rest_api(
-            '/api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + "/" + settingsvar.icdGrDiagnoz, '', 'GET')
+        if len(settingsvar.kodDoctor) > 0:
+            likargrupdiagnoz = rest_api(
+                '/api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + "/" + settingsvar.icdGrDiagnoz,
+                '', 'GET')
+        else:
+            likargrupdiagnoz = rest_api(
+                '/api/LikarGrupDiagnozController/' + "0/" + settingsvar.icdGrDiagnoz, '', 'GET')
 
-    if settingsvar.kabinetitem == 'likarinterwiev' and len(likargrupdiagnoz) > 0 and settingsvar.selectlikar == False:
+    if settingsvar.kabinetitem == 'likarinterwiev' and len(settingsvar.kodDoctor) > 0 and len(
+            likargrupdiagnoz) > 0 and settingsvar.selectlikar == False:
         settingsvar.setintertview = True
         settingsvar.selectlikar = True
         medzaklad = rest_api('/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '', 'GET')
@@ -1104,19 +1111,21 @@ def backreceptprofillmedzaklad(request):
                     settingsvar.receptitem = 'reception'
                 case 'receptprofillmedzaklad':
                     settingsvar.receptitem = 'backreceptprofillmedzaklad'
-                case 'interwievcomplaint':
-                    settingsvar.receptitem = settingsvar.receptitem
-                case 'receptprofillmedzaklad':
+                case 'interwievcomplaint' | 'receptprofillmedzaklad':
                     settingsvar.receptitem = settingsvar.receptitem
                 case 'getsearchcomplateForm':
                     settingsvar.receptitem = 'interwievcomplaint'
                 case _:
                     settingsvar.receptitem = 'receptprofillmedzaklad'
-
-        if settingsvar.kabinet == 'likarinterwiev':
-            settingsvar.backpage = 'likarinterwiev'
-            settingsvar.receptitem = 'likarinterwiev'
-        selectmedzaklad(request, status)
+            if len(likargrupdiagnoz) > 0 and settingsvar.receptitem == 'interwievcomplaint':
+                selectlikarrofil(request, likargrupdiagnoz)
+            else:
+                selectmedzaklad(request, status)
+        else:
+            if settingsvar.kabinet == 'likarinterwiev':
+                settingsvar.backpage = 'likarinterwiev'
+                settingsvar.receptitem = 'likarinterwiev'
+            selectmedzaklad(request, status)
         json = (
                 'IdUser: ' + settingsvar.kodPacienta + ' ' + settingsvar.kodDoctor + ' ' + 'dateseanse :' +
                 datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: receptprofillmedzaklad')
@@ -1131,6 +1140,56 @@ def receptfamilylikar(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
+# --- Вибір лікаря серед профільних лікарів незалежно від лікарні де він працює
+def selectlikarrofil(request, listrofillikar):
+    listlikar = []
+    itemlistlikar = {}
+    for item in listrofillikar:
+        zakladlikar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
+
+        medzaklad = rest_api('/api/MedicalInstitutionController/' + zakladlikar['edrpou'] + '/0/0/0', '', 'GET')
+        itemlistlikar['kodDoctor'] = item['kodDoctor']
+        itemlistlikar['kodzaklad'] = zakladlikar['edrpou']
+        itemlistlikar['name'] = zakladlikar['name']
+        itemlistlikar['surname'] = zakladlikar['surname']
+        itemlistlikar['specialnoct'] = zakladlikar['specialnoct']
+        itemlistlikar['zakladname'] = medzaklad['name']
+        listlikar.append(itemlistlikar)
+
+    settingsvar.html = 'diagnoz/selectlikarprofil.html'
+    if (settingsvar.kabinet != 'likarinterwiev'
+            and settingsvar.kabinet != 'guest' and settingsvar.kabinet != 'interwiev'): settingsvar.receptitem = 'selectedprofillikar'
+    iduser = funciduser()
+    backurl = funcbakurl()
+    likar = False
+    # directdiagnoz = settingsvar.directdiagnoz
+    # if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'directiondiagnoz': backurl = 'backlikarworkdiagnoz'
+    # if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'receptprofillmedzaklad': backurl = 'receptprofillmedzaklad'
+    # if settingsvar.receptitem == 'likarworkdirection': settingsvar.receptitem = 'receptprofillmedzaklad'
+    # if settingsvar.receptitem == 'directiondiagnoz': directdiagnoz = False
+    # if settingsvar.kabinet == 'guest' and settingsvar.receptitem == 'interwievcomplaint':
+    #     settingsvar.backpage = 'interwievcomplaint'
+
+    settingsvar.nextstepdata = {}
+    settingsvar.nextstepdata = {
+        'iduser': iduser,
+        'compl': 'Перелік профільних лікарів',
+        'detalinglist': listlikar,
+        'piblikar': '',
+        'pacient': '',
+        'likar': likar,
+        'backurl': backurl,
+
+    }
+    if len(settingsvar.pacient) > 0:
+        settingsvar.nextstepdata['likar'] = True
+        settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
+                                              settingsvar.pacient[
+                                                  'name'] + " " + settingsvar.pacient['surname']
+    if len(settingsvar.likar) > 0:
+        settingsvar.nextstepdata['piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+
+    return
 # --- Вибір лікаря у профільному мед закладі
 def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_name):
     settingsvar.gruplikar = []
@@ -1266,7 +1325,7 @@ def funciduser():
     iduser = 'Реєстратура'
     match settingsvar.kabinet:
         case "guest":
-            iduser = 'Реєстратура'
+            iduser = 'Відвідувач'
         case "pacient" | "pacientprofil" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth':
             iduser = 'Кабінет пацієнта'
         case "likar" | 'likarprofil' | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
