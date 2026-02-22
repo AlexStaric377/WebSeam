@@ -386,6 +386,7 @@ def interwievcomplaint(request):
 def funcinterwiev(request):
     settingsvar.complate = 'funcsearchcomplate'
     iduser = funciduser()
+    settingsvar.kodDoctor = ""
     settingsvar.DiagnozRecomendaciya = []
     settingsvar.spisokkeyinterview = []
     settingsvar.spisokkeyfeature = []
@@ -709,7 +710,7 @@ def nextstepgrdetaling():
                 settingsvar.html = 'diagnoz/grdetaling.html'
                 del settingsvar.spisokGrDetailing[0]
                 if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
-
+                break
         if len(settingsvar.spisoklistdetaling) == 0 and len(settingsvar.spisokGrDetailing) == 0 and len(
                 settingsvar.spisokkeyfeature) == 0:
             diagnoz()
@@ -1155,6 +1156,7 @@ def selectlikarrofil(request, listrofillikar):
         itemlistlikar['specialnoct'] = zakladlikar['specialnoct']
         itemlistlikar['zakladname'] = medzaklad['name']
         listlikar.append(itemlistlikar)
+        itemlistlikar = {}
 
     settingsvar.html = 'diagnoz/selectlikarprofil.html'
     if (settingsvar.kabinet != 'likarinterwiev'
@@ -1190,6 +1192,8 @@ def selectlikarrofil(request, listrofillikar):
         settingsvar.nextstepdata['piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
 
     return
+
+
 # --- Вибір лікаря у профільному мед закладі
 def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_name):
     settingsvar.gruplikar = []
