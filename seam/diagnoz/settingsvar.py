@@ -118,3 +118,4 @@ likarGrupDiagnoz = []
 Diagnozmedgrup = []
 kodzaklad = ""
 idstatus = ""
+listlikar = []

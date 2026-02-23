@@ -257,7 +257,7 @@ def likar(request):  # httpRequest
         settingsvar.interviewcompl = False
 
         settingsvar.pacient = {}
-        settingsvar.datereception = 'не встановлено'
+        settingsvar.datereception = 'призначається за тел:'
         settingsvar.datedoctor = 'не встановлено'
         settingsvar.funciya = ''
         settingsvar.nextstepdata = {
@@ -387,6 +387,7 @@ def funcinterwiev(request):
     settingsvar.complate = 'funcsearchcomplate'
     iduser = funciduser()
     settingsvar.kodDoctor = ""
+    settingsvar.pacient = {}
     settingsvar.DiagnozRecomendaciya = []
     settingsvar.spisokkeyinterview = []
     settingsvar.spisokkeyfeature = []
@@ -1143,7 +1144,7 @@ def receptfamilylikar(request):
 
 # --- Вибір лікаря серед профільних лікарів незалежно від лікарні де він працює
 def selectlikarrofil(request, listrofillikar):
-    listlikar = []
+    settingsvar.listlikar = []
     itemlistlikar = {}
     for item in listrofillikar:
         zakladlikar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
@@ -1155,8 +1156,11 @@ def selectlikarrofil(request, listrofillikar):
         itemlistlikar['surname'] = zakladlikar['surname']
         itemlistlikar['specialnoct'] = zakladlikar['specialnoct']
         itemlistlikar['zakladname'] = medzaklad['name']
-        listlikar.append(itemlistlikar)
+        itemlistlikar['adreszak'] = medzaklad['adres']
+        itemlistlikar['tel'] = medzaklad['telefon']
+        settingsvar.listlikar.append(itemlistlikar)
         itemlistlikar = {}
+
 
     settingsvar.html = 'diagnoz/selectlikarprofil.html'
     if (settingsvar.kabinet != 'likarinterwiev'
@@ -1164,19 +1168,12 @@ def selectlikarrofil(request, listrofillikar):
     iduser = funciduser()
     backurl = funcbakurl()
     likar = False
-    # directdiagnoz = settingsvar.directdiagnoz
-    # if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'directiondiagnoz': backurl = 'backlikarworkdiagnoz'
-    # if settingsvar.directdiagnoz == True and settingsvar.receptitem == 'receptprofillmedzaklad': backurl = 'receptprofillmedzaklad'
-    # if settingsvar.receptitem == 'likarworkdirection': settingsvar.receptitem = 'receptprofillmedzaklad'
-    # if settingsvar.receptitem == 'directiondiagnoz': directdiagnoz = False
-    # if settingsvar.kabinet == 'guest' and settingsvar.receptitem == 'interwievcomplaint':
-    #     settingsvar.backpage = 'interwievcomplaint'
 
     settingsvar.nextstepdata = {}
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': 'Перелік профільних лікарів',
-        'detalinglist': listlikar,
+        'detalinglist': settingsvar.listlikar,
         'piblikar': '',
         'pacient': '',
         'likar': likar,
@@ -1361,6 +1358,12 @@ def saveselectlikar(pacient):
         apiicd = rest_api('/api/DiagnozController/' + api[0]['kodDiagnoz'] + "/0/0", '', 'GET')
         settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
         settingsvar.icdGrDiagnoz = apiicd['icdGrDiagnoz']
+    for itemzaklad in settingsvar.listlikar:
+        if itemzaklad['kodDoctor'] == settingsvar.kodDoctor:
+            settingsvar.namemedzaklad = itemzaklad['zakladname']
+            settingsvar.adrzaklad = itemzaklad['adreszak']
+            settingsvar.namelikar = itemzaklad['name'] + ' ' + itemzaklad['surname']
+            settingsvar.datereception = settingsvar.datereception + " " + itemzaklad['tel']
     settingsvar.html = 'diagnoz/finishinterviewpacient.html'
     settingsvar.nawpage = 'backshablonselect'
 
@@ -1399,7 +1402,7 @@ def saveselectlikar(pacient):
                 'podval': 'Ви підтверджуєте свій вибір?',
                 'backurl': backurl
             }
-
+            settingsvar.kodDoctor = ""
 
         else:
             settingsvar.html = 'diagnoz/savediagnoz.html'
@@ -1876,7 +1879,7 @@ def deletprofil(request):
     settingsvar.likar = {}
     settingsvar.pacient = {}
     settingsvar.setpost = False
-    settingsvar.datereception = 'не встановлено'
+    settingsvar.datereception = 'призначається за тел:'
     settingsvar.datedoctor = 'не встановлено'
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
