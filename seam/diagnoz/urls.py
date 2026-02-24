@@ -97,6 +97,8 @@ urlpatterns = [
     path('recomentaktikhealing', views.recomentaktikhealing, name='recomentaktikhealing'),
     path('backworkdiagnozlikar', views.backworkdiagnozlikar, name='backworkdiagnozlikar'),
     path('applicregulat', views.applicregulat, name='applicregulat'),
+    path('manuallikar', views.manuallikar, name='manuallikar'),
+    path('manualpacient', views.manualpacient, name='manualpacient'),
 
 ]
 #

@@ -305,6 +305,20 @@ def applicregulat(request):
     unloadlog(json)
     return render(request, 'diagnoz/applicregulat.html')
 
+
+def manuallikar(request):
+    json = ('IdUser: manuallikar,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: manuallikar')
+    unloadlog(json)
+    return render(request, 'diagnoz/manuallikar.html')
+
+
+def manualpacient(request):
+    json = ('IdUser: manualpacient,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: manualpacient')
+    unloadlog(json)
+    return render(request, 'diagnoz/manualpacient.html')
+
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):
     json = ('IdUser: directiondiagnoz,' + 'dateseanse :' +
