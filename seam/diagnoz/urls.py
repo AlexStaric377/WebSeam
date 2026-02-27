@@ -99,6 +99,13 @@ urlpatterns = [
     path('applicregulat', views.applicregulat, name='applicregulat'),
     path('manuallikar', views.manuallikar, name='manuallikar'),
     path('manualpacient', views.manualpacient, name='manualpacient'),
+    path('registrprofil', views.registrprofil, name='registrprofil'),
+    path('registrkabinet', views.registrkabinet, name='registrkabinet'),
+    path('profillikar', views.profillikar, name='profillikar'),
+    path('clinicmedzaklad', views.clinicmedzaklad, name='clinicmedzaklad'),
+    path('familylikar', views.familylikar, name='familylikar'),
+    path('addprofilpacient', views.addprofilpacient, name='addprofilpacient'),
+    path('repetpacientprofil', views.repetpacientprofil, name='repetpacientprofil'),
 
 ]
 #

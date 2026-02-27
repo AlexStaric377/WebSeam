@@ -33,13 +33,19 @@
         <td><p style="height=12;">{{ pind }} </p></td>
     </tr>
     <tr>
+        <td><p style="height=12;">{{ tel }} </p></td>
+    </tr>
+    <tr>
         <td><p style="height=12;">{{ email }} </p></td>
     </tr>
     </tbody>
 </table>
 
 <div class="container-fluid text-center" style="display: inline-block">
-
+    {% if registrprofil %}
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'addprofilpacient' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Зареєструвати</a>
+    {% endif %}
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'pacientprofil' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Корегувати</a>
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'deletprofil' %}" role="button"

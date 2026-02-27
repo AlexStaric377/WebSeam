@@ -319,6 +319,96 @@ def manualpacient(request):
     unloadlog(json)
     return render(request, 'diagnoz/manualpacient.html')
 
+
+# ---- Реєстрація профіля пацієнта
+def registrprofil(request):
+    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likarinterwiev':
+        settingsvar.backpage = settingsvar.kabinet
+        shablonlikar(request, settingsvar.pacient)
+    else:
+        iduser = funciduser()
+        backurl = funcbakurl()
+        settingsvar.backpage = settingsvar.kabinet
+        settingsvar.receptitem = 'registrprofil'
+        if request.method == 'POST':
+            pacientprofil(request)
+        else:
+            settingsvar.html = 'diagnoz/pacientprofil.html'
+            form = PacientForm()
+            settingsvar.nextstepdata = {
+                'form': form,
+                'next': settingsvar.readprofil,
+                'backurl': backurl,
+                'iduser': iduser
+            }
+
+    json = ('IdUser: registrprofil,' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: registrprofil')
+    unloadlog(json)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# ---- Реєстрація кабінету пацієнта
+def registrkabinet(request):
+    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likarinterwiev':
+        settingsvar.backpage = settingsvar.kabinet
+        shablonlikar(request, settingsvar.pacient)
+    else:
+        settingsvar.html = 'diagnoz/manualpacient.html'
+        settingsvar.nextstepdata = {}
+
+    json = ('IdUser: registrkabinet' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: registrkabinet')
+    unloadlog(json)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# ---- Профільні лікарі
+def profillikar(request):
+    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likarinterwiev':
+        settingsvar.backpage = settingsvar.kabinet
+        shablonlikar(request, settingsvar.pacient)
+    else:
+        settingsvar.html = 'diagnoz/manualpacient.html'
+        settingsvar.nextstepdata = {}
+
+    json = ('IdUser: profillikar' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: profillikar')
+    unloadlog(json)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# ---- Амбулаторно-поліклінічні заклади
+def clinicmedzaklad(request):
+    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likarinterwiev':
+        settingsvar.backpage = settingsvar.kabinet
+        shablonlikar(request, settingsvar.pacient)
+    else:
+        settingsvar.html = 'diagnoz/manualpacient.html'
+        settingsvar.nextstepdata = {}
+
+    json = ('IdUser: clinicmedzaklad' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: clinicmedzaklad')
+    unloadlog(json)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# ---- Сімейні лікарі
+def familylikar(request):
+    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likarinterwiev':
+        settingsvar.backpage = settingsvar.kabinet
+        shablonlikar(request, settingsvar.pacient)
+    else:
+        settingsvar.html = 'diagnoz/manualpacient.html'
+        settingsvar.nextstepdata = {}
+
+    json = ('IdUser: familylikar' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: familylikar')
+    unloadlog(json)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):
     json = ('IdUser: directiondiagnoz,' + 'dateseanse :' +
@@ -1072,8 +1162,7 @@ def selectmedzaklad(request, statuszaklad):
         'detalinglist': settingsvar.grupmedzaklad,
         'piblikar': '',
         'likar': '',
-        # 'icdgr': settingsvar.icdGrDiagnoz,
-        # 'grupdiagnoz': settingsvar.grupDiagnoz
+
     }
     if len(settingsvar.pacient) > 0:
         settingsvar.nextstepdata['likar'] = True
@@ -1853,6 +1942,9 @@ def caseprofil(request):
 def profilinfopacient():
     settingsvar.readprofil = True
     settingsvar.html = 'diagnoz/pacientinfoprofil.html'
+    registrprofil = False
+    if settingsvar.receptitem == 'registrprofil': registrprofil = True
+
     email = ""
     if len(settingsvar.pacient['email']) != "": email = settingsvar.pacient['email']
     settingsvar.nextstepdata = {
@@ -1864,14 +1956,15 @@ def profilinfopacient():
         'profession': 'Профессія: ' + settingsvar.pacient['profession'],
         'pind': 'Поштовий індекс: ' + settingsvar.pacient['pind'],
         'tel': 'Телефон: ' + settingsvar.pacient['tel'],
-        'email': 'Поштова електронна адреса: ' + email
+        'email': 'Поштова електронна адреса: ' + email,
+        'registrprofil': registrprofil
     }
     return
 
 
 # Видалити профіль пацієнта
 def deletprofil(request):
-    # settingsvar.pacient['id']
+
     settingsvar.pacient = rest_api(
         '/api/PacientController/' + '0/' + settingsvar.kodPacienta, '', 'DEL')
     settingsvar.pacient = rest_api(
@@ -1889,6 +1982,7 @@ def deletprofil(request):
     settingsvar.kabinet = ''
     settingsvar.setintertview = False
     settingsvar.html = 'diagnoz/index.html'
+    if settingsvar.receptitem == 'registrprofil': settingsvar.html = 'diagnoz/reception.html'
     settingsvar.nextstepdata = {}
     settingsvar.likar = {}
     settingsvar.pacient = {}
@@ -2119,6 +2213,32 @@ def modformatjson(formdata):
     return
 
 
+# --- записати в Бд введенний профіль
+def addprofilpacient(request):
+    doc = rest_api('api/PacientController/' + '0/0/0/0/' + settingsvar.jsonformpacient['Tel'], '', 'GET')
+
+    if len(doc) == 0:
+        settingsvar.pacient = rest_api('/api/PacientController/', settingsvar.jsonformpacient, 'POST')
+        if len(settingsvar.pacient) > 0:
+            errorprofil('Шановний користувач!  Ваш профіль збережено.')
+            settingsvar.nextstepdata = {}
+            settingsvar.html = 'diagnoz/reception.html'
+    else:
+        settingsvar.kodPacienta = doc[0]['kodPacient']
+        settingsvar.pacient = doc[0]
+        errorprofil('Шановний користувач!  Ваш профіль вже існує в БД.')
+
+    json = ('IdUser: addprofilpacient' + ' ' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: addprofilpacient')
+    unloadlog(json)
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def repetpacientprofil(request):
+    getpostpacientprofil(request)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
 def getpostpacientprofil(request):
     settingsvar.html = 'diagnoz/pacientprofil.html'
     iduser = funciduser()
@@ -2144,10 +2264,17 @@ def getpostpacientprofil(request):
                                            'Profession': settingsvar.formpacient['profession']
                                            }
 
+
         match settingsvar.kabinet:
             case 'guest':
-                modformatjson(settingsvar.formpacient)
-                saveselectlikar(settingsvar.pacient)
+                if len(settingsvar.pacient) == 0:
+                    modformatjson(settingsvar.formpacient)
+                if settingsvar.receptitem == 'registrprofil':
+
+                    profilinfopacient()
+                else:
+
+                    saveselectlikar(settingsvar.pacient)
             case 'pacient' | 'interwiev':
                 if settingsvar.editprofil == False:
                     # --- записати в Бд облікові дані
@@ -2268,13 +2395,17 @@ def errorprofil(compl):
     settingsvar.html = 'diagnoz/savediagnoz.html'
     iduser = funciduser()
     backurl = funcbakurl()
-    if settingsvar.kabinet == "guest": backurl = 'backshablonselect'
+    next = 'Повторити запит'
+    if 'існує' in compl: next = 'Далі'
+    if settingsvar.kabinet == "guest" and settingsvar.receptitem != 'registrprofil': backurl = 'backshablonselect'
+    if settingsvar.kabinet == "guest" and settingsvar.receptitem == 'registrprofil': backurl = 'repetpacientprofil'
     if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'listinterwiev' \
             or settingsvar.kabinet == 'listreceptionlikar' or settingsvar.kabinet == 'pacientstanhealth': backurl = 'reestraccountuser'
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': compl,
         'backurl': backurl,
+        'next': next
 
     }
     return

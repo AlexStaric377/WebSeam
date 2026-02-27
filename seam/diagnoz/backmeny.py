@@ -47,6 +47,8 @@ def backpage(request):
             views.listworkdiagnoz()
         case 'guest':
             match settingsvar.receptitem:
+                case 'registrprofil':
+                    views.reception(request)
                 case 'directiondiagnoz':
                     views.listworkdiagnoz()
                 case 'likarworkdiagnoz':
