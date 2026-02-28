@@ -46,10 +46,15 @@
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'addprofilpacient' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Зареєструвати</a>
     {% endif %}
-    <a class="btn btn-sm text-white rounded-pill" href="{% url 'pacientprofil' %}" role="button"
+    {% if registrkabinet %}
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'addprofilpacient' %}" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;">Підтвердити</a>
+    {% else %}
+    <a class="btn btn-sm text-white rounded-pill" href="{% url 'editpacientprofil' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Корегувати</a>
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'deletprofil' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Видалити профіль</a>
+    {% endif %}
 </div>
         </div>
     </div>

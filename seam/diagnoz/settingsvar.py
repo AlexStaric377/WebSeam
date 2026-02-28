@@ -119,3 +119,4 @@ Diagnozmedgrup = []
 kodzaklad = ""
 idstatus = ""
 listlikar = []
+editpacientprofil = False

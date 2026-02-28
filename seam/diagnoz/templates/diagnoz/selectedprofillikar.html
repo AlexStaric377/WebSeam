@@ -13,20 +13,15 @@
         </tbody>
     </table>
     {% else %}
-    <!--    <h6>{{iduser}}</h6>-->
-
     <table class="table text-center">
         <tbody>
         <tr>
             <td><p>{{namedzaklad}}</p></td>
         </tr>
-        <!--        <tr>-->
-        <!--            <td><p>{{adrdzaklad}}</p></td>-->
-        <!--        </tr>-->
         </tbody>
     </table>
     {% endif %}
-    <h5> {{ compl }} </h5>
+    <h6> {{ compl }} </h6>
 
     {% block list %}
     {% if directdiagnoz %}

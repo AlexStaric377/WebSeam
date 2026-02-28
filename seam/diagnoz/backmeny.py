@@ -59,6 +59,11 @@ def backpage(request):
                     views.backreceptprofillmedzaklad(request)
                 case 'backreceptprofillmedzaklad':
                     views.backreception()
+                case 'clinicmedzaklad':
+                    views.clinicmedzaklad(request)
+                    settingsvar.backpage = 'reception'
+                case 'profillikar':
+                    views.backreception()
                 case 'interwievcomplaint':
                     if settingsvar.selectbackmeny == True:
                         settingsvar.selectbackmeny = False

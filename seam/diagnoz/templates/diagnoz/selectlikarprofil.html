@@ -16,7 +16,13 @@
     <h6>{{iduser}}</h6>
     {% endif %}
     <h5> {{ compl }} </h5>
+    {% if workdirection %}
+    <p class="fst-italic" style="font-size: 12px;">(Для перегляду робочих напрямків захворювань, з якими працює лікар,
+        натисніть на відповідне прізвище)</p>
+    {% else %}
     <p class="fst-italic" style="font-size: 12px;">(Для запису до лікаря натисніть на відповідне прізвище.)</p>
+    {% endif %}
+
 </div>
 {% block list %}
 <div class="table-container" style="max-height: 400px; overflow-y: auto;">

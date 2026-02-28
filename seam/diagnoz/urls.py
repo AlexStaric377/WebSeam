@@ -106,6 +106,7 @@ urlpatterns = [
     path('familylikar', views.familylikar, name='familylikar'),
     path('addprofilpacient', views.addprofilpacient, name='addprofilpacient'),
     path('repetpacientprofil', views.repetpacientprofil, name='repetpacientprofil'),
+    path('editpacientprofil', views.editpacientprofil, name='editpacientprofil'),
 
 ]
 #
