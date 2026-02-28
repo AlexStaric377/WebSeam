@@ -413,8 +413,21 @@ def familylikar(request):
         settingsvar.backpage = settingsvar.kabinet
         shablonlikar(request, settingsvar.pacient)
     else:
-        settingsvar.html = 'diagnoz/manualpacient.html'
-        settingsvar.nextstepdata = {}
+        settingsvar.backpage = settingsvar.kabinet
+        settingsvar.receptitem = 'familylikar'
+        likarspec = []
+
+        settingsvar.likar = rest_api('/api/ApiControllerDoctor/', '', 'GET')
+        for item in settingsvar.likar:
+            medzaklad = rest_api(
+                '/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '',
+                'GET')
+            if medzaklad['idStatus'] == '2':
+                likarspec.append(item)
+        if len(likarspec) > 0:
+            selectlikarrofil(request, likarspec)
+        else:
+            errorprofil('Шановний користувач! за вашим запитом немає спецілізованих лікарів')
 
     json = ('IdUser: familylikar' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: familylikar')
@@ -1267,17 +1280,27 @@ def selectlikarrofil(request, listrofillikar):
     settingsvar.listlikar = []
     itemlistlikar = {}
     for item in listrofillikar:
-        # zakladlikar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
-
-        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
-        itemlistlikar['kodDoctor'] = item['kodDoctor']
-        itemlistlikar['kodzaklad'] = item['edrpou']
-        itemlistlikar['name'] = item['name']
-        itemlistlikar['surname'] = item['surname']
-        itemlistlikar['specialnoct'] = item['specialnoct']
-        itemlistlikar['zakladname'] = medzaklad['name']
-        itemlistlikar['adreszak'] = medzaklad['adres']
-        itemlistlikar['tel'] = medzaklad['telefon']
+        if settingsvar.receptitem != 'familylikar' and settingsvar.receptitem != 'profillikar':
+            zakladlikar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
+            medzaklad = rest_api('/api/MedicalInstitutionController/' + zakladlikar['edrpou'] + '/0/0/0', '', 'GET')
+            itemlistlikar['kodDoctor'] = item['kodDoctor']
+            itemlistlikar['kodzaklad'] = zakladlikar['edrpou']
+            itemlistlikar['name'] = zakladlikar['name']
+            itemlistlikar['surname'] = zakladlikar['surname']
+            itemlistlikar['specialnoct'] = zakladlikar['specialnoct']
+            itemlistlikar['zakladname'] = medzaklad['name']
+            itemlistlikar['adreszak'] = medzaklad['adres']
+            itemlistlikar['tel'] = medzaklad['telefon']
+        else:
+            medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
+            itemlistlikar['kodDoctor'] = item['kodDoctor']
+            itemlistlikar['kodzaklad'] = item['edrpou']
+            itemlistlikar['name'] = item['name']
+            itemlistlikar['surname'] = item['surname']
+            itemlistlikar['specialnoct'] = item['specialnoct']
+            itemlistlikar['zakladname'] = medzaklad['name']
+            itemlistlikar['adreszak'] = medzaklad['adres']
+            itemlistlikar['tel'] = medzaklad['telefon']
         settingsvar.listlikar.append(itemlistlikar)
         itemlistlikar = {}
 
@@ -1287,14 +1310,19 @@ def selectlikarrofil(request, listrofillikar):
             and settingsvar.kabinet != 'guest' and settingsvar.kabinet != 'interwiev'): settingsvar.receptitem = 'selectedprofillikar'
     iduser = funciduser()
     backurl = funcbakurl()
-    likar = False
     workdirection = False
+    likar = False
+    compl = 'Перелік спеціалізованих лікарів'
+    if settingsvar.receptitem == 'familylikar':
+        compl = 'Перелік сімейних лікарів'
+        workdirection = True
     if settingsvar.receptitem == 'profillikar':
         workdirection = True
+
     settingsvar.nextstepdata = {}
     settingsvar.nextstepdata = {
         'iduser': iduser,
-        'compl': 'Перелік спеціалізованих лікарів',
+        'compl': compl,
         'detalinglist': settingsvar.listlikar,
         'piblikar': '',
         'pacient': '',

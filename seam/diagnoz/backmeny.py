@@ -64,6 +64,8 @@ def backpage(request):
                     settingsvar.backpage = 'reception'
                 case 'profillikar':
                     views.backreception()
+                case 'familylikar':
+                    views.backreception()
                 case 'interwievcomplaint':
                     if settingsvar.selectbackmeny == True:
                         settingsvar.selectbackmeny = False
