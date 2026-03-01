@@ -3,44 +3,51 @@
 {% block nav %}
 <!--{% include 'diagnoz/kaducey.html' %}-->
 <div class="container text-center">
-    <div class="col justify-content-md-center">
-        <p></p>
-        <div class="col-md-auto">
-            <h2>Кабінет пацієнта</h2>
+    <div class="row">
+        <div class="col justify-content-md-center">
+            <p></p>
+            <h4>Кабінет пацієнта :</h4>
+            <div class="d-flex justify-content-center align-items-start border shadow p-3 mb-5 bg-white rounded overflow-y: auto">
+                <nav class="navbar navbar-light bg-light">
+                    <div class="container-fluid  ">
+                        <!-- Вертикальное меню -->
+                        <ul class="navbar-nav flex-column text-start">
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'manualpacient' %}"
+                                   style="font-size: 23px;">- СЕАМ для пацієнта</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'profilpacient' %}"
+                                   style="font-size: 23px;">- Профіль</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'pacientinterwiev' %}"
+                                   style="font-size: 23px;">- Провести діагностику</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'pacientlistinterwiev' %}"
+                                   style="font-size: 23px;">- Перегляд опитувань</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'pacientreceptionlikar' %}"
+                                   style="font-size: 23px;">- Запис на обстеження</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'pacientstanhealth' %}"
+                                   style="font-size: 23px;">- Тиск, пульс, аналізи</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'selectfamilylikar' %}"
+                                   style="font-size: 23px;">- Сімейний лікар</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
         </div>
-        <p><br></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'manualpacient' %}">
-                <font style="font-size: 25px;"><font style="vertical-align: inherit;">Про СЕАМ для
-                    пацієнта</font></font></a>
-        </div>
-        <p></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'profilpacient' %}">
-                <font style="font-size: 25px;"><font style="vertical-align: inherit;">Профіль</font></font></a>
-        </div>
-        <p></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'pacientinterwiev' %}"
-               style="font-size: 25px;">Провести діагностику</a>
-        </div>
-        <p></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'pacientlistinterwiev' %}"
-               style="font-size: 25px;">Перегляд опитувань</a>
-        </div>
-        <p></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'pacientreceptionlikar' %}"
-               style="font-size: 25px;">Запис на обстеження до лікаря</a>
-        </div>
-        <p></p>
-        <div class="col-md-auto">
-            <a class="text-primary text-decoration-none" href="{% url 'pacientstanhealth' %}"
-               style="font-size: 25px;">Тиск, пульс, аналізи</a>
-        </div>
-
     </div>
 </div>
+
+
 {% endblock %}
 

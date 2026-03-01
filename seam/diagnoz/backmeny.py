@@ -11,10 +11,25 @@ def backpage(request):
             views.pacient(request)
         case "":
             views.index(request)
-        case 'index' | "pacient" | "likar":
+        case 'index':
             views.index(request)
+        case "pacient":
+            if settingsvar.receptitem == 'manualpacient':
+                views.pacient(request)
+                settingsvar.backpage = 'index'
+            else:
+                views.index(request)
+        case "likar":
+            if settingsvar.receptitem == 'manuallikar':
+                views.likar(request)
+                settingsvar.backpage = 'index'
+            else:
+                views.index(request)
         case 'reception':
             views.backreception()
+        case 'likarinapryamok':
+            views.likar(request)
+            settingsvar.backpage = 'index'
         case "checkvisitinglikar":
             if settingsvar.html == 'diagnoz/pacientreceptionlikar.html' or settingsvar.html == 'diagnoz/searchpacient.html':
                 views.backreception()
@@ -47,8 +62,10 @@ def backpage(request):
             views.listworkdiagnoz()
         case 'guest':
             match settingsvar.receptitem:
-                case 'registrprofil':
+
+                case 'registrprofil' | 'registrkabinet' | 'applicregulat' | 'manuallikar':
                     views.reception(request)
+                    settingsvar.backpage = 'index'
                 case 'directiondiagnoz':
                     views.listworkdiagnoz()
                 case 'likarworkdiagnoz':
@@ -77,6 +94,8 @@ def backpage(request):
                     views.backreception()
                 case 'selectedprofillikar':
                     views.backreceptprofillmedzaklad(request)
+                case _:
+                    views.index(request)
 
         case "pacientprofil" | 'interwiev' | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth' | 'pacientinterwiev':
 
