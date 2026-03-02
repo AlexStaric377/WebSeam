@@ -1591,14 +1591,19 @@ def inputprofilpacient(request, selected_doctor):
                                     settingsvar.kodDoctor + '/0', '', 'GET')
         iduser = funciduser()
         match settingsvar.receptitem:
-            case 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
+            case 'profillikar' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
                 if settingsvar.addinterviewrecept == True and settingsvar.receptitem != 'directiondiagnoz':
                     dateregistrationappointment(request)
                 else:
+                    settingsvar.html = 'diagnoz/likarworkdirection.html'
                     backurl = 'receptprofillmedzaklad'
                     settingsvar.nawpage = 'receptprofillmedzaklad'
-                    settingsvar.html = 'diagnoz/likarworkdirection.html'
+
                     match settingsvar.receptitem:
+                        case 'profillikar':
+                            settingsvar.backurl = 'profillikar'
+                        case 'familylikar':
+                            settingsvar.backurl = 'familylikar'
                         case 'receptprofillmedzaklad':
                             settingsvar.receptitem = 'likarworkdirection'
 
@@ -2709,10 +2714,12 @@ def selectmedzakladpacien():
 
 
 # --- Профіль проведеного інтервью
-def profilinterview(request, selected_protokol, selected_datevizita, selected_dateInterview):  # httpRequest
+def profilinterview(request, selected_protokol, selected_datevizita, selected_kodDiagnoz,
+                    selected_dateInterview):  # httpRequest
     settingsvar.datevizita = selected_datevizita
     settingsvar.dateInterview = selected_dateInterview
     settingsvar.kodProtokola = selected_protokol
+    settingsvar.kodDiagnoz = selected_kodDiagnoz
     settingsvar.backpage = 'profilinterview'
     if settingsvar.kabinet != 'listreceptionlikar': settingsvar.backpage = 'profilinterview'
 
@@ -2857,10 +2864,30 @@ def nextprofilinterview(request):
                         medzaklad = settingsvar.namemedzaklad
                 break
     depend = rest_api('api/DependencyDiagnozController/' + '0/' + settingsvar.kodProtokola + '/0', '', 'GET')
-    recommend = rest_api('api/RecommendationController/' + depend[0]['kodRecommend'] + '/0', '', 'GET')
-    diagnoz = rest_api('api/DiagnozController/' + depend[0]['kodDiagnoz'] + '/0/0', '', 'GET')
-    if settingsvar.nametInterview == "": settingsvar.nametInterview = diagnoz['nameDiagnoza']
-    settingsvar.namediagnoz = 'Попередній діагноз: ' + diagnoz['nameDiagnoza']
+    recommend = {}
+    diagnoz = {}
+    urlinet = ''
+
+    if len(depend) > 0:
+        recommend = rest_api('api/RecommendationController/' + depend[0]['kodRecommend'] + '/0', '', 'GET')
+        diagnoz = rest_api('api/DiagnozController/' + depend[0]['kodDiagnoz'] + '/0/0', '', 'GET')
+        urlinet = diagnoz['uriDiagnoza']
+        if settingsvar.nametInterview == "": settingsvar.nametInterview = diagnoz['nameDiagnoza']
+        settingsvar.namediagnoz = 'Попередній діагноз: ' + diagnoz['nameDiagnoza']
+    else:
+        recommend['contentRecommendation'] = ''
+        diagnoz = rest_api('api/InterviewController/' + settingsvar.kodProtokola + '/0/0/0/0', '', 'GET')
+        if len(diagnoz) > 0:
+            urlinet = diagnoz[0]['uriInterview']
+            if settingsvar.nametInterview == "": settingsvar.nametInterview = diagnoz[0]['nametInterview']
+            settingsvar.namediagnoz = 'Попередній діагноз: ' + diagnoz[0]['nametInterview']
+        else:
+            diagnoz = rest_api('api/DiagnozController/' + settingsvar.kodDiagnoz + '/0/0', '', 'GET')
+            urlinet = diagnoz['uriDiagnoza']
+            if settingsvar.nametInterview == "": settingsvar.nametInterview = diagnoz['nameDiagnoza']
+            settingsvar.namediagnoz = 'Попередній діагноз: ' + diagnoz['nameDiagnoza']
+
+
     settingsvar.html = 'diagnoz/profilinterview.html'
     settingsvar.backpage = 'profilinterview'
     shablonpacient(settingsvar.pacient)
@@ -2871,7 +2898,7 @@ def nextprofilinterview(request):
     settingsvar.nextstepdata['datereception'] = 'Дата прийому:   ' + select_dateDoctor
     settingsvar.nextstepdata['diagnoz'] = settingsvar.namediagnoz
     settingsvar.nextstepdata['recomendaciya'] = 'Рекомендації:   ' + recommend['contentRecommendation']
-    settingsvar.nextstepdata['urlinet'] = 'Опис в інтернеті:   ' + diagnoz['uriDiagnoza']
+    settingsvar.nextstepdata['urlinet'] = 'Опис в інтернеті:   ' + urlinet
     settingsvar.nextstepdata['backurl'] = backurl
     settingsvar.nextstepdata['remove'] = remove
     settingsvar.nextstepdata['removefunc'] = removefunc
@@ -2879,6 +2906,7 @@ def nextprofilinterview(request):
     settingsvar.url = settingsvar.nametInterview + '+як+лікувати'
     settingsvar.nextstepdata['base_url'] = 'https://www.google.com/search'
     settingsvar.nextstepdata['search_term'] = settingsvar.url
+
     return
 
 

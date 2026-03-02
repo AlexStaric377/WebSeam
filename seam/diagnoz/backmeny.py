@@ -80,9 +80,17 @@ def backpage(request):
                     views.clinicmedzaklad(request)
                     settingsvar.backpage = 'reception'
                 case 'profillikar':
-                    views.backreception()
+                    if settingsvar.backurl == 'profillikar':
+                        views.profillikar(request)
+                    else:
+                        views.backreception()
+                    settingsvar.backurl = 'reception'
                 case 'familylikar':
-                    views.backreception()
+                    if settingsvar.backurl == 'familylikar':
+                        views.familylikar(request)
+                    else:
+                        views.backreception()
+                    settingsvar.backurl = 'reception'
                 case 'interwievcomplaint':
                     if settingsvar.selectbackmeny == True:
                         settingsvar.selectbackmeny = False

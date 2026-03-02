@@ -60,7 +60,8 @@ urlpatterns = [
     path('rada', views.rada, name='rada'),
     path('newsseam', views.newsseam, name='newsseam'),
     path('kabinetpacient', views.kabinetpacient, name='kabinetpacient'),
-    path('profilinterview/<str:selected_protokol>,  <str:selected_datevizita>, <str:selected_dateInterview>',
+    path(
+        'profilinterview/<str:selected_protokol>,  <str:selected_datevizita>,  <str:selected_kodDiagnoz>,  <str:selected_dateInterview>',
          views.profilinterview, name='profilinterview'),
     path('backprofilinterview', views.backprofilinterview, name='backprofilinterview'),
     path('profilpacient', views.profilpacient, name='profilpacient'),

@@ -33,19 +33,19 @@
     {% for item in complaintlist %}
     <tr>
         <td><a class="col container  text-dark text-decoration-none"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.namelikar}}</a>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor item.kodDiagnoz item.dateInterview %}">{{item.namelikar}}</a>
         </td>
         <td><a class="col container  text-dark text-decoration-none"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.medzaklad}}</a>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor item.kodDiagnoz item.dateInterview %}">{{item.medzaklad}}</a>
         </td>
         <td><a class="col container  text-dark text-decoration-none"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.dateDoctor}}</a>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor item.kodDiagnoz item.dateInterview %}">{{item.dateDoctor}}</a>
         </td>
         <td><a class="col container  text-dark text-decoration-none"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.dateInterview}}</a>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor item.kodDiagnoz item.dateInterview %}">{{item.dateInterview}}</a>
         </td>
         <td><a class="col container  text-dark text-decoration-none"
-               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.dateInterview %}">{{item.diagnoz}}</a>
+               href="{% url 'profilinterview' item.kodProtokola  item.dateDoctor  item.kodDiagnoz item.dateInterview %}">{{item.diagnoz}}</a>
         </td>
 
     </tr>
