@@ -9,6 +9,20 @@
     <p>{{pacient}}</p>
     {% endif %}
     <h6>{{ compl }}</h6>
+    <p style="font-size: 12px;">{{namediagnoz}}</p>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white rounded-pill" href="{{ prof_url }}?q={{ search_prof }}"
+           rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">
+            Профілактика захворювання
+        </a>
+        <a class="btn btn-sm text-white rounded-pill" href="{{ medication_url }}?q={{ search_medic }}"
+           rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">
+            Тактика лікування
+        </a>
+    </div>
+
 </div>
 {% block detalinglist %}
 <div class="container-fluid text-center">

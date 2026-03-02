@@ -14,11 +14,11 @@ def backpage(request):
         case 'index':
             views.index(request)
         case "pacient":
-            if settingsvar.receptitem == 'manualpacient':
                 views.pacient(request)
                 settingsvar.backpage = 'index'
-            else:
-                views.index(request)
+        case 'selectfamilylikar':
+            views.selectfamilylikar(request)
+            settingsvar.backpage = 'pacient'
         case "likar":
             if settingsvar.receptitem == 'manuallikar':
                 views.likar(request)
@@ -60,6 +60,9 @@ def backpage(request):
             views.shablonlistlikar()
         case 'workdiagnozlikar':
             views.listworkdiagnoz()
+        case 'selectdprofillikar':
+            views.profillmedzaklad(request, settingsvar.select_icd)
+
         case 'guest':
             match settingsvar.receptitem:
 
