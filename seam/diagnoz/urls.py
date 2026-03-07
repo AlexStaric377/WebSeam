@@ -110,6 +110,9 @@ urlpatterns = [
     path('editpacientprofil', views.editpacientprofil, name='editpacientprofil'),
     path('selectfamilylikar', views.selectfamilylikar, name='selectfamilylikar'),
     path('likarinapryamok', views.likarinapryamok, name='likarinapryamok'),
+    path('replaceproflikar', views.replaceproflikar, name='replaceproflikar'),
+    path('removeappointments', views.removeappointments, name='removeappointments'),
+    path('manualseam', views.manualseam, name='manualseam'),
 
 ]
 #
@@ -118,5 +121,3 @@ urlpatterns += [
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
-
-# http GET http://192.168.1.113:50001/api/ApiControllerComplaint/ Accept:application/json

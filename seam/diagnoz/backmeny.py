@@ -146,7 +146,6 @@ def backpage(request):
                     settingsvar.selectbackmeny = False
             else:
                 views.likar(request)
-
         case 'receptinterwiev':
             if settingsvar.receptitem == 'InputsearchcomplateForm':  # or settingsvar.receptitem == 'getsearchcomplateForm':
                 views.funcinterwiev(request)
@@ -159,6 +158,16 @@ def backpage(request):
                     settingsvar.search = True
                     views.checkvisitinglikar(request)
                 case 'likarlistinterwiev':
+                    CmdStroka = views.rest_api('/api/ApiControllerDoctor/' + settingsvar.kodDoctor + "/0/0", '', 'GET')
+                    if 'name' in CmdStroka:
+                        settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
+                        #        settingsvar.mobtellikar = CmdStroka['telefon']
+                        settingsvar.likar = CmdStroka
+                        medzaklad = views.rest_api(
+                            '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0',
+                            '',
+                            'GET')
+                        settingsvar.namemedzaklad = medzaklad['name']
                     views.listlikar()
                 case 'likarreceptionpacient':
                     views.listreceptionpacient(request)

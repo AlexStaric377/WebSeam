@@ -120,3 +120,6 @@ kodzaklad = ""
 idstatus = ""
 listlikar = []
 editpacientprofil = False
+listAdmissionlikar = []
+itemlikarAdmission = {}
+PacientName = ""

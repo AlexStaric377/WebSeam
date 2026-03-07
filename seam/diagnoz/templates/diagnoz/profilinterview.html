@@ -33,42 +33,43 @@
     </div>
 
                 <table class="table text-start">
-    <thead>
-    <tr>
-        <!--        <th scope="col">Інформація для обстеження пацієнта</th>-->
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td><p>{{ namepacient }}</p></td>
-    </tr>
-    <tr>
-        <td><p>{{ medzaklad }}</p></td>
-    </tr>
-    <tr>
-        <td><p>{{ namelikar }} </p></td>
-    </tr>
+                    <thead>
+                    <tr></tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><p>{{ namepacient }}</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>{{ medzaklad }}</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>{{ namelikar }} </p></td>
+                    </tr>
 
-    <tr>
-        <td><p>{{ dateinterv }}</p></td>
-    </tr>
-    <tr>
-        <td><p>{{ datereception }}</p></td>
-    </tr>
-    <tr>
-        <td><p>{{ diagnoz }} </p></td>
-    </tr>
-    <tr>
-        <td><p>{{ recomendaciya }}</p></td>
-    </tr>
-    </tbody>
+                    <tr>
+                        <td><p>{{ dateinterv }}</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>{{ datereception }}</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>{{ diagnoz }} </p></td>
+                    </tr>
+                    <tr>
+                        <td><p>{{ recomendaciya }}</p></td>
+                    </tr>
+                    </tbody>
                 </table>
 
                 <div class="container-fluid text-center" style="display: inline-block">
-    {% if remove %}
-                    <a class="btn btn-sm text-white rounded-pill" href="{% url removefunc %}" role="button"
-       style="font-size: 12px; background-color: #558787; height=12;">Видалити</a>
-    {% endif %}
+                    {% if remove %}
+                    <a class="btn btn-sm text-white rounded-pill" href="{% url 'removeappointments' %}" role="button"
+                       style="font-size: 12px; background-color: #558787; height=12;">Видалити</a>
+                    {% endif %}
+                    <a class="btn btn-sm text-white rounded-pill" href="{% url 'replaceproflikar' %}"
+                       role="button" style="font-size: 12px; background-color: #558787; height=12;">Записати до іншого
+                        профільного лікаря</a>
                 </div>
 </div>
         </div>
