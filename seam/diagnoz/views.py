@@ -250,6 +250,7 @@ def likar(request):  # httpRequest
                 datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: likar')
         unloadlog(json)
         settingsvar.backpage = 'index'
+        settingsvar.receptitem = 'index'
         settingsvar.kabinet = 'likar'
         settingsvar.html = 'diagnoz/likar.html'
         settingsvar.setintertview = False
@@ -1661,7 +1662,7 @@ def inputprofilpacient(request, selected_doctor):
                                     settingsvar.kodDoctor + '/0', '', 'GET')
         iduser = funciduser()
         match settingsvar.receptitem:
-            case 'profillikar' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
+            case 'profillikar' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
                 if settingsvar.addinterviewrecept == True and settingsvar.receptitem != 'directiondiagnoz':
                     dateregistrationappointment(request)
                 else:
@@ -4073,6 +4074,8 @@ def profillmedzaklad(request, select_icd):
     point = select_icd[select_icd.rindex('.', 0):]
     namediagnoz = 'Діагноз : ' + point.replace('.', ' ')
 
+    reason_url = 'https://www.google.com/search'
+    search_reason = point + '+причини+захворювання'
     prof_url = 'https://www.google.com/search'
     search_prof = point + '+профілактика+захворювання'
     medication_url = 'https://www.google.com/search'
@@ -4089,7 +4092,9 @@ def profillmedzaklad(request, select_icd):
         'prof_url': prof_url,
         'search_prof': search_prof,
         'medication_url': medication_url,
-        'search_medic': search_medic
+        'search_medic': search_medic,
+        'reason_url': reason_url,
+        'search_reason': search_reason
     }
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -4363,7 +4368,7 @@ def likarinapryamok(request):  # httpRequest
         settingsvar.nawpage = 'likarinapryamok'
         settingsvar.kabinetitem = 'likarinapryamok'
         settingsvar.kabinet = 'likarinapryamok'
-        settingsvar.backpage = 'likarinapryamok'
+        if settingsvar.backpage != 'likar': settingsvar.backpage = 'likarinapryamok'
         settingsvar.receptitem = 'likarinapryamok'
         if settingsvar.setpostlikar == False:
             accountuser(request)
@@ -4376,10 +4381,34 @@ def likarinapryamok(request):  # httpRequest
 def funclikarnapryamok():
     iduser = funciduser()
     backurl = funcbakurl()
-    listworkdiagnoz = []
+    tmp = []
+    itemgrupdiagnoz = []
+    listworknapryamok = []
+    listlikarall = []
+    likargrupdiagnoz = rest_api(
+        '/api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + "/0", '', 'GET')
+
+    for item in likargrupdiagnoz:
+        itemgrupdiagnoz = rest_api('/api/LikarGrupDiagnozController/' + "0/" + item['icdGrDiagnoz'], '', 'GET')
+        for item in itemgrupdiagnoz:
+            listworknapryamok.append(item)
+        itemgrupdiagnoz = []
+
+    for item in listworknapryamok:
+        CmdStroka = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
+        doctorfalse = False
+        for itemkod in listlikarall:
+            if item['kodDoctor'] == itemkod['kodDoctor']:
+                doctorfalse = True
+        if doctorfalse == False:
+            medzaklad = rest_api('/api/MedicalInstitutionController/' + CmdStroka['edrpou'] + '/0/0/0', '',
+                                 'GET')
+            CmdStroka['zakladname'] = medzaklad['name']
+            CmdStroka['adreszak'] = medzaklad['adres']
+            listlikarall.append(CmdStroka)
     settingsvar.html = 'diagnoz/selectlikarprofil.html'
     settingsvar.nextstepdata = {
-        'detalinglist': listworkdiagnoz,
+        'detalinglist': listlikarall,
         'backurl': backurl,
         'piblikar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
         'medzaklad': settingsvar.namemedzaklad,

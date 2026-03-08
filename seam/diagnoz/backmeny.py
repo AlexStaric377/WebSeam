@@ -20,16 +20,16 @@ def backpage(request):
             views.selectfamilylikar(request)
             settingsvar.backpage = 'pacient'
         case "likar":
-            if settingsvar.receptitem == 'manuallikar':
+            if settingsvar.receptitem == 'manuallikar' or settingsvar.receptitem == 'likarinapryamok':
                 views.likar(request)
-                settingsvar.backpage = 'index'
+
             else:
                 views.index(request)
         case 'reception':
             views.backreception()
         case 'likarinapryamok':
-            views.likar(request)
-            settingsvar.backpage = 'index'
+            views.likarinapryamok(request)
+            settingsvar.backpage = 'likar'
         case "checkvisitinglikar":
             if settingsvar.html == 'diagnoz/pacientreceptionlikar.html' or settingsvar.html == 'diagnoz/searchpacient.html':
                 views.backreception()

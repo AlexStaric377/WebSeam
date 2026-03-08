@@ -21,6 +21,7 @@
             <th> Ім'я, прізвище</th>
             <th> Професійна діяльність</th>
             <th> Мед. заклад</th>
+            <th> Адреса закладу</th>
         </tr>
         </thead>
         <tbody>
@@ -38,6 +39,10 @@
             <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
                    style="vertical-align: inherit;">
                 {{item.zakladname}}</a>
+            </td>
+            <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
+                   style="vertical-align: inherit;">
+                {{item.adreszak}}</a>
             </td>
         </tr>
         {% endfor %}

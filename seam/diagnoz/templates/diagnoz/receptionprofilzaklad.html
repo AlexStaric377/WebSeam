@@ -11,6 +11,11 @@
     <h6>{{ compl }}</h6>
     <p class="fw-bold" style="font-size: 12px;">{{namediagnoz}}</p>
     <div style="display: inline-block">
+        <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+           rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">
+            Причини захворювання
+        </a>
         <a class="btn btn-sm text-white rounded-pill" href="{{ prof_url }}?q={{ search_prof }}"
            rel="noopener noreferrer"
            role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">
