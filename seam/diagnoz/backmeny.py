@@ -49,9 +49,14 @@ def backpage(request):
                         settingsvar.selectbackmeny = False
                         views.funcinterwiev(request)
                     else:
-                        views.writediagnoz()
-                        if settingsvar.selectbackmeny == False and settingsvar.receptitem == 'interwievcomplaint':
-                            settingsvar.selectbackmeny = True
+                        if settingsvar.receptitem == 'replaceproflikar':
+                            settingsvar.receptitem = 'reception'
+                            settingsvar.selectbackmeny = False
+                            views.funcinterwiev(request)
+                        else:
+                            views.writediagnoz()
+                            if settingsvar.selectbackmeny == False and settingsvar.receptitem == 'interwievcomplaint':
+                                settingsvar.selectbackmeny = True
         case 'directiondiagnoz':
             views.backreception()
         case 'profillmedzaklad':
@@ -61,7 +66,24 @@ def backpage(request):
         case 'workdiagnozlikar':
             views.listworkdiagnoz()
         case 'selectdprofillikar':
-            views.profillmedzaklad(request, settingsvar.select_icd)
+            match settingsvar.receptitem:
+                case 'receptprofillmedzaklad':
+                    views.backreceptprofillmedzaklad(request)
+                case 'likarworkdirection':
+                    views.shablonlistlikar()
+                case 'backreceptprofillmedzaklad':
+                    views.backreception()
+                case 'clinicmedzaklad':
+                    views.clinicmedzaklad(request)
+                    settingsvar.backpage = 'reception'
+                case 'familylikar':
+                    if settingsvar.backurl == 'familylikar':
+                        views.familylikar(request)
+                    else:
+                        views.backreception()
+                    settingsvar.backurl = 'reception'
+                case _:
+                    views.profillmedzaklad(request, settingsvar.select_icd)
 
         case 'guest':
             match settingsvar.receptitem:

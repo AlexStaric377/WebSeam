@@ -3,12 +3,12 @@
 
 <div class="container-fluid text-center">
 
-    <!--    <h6>{{iduser}}</h6>-->
+
     {% if likar %}
     <p>{{piblikar}}</p>
     <p>{{pacient}}</p>
-    {% endif %}
-    <h6>{{ compl }}</h6>
+
+
     <p class="fw-bold" style="font-size: 12px;">{{namediagnoz}}</p>
     <div style="display: inline-block">
         <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
@@ -28,12 +28,15 @@
         </a>
     </div>
 
+
+    {% endif %}
+
+    <h6>{{ compl }}</h6>
 </div>
 {% block detalinglist %}
 <div class="container-fluid text-center">
     <p class="fst-italic" style="font-size: 12px;">(Для перегляду переліку лікарів, які працюють у закладі натисніть на
-        рядок відповідного
-        закладу)</p>
+        рядок відповідного закладу)</p>
 </div>
 
 <div class="table-container" style="max-height: 500px; overflow-y: auto;">

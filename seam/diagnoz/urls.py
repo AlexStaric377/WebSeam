@@ -113,6 +113,7 @@ urlpatterns = [
     path('replaceproflikar', views.replaceproflikar, name='replaceproflikar'),
     path('removeappointments', views.removeappointments, name='removeappointments'),
     path('manualseam', views.manualseam, name='manualseam'),
+    path('profillikardiagnoz/<str:select_icd>', views.profillikardiagnoz, name='profillikardiagnoz'),
 
 ]
 #

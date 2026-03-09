@@ -1,7 +1,32 @@
 {% extends 'diagnoz/shablonnologin.html' %}
 {% block nav %}
 <div class="container-fluid text-center">
-    <h6> {{ compl }} </h6>
+    {% if likarikolegi %}
+    <p class="fw-normal" style="font-size: 18px;"> {{ compl }} </p>
+    {% else %}
+    {% if likar %}
+    <p class="fw-bold" style="font-size: 15px;">{{namediagnoz}}</p>
+    <div style="display: inline-block">
+        <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+           rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">
+            Причини захворювання
+        </a>
+        <a class="btn btn-sm text-white rounded-pill" href="{{ prof_url }}?q={{ search_prof }}"
+           rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">
+            Профілактика захворювання
+        </a>
+        <a class="btn btn-sm text-white rounded-pill" href="{{ medication_url }}?q={{ search_medic }}"
+           rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">
+            Тактика лікування
+        </a>
+    </div>
+    {% endif %}
+    <p></p>
+    <p class="fw-normal" style="font-size: 18px;"> {{ compl }} </p>
+
     {% if workdirection %}
     {% if familylikar %}
     <p class="fst-italic" style="font-size: 12px;">(Для вибору лікаря натисніть на відповідне прізвище)</p>
@@ -10,7 +35,11 @@
         натисніть на відповідне прізвище)</p>
     {% endif %}
     {% else %}
+    {% if likar %}
+    {% else %}
     <p class="fst-italic" style="font-size: 12px;">(Для запису до лікаря натисніть на відповідне прізвище.)</p>
+    {% endif %}
+    {% endif %}
     {% endif %}
 </div>
 {% block list %}
@@ -18,15 +47,30 @@
     <table class="table table-striped table-hover table-bordered">
         <thead>
         <tr>
-            <th> Ім'я, прізвище</th>
-            <th> Професійна діяльність</th>
-            <th> Мед. заклад</th>
-            <th> Адреса закладу</th>
+            <th class="fw-normal" style="font-size: 15px;"> Ім'я, прізвище</th>
+            <th class="fw-normal" style="font-size: 15px;"> Проф. діяльність</th>
+            <th class="fw-normal" style="font-size: 15px;"> Мед. заклад</th>
+            <th class="fw-normal" style="font-size: 15px;"> Адреса закладу</th>
         </tr>
         </thead>
         <tbody>
         {% for item in detalinglist %}
         <tr>
+            {% if likar %}
+            <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                {{item.name}} {{item.surname}}</a>
+            </td>
+
+            <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                {{item.specialnoct}} {{item.resume}}</a>
+            </td>
+            <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                {{item.zakladname}}</a>
+            </td>
+            <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                {{item.adreszak}}</a>
+            </td>
+            {% else %}
             <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
                    style="vertical-align: inherit;">
                 {{item.name}} {{item.surname}}</a>
@@ -44,6 +88,7 @@
                    style="vertical-align: inherit;">
                 {{item.adreszak}}</a>
             </td>
+            {% endif %}
         </tr>
         {% endfor %}
         </tbody>
