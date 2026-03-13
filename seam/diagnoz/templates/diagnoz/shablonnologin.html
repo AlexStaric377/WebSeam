@@ -12,6 +12,7 @@
           rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="{% static 'diagnoz/css/diagnoz.css' %}" rel="stylesheet">
+
 </head>
 <body>
 <div class="container text-center sticky-top">
@@ -153,7 +154,7 @@
 <script crossorigin="anonymous"
         integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
-
+<script src="https://unpkg.com/htmx.org@2.0.2"></script>
 <script>
     // Проверяем, существует ли переменная 'login_form' в контексте
     // и есть ли у нее ошибки (т.е. был ли неудачный POST-запрос)
@@ -173,4 +174,6 @@
       $('[data-toggle="tooltip"]').tooltip()
     })
 </script>
+
+
 </body>

@@ -6,28 +6,64 @@
     <h6> {{ compl }} </h6>
 </div>
 {% block detalinglist %}
-<table class="table table-striped table-hover">
-    <thead>
-    <tr>
-        <th scope="col">Деталі прояву</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for item in detalinglist %}
-    <tr>
-        <td><a aria-current="page" class="nav-link"
-               href="{% url 'selectgrdetaling' item.kodDetailing%}"><font
-                style="vertical-align: inherit;">{{item.nameGrDetailing}}</font></a></td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<form method="POST">
+    {% csrf_token %}
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Деталі прояву</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in detalinglist %}
+        <tr>
+            <td>
+                <div class="form-check ">
+                    <input %} %}checked{% class="form-check-input ajax-checkbox"
+                           data-id="{{ item.kodDetailing }}"
+                           data-url="{% url 'grdetaling_checkbox_view' item.kodDetailing %}"
+                           endif
+                           if item.checkfeat name="grdetaling_checkbox" style="background-color: #a2baba;" type="checkbox" {%>
+
+                    <a class="col container  text-dark text-decoration-none" href="">{{item.nameGrDetailing}}</a>
+                </div>
+
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</form>
 {% endblock %}
 
 <div class="container-fluid text-center justify-content-center d-flex align-items-center" style="display: inline-block">
     <p></p>
     <a class="btn btn-sm text-white rounded-pill text-center justify-content-center d-flex align-items-center"
-       href="{% url enddetaling %}" role="button"
-       style="font-size: 13px; background-color: #558787; width: 90px; height: 20px; background-color: #558787; ">{{next}}</a>
+       href="{% url 'endgrdetaling' %}" role="button"
+       style="font-size: 13px; background-color: #558787; width: 90px; height: 20px; ">{{next}}</a>
 </div>
+<script>
+    document.querySelectorAll('.ajax-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+
+            const url = this.dataset.url;
+            const itemId = this.getAttribute('data-id');
+            const isChecked = this.checked;
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                        idfeat: itemId,
+                        active: isChecked
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log("Успех:", data))
+            .catch(error => console.error("Ошибка:", error));
+        });
+    });
+</script>
 {% endblock %}

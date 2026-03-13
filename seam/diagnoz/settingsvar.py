@@ -123,3 +123,6 @@ editpacientprofil = False
 listAdmissionlikar = []
 itemlikarAdmission = {}
 PacientName = ""
+feature_keyComplaint = []
+grDetaling_keyGrDetaling = []
+continuegrdetaling = False

@@ -15,7 +15,8 @@
     <tbody>
     {% for item in featurelist %}
     <tr>
-        <td><a aria-current="page" class="nav-link"
+
+    <td><a aria-current="page" class="nav-link"
                href="{% url 'featurespisok' item.keyComplaint item.keyFeature %}"><font
                 style="vertical-align: inherit;">{{item.name}}</font></a></td>
     </tr>

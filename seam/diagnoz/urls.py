@@ -114,6 +114,11 @@ urlpatterns = [
     path('removeappointments', views.removeappointments, name='removeappointments'),
     path('manualseam', views.manualseam, name='manualseam'),
     path('profillikardiagnoz/<str:select_icd>', views.profillikardiagnoz, name='profillikardiagnoz'),
+    path('grdetaling_checkbox_view/<str:select_grdetaling>', views.grdetaling_checkbox_view,
+         name='grdetaling_checkbox_view'),
+    path('endvibor', views.endvibor, name='endvibor'),
+    path('detaling_checkbox_view/<str:select_detaling>', views.detaling_checkbox_view, name='detaling_checkbox_view'),
+    path('endgrdetaling', views.endgrdetaling, name='endgrdetaling'),
 
 ]
 #
