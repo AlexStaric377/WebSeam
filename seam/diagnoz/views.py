@@ -1536,6 +1536,7 @@ def selectlikarrofil(listrofillikar):
     iduser = funciduser()
     backurl = funcbakurl()
     workdirection = False
+    likarikolegi = False
     likar = familylikar = False
     compl = 'Перелік спеціалізованих лікарів'
     if settingsvar.receptitem == 'familylikar' or settingsvar.backpage == 'selectfamilylikar':
@@ -1556,10 +1557,12 @@ def selectlikarrofil(listrofillikar):
         'backurl': backurl,
         'workdirection': workdirection,
         'familylikar': familylikar,
-        'namediagnoz': settingsvar.icdGrDiagnoz
+        'namediagnoz': settingsvar.icdGrDiagnoz,
+        'likarikolegi': likarikolegi
     }
     if len(settingsvar.pacient) > 0:
-        settingsvar.nextstepdata['likar'] = True
+        if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'selectfamilylikar':
+            settingsvar.nextstepdata['likar'] = True
         settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
                                               settingsvar.pacient[
                                                   'name'] + " " + settingsvar.pacient['surname']
@@ -2856,14 +2859,15 @@ def errorprofil(compl):
     iduser = funciduser()
     backurl = funcbakurl()
     next = 'Повторити запит'
-    if 'існує' or 'лікар' in compl: next = 'Далі'
+    if 'існує' in compl: next = 'Далі'
+    if 'лікар' in compl: next = 'Далі'
     if settingsvar.kabinet == "pacient" and settingsvar.backpage == 'selectfamilylikar':  backurl = 'pacient'
-
+    if settingsvar.kabinet == "guest" and settingsvar.backpage == "checkvisitinglikar":  backurl = 'backshablonselect'
     if settingsvar.kabinet == "guest" and settingsvar.receptitem != 'registrprofil': backurl = 'backshablonselect'
     if settingsvar.kabinet == "guest" and settingsvar.receptitem == 'registrprofil': backurl = 'repetpacientprofil'
     if settingsvar.kabinet == "guest" and settingsvar.receptitem == 'registrkabinet': backurl = 'reestraccountuser'
-    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'pacient' or settingsvar.kabinet == 'listinterwiev' \
-            or settingsvar.kabinet == 'listreceptionlikar' or settingsvar.kabinet == 'pacientstanhealth': backurl = 'reestraccountuser'
+    if settingsvar.kabinet == 'listinterwiev' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listreceptionlikar' or settingsvar.kabinet == 'pacientstanhealth': backurl = 'pacient'
+    if settingsvar.kabinet == 'pacient': backurl = 'reestraccountuser'
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': compl,
@@ -3392,7 +3396,6 @@ def funcshablonlistpacient():
                 #                settingsvar.mobtellikar = settingsvar.likar['telefon']
                 settingsvar.nextstepdata[
                     'piblikar'] = settingsvar.namemedzaklad + 'Лікар : ' + settingsvar.namelikar  # + " " + settingsvar.mobtellikar
-        settingsvar.nextstepdata['complaintlist'] = settingsvar.listapi
 
     else:
         errorprofil('Шановний користувач! За вашим запитом відсутні проведені опитування.')

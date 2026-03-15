@@ -201,7 +201,7 @@ def backpage(request):
             views.listworkdiagnoz()
         case 'contentinterview' | 'contentinterwiev':
 
-            if settingsvar.receptitem == 'interwievcomplaint':
+            if settingsvar.receptitem == 'interwievcomplaint' or settingsvar.receptitem == 'replaceproflikar':
                 if settingsvar.kabinet == 'guest':
                     match settingsvar.nawpage:
                         case 'backprofilinterview':
