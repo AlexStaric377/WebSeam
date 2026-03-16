@@ -65,6 +65,9 @@ def backpage(request):
             views.shablonlistlikar()
         case 'workdiagnozlikar':
             views.listworkdiagnoz()
+        case 'likarinapryamok':
+            views.likarinapryamok()
+
         case 'selectdprofillikar':
             match settingsvar.receptitem:
                 case 'receptprofillmedzaklad':

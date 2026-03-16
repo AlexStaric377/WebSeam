@@ -1820,7 +1820,7 @@ def inputprofilpacient(request, selected_doctor):
                                     settingsvar.kodDoctor + '/0', '', 'GET')
         iduser = funciduser()
         match settingsvar.receptitem:
-            case 'profillikar' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
+            case 'profillikar' | 'likarinapryamok' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
                 if settingsvar.addinterviewrecept == True and settingsvar.receptitem != 'directiondiagnoz':
                     dateregistrationappointment(request)
                 else:
@@ -1832,6 +1832,8 @@ def inputprofilpacient(request, selected_doctor):
                         settingsvar.nawpage = 'receptprofillmedzaklad'
 
                         match settingsvar.receptitem:
+                            case 'likarinapryamok':
+                                settingsvar.backpage = 'likarinapryamok'
                             case 'profillikar':
                                 settingsvar.backurl = 'profillikar'
                             case 'familylikar':
