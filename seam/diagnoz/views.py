@@ -1504,30 +1504,33 @@ def receptfamilylikar(request):
 def selectlikarrofil(listrofillikar):
     settingsvar.listlikar = []
     itemlistlikar = {}
-    for item in listrofillikar:
-        if settingsvar.receptitem != 'familylikar' and settingsvar.receptitem != 'profillikar' and settingsvar.receptitem != 'selectfamilylikar':
-            zakladlikar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
-            medzaklad = rest_api('/api/MedicalInstitutionController/' + zakladlikar['edrpou'] + '/0/0/0', '', 'GET')
-            itemlistlikar['kodDoctor'] = item['kodDoctor']
-            itemlistlikar['kodzaklad'] = zakladlikar['edrpou']
-            itemlistlikar['name'] = zakladlikar['name']
-            itemlistlikar['surname'] = zakladlikar['surname']
-            itemlistlikar['specialnoct'] = zakladlikar['specialnoct']
-            itemlistlikar['zakladname'] = medzaklad['name']
-            itemlistlikar['adreszak'] = medzaklad['adres']
-            itemlistlikar['tel'] = medzaklad['telefon']
-        else:
-            medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
-            itemlistlikar['kodDoctor'] = item['kodDoctor']
-            itemlistlikar['kodzaklad'] = item['edrpou']
-            itemlistlikar['name'] = item['name']
-            itemlistlikar['surname'] = item['surname']
-            itemlistlikar['specialnoct'] = item['specialnoct']
-            itemlistlikar['zakladname'] = medzaklad['name']
-            itemlistlikar['adreszak'] = medzaklad['adres']
-            itemlistlikar['tel'] = medzaklad['telefon']
-        settingsvar.listlikar.append(itemlistlikar)
-        itemlistlikar = {}
+    if settingsvar.receptitem == 'selectfamilylikar':
+        settingsvar.listlikar = listrofillikar
+    else:
+        for item in listrofillikar:
+            if settingsvar.receptitem != 'familylikar' and settingsvar.receptitem != 'profillikar':
+                zakladlikar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
+                medzaklad = rest_api('/api/MedicalInstitutionController/' + zakladlikar['edrpou'] + '/0/0/0', '', 'GET')
+                itemlistlikar['kodDoctor'] = item['kodDoctor']
+                itemlistlikar['kodzaklad'] = zakladlikar['edrpou']
+                itemlistlikar['name'] = zakladlikar['name']
+                itemlistlikar['surname'] = zakladlikar['surname']
+                itemlistlikar['specialnoct'] = zakladlikar['specialnoct']
+                itemlistlikar['zakladname'] = medzaklad['name']
+                itemlistlikar['adreszak'] = medzaklad['adres']
+                itemlistlikar['tel'] = medzaklad['telefon']
+            else:
+                medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
+                itemlistlikar['kodDoctor'] = item['kodDoctor']
+                itemlistlikar['kodzaklad'] = item['edrpou']
+                itemlistlikar['name'] = item['name']
+                itemlistlikar['surname'] = item['surname']
+                itemlistlikar['specialnoct'] = item['specialnoct']
+                itemlistlikar['zakladname'] = medzaklad['name']
+                itemlistlikar['adreszak'] = medzaklad['adres']
+                itemlistlikar['tel'] = medzaklad['telefon']
+            settingsvar.listlikar.append(itemlistlikar)
+            itemlistlikar = {}
 
 
     settingsvar.html = 'diagnoz/selectlikarprofil.html'
@@ -1537,12 +1540,23 @@ def selectlikarrofil(listrofillikar):
     backurl = funcbakurl()
     workdirection = False
     likarikolegi = False
-    likar = familylikar = False
+    addfamilylikar = likar = familylikar = False
     compl = 'Перелік спеціалізованих лікарів'
-    if settingsvar.receptitem == 'familylikar' or settingsvar.backpage == 'selectfamilylikar':
+    if settingsvar.receptitem == 'familylikar':
         compl = 'Перелік сімейних лікарів'
         workdirection = True
-        if settingsvar.backpage == 'selectfamilylikar': familylikar = True
+
+    if settingsvar.backpage == 'selectfamilylikar':
+        compl = 'Перелік приписаних до вас лікарів'
+        workdirection = True
+        familylikar = False
+        addfamilylikar = True
+
+    if settingsvar.backpage == 'addfamilylikar':
+        compl = 'Перелік лікарів'
+        workdirection = True
+        familylikar = True
+        likar = False
     if settingsvar.receptitem == 'profillikar':
         workdirection = True
 
@@ -1558,10 +1572,11 @@ def selectlikarrofil(listrofillikar):
         'workdirection': workdirection,
         'familylikar': familylikar,
         'namediagnoz': settingsvar.icdGrDiagnoz,
-        'likarikolegi': likarikolegi
+        'likarikolegi': likarikolegi,
+        'addfamilylikar': addfamilylikar
     }
     if len(settingsvar.pacient) > 0:
-        if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'selectfamilylikar':
+        if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'selectfamilylikar' and settingsvar.backpage != 'addfamilylikar':
             settingsvar.nextstepdata['likar'] = True
         settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
                                               settingsvar.pacient[
@@ -1818,13 +1833,14 @@ def inputprofilpacient(request, selected_doctor):
         settingsvar.namemedzaklad = medzaklad['name']
         likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
                                     settingsvar.kodDoctor + '/0', '', 'GET')
+        settingsvar.receptitem = 'selectfamilylikar'
         iduser = funciduser()
         match settingsvar.receptitem:
-            case 'profillikar' | 'likarinapryamok' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
+            case 'selectfamilylikar' | 'profillikar' | 'likarinapryamok' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
                 if settingsvar.addinterviewrecept == True and settingsvar.receptitem != 'directiondiagnoz':
                     dateregistrationappointment(request)
                 else:
-                    if settingsvar.backpage == 'selectfamilylikar':
+                    if settingsvar.receptitem == 'selectfamilylikar' and settingsvar.backpage == 'addfamilylikar':
                         writefamilylikar()
                     else:
                         settingsvar.html = 'diagnoz/likarworkdirection.html'
@@ -1849,6 +1865,9 @@ def inputprofilpacient(request, selected_doctor):
 
                             case 'likarworkdirection':
                                 settingsvar.backpage = 'selectedprofillikar'
+                            case 'selectfamilylikar':
+                                settingsvar.backpage = 'selectfamilylikar'
+                                backurl = 'selectfamilylikar'
                         if len(likarGrupDiagnoz) > 0:
                             settingsvar.nextstepdata = {
                                 'iduser': iduser,
@@ -1878,7 +1897,30 @@ def inputprofilpacient(request, selected_doctor):
 
 
 def writefamilylikar():
-    errorprofil('Шановний користувач! Ваш вибір сімейного лікаря збережено.')
+    date_format = "%Y-%m-%d %H:%M:%S"
+    dateyear = datetime.now()
+    year = dateyear.year
+    numbermonth = dateyear.month
+    itemdays = dateyear.day
+    date_string = str(year) + "-" + str(numbermonth) + "-" + str(
+        itemdays) + " 00:00:00"  # "2023-09-23 00:00:00"
+    datestart = datetime.strptime(date_string, date_format)
+    iso_datestart = datestart.isoformat()
+    date_string = str(datetime.min)
+    dateend = datetime.strptime(date_string, date_format)
+    iso_dateend = dateend.isoformat()
+    json = {'Id': 0,
+            'KodPacient': settingsvar.kodPacienta,
+            'KodDoctor': settingsvar.kodDoctor,
+            'Datestart': iso_datestart,
+            'Dateend': iso_dateend,
+            'Numberrequests': 0,
+            'Numberdiagnoz': 0,
+            }
+
+    # --- записати в Бд до лікаря
+    saveprofil = rest_api('/api/ControlerFamilyLikar/', json, 'POST')
+    funcselectfamilylikar()
     return
 
 
@@ -3674,21 +3716,47 @@ def selectfamilylikar(request):
 
 def funcselectfamilylikar():
     settingsvar.backpage = settingsvar.kabinet
+    settingsvar.kabinetitem = 'selectfamilylikar'
     settingsvar.receptitem = 'selectfamilylikar'
     likarspec = []
+    settingsvar.html = 'diagnoz/selectlikarprofil.html'
+    listfamilylikar = rest_api('/api/ControlerFamilyLikar/', '', 'GET')
+    if len(listfamilylikar) > 0:
+        for item in listfamilylikar:
+            settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + '/0/0', '', 'GET')
+            medzaklad = rest_api('/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
+                                 'GET')
+            item['name'] = settingsvar.likar['name']
+            item['surname'] = settingsvar.likar['surname']
+            item['kodzaklad'] = settingsvar.likar['edrpou']
+            item['specialnoct'] = settingsvar.likar['specialnoct']
+            item['zakladname'] = medzaklad['name']
+            item['adreszak'] = medzaklad['adres']
+            item['tel'] = medzaklad['telefon']
+            likarspec.append(item)
+        selectlikarrofil(likarspec)
 
+    else:
+        errorprofil('Шановний користувач! За вашим запитом відсутні приписані до вас сімейні лікарі')
+    return
+
+
+def addfamilylikar(request):
+    settingsvar.backpage = 'addfamilylikar'
+    likarspec = []
     settingsvar.likar = rest_api('/api/ApiControllerDoctor/', '', 'GET')
     for item in settingsvar.likar:
-        medzaklad = rest_api(
-            '/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '',
-            'GET')
-        if medzaklad['idStatus'] == '2':
-            likarspec.append(item)
-    if len(likarspec) > 0:
-        selectlikarrofil(likarspec)
-    else:
-        errorprofil('Шановний користувач! за вашим запитом немає сімейних лікарів')
-    return
+        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
+        item['kodzaklad'] = item['edrpou']
+        item['zakladname'] = medzaklad['name']
+        item['adreszak'] = medzaklad['adres']
+        item['tel'] = medzaklad['telefon']
+        likarspec.append(item)
+
+    selectlikarrofil(likarspec)
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
 
 # --------- Лікар
 # --- Реєстрація до кабінету лікаря
