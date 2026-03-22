@@ -1261,6 +1261,9 @@ def writediagnoz():
                 iduser = funciduser()
                 settingsvar.url = item['nametInterview'] + 'як+лікувати'
                 settingsvar.namediagnoz = item['nametInterview']
+
+                reason_url = 'https://www.google.com/search'
+                search_reason = settingsvar.namediagnoz + '+причини+захворювання'
                 settingsvar.nextstepdata = {
                     'opis': item['opistInterview'],
                     'http': item['uriInterview'],
@@ -1272,7 +1275,9 @@ def writediagnoz():
                     'base_url': 'https://www.google.com/search',
                     # https://gemini.google.com/app  https://www.google.com/search
                     'search_term': settingsvar.url,
-                    'backurl': settingsvar.nawpage
+                    'backurl': settingsvar.nawpage,
+                    'reason_url': reason_url,
+                    'search_reason': search_reason
                 }
                 if len(settingsvar.pacient) > 0:
                     settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
@@ -1540,6 +1545,7 @@ def selectlikarrofil(listrofillikar):
     backurl = funcbakurl()
     workdirection = False
     likarikolegi = False
+    dellikar = False
     addfamilylikar = likar = familylikar = False
     compl = 'Перелік спеціалізованих лікарів'
     if settingsvar.receptitem == 'familylikar':
@@ -1551,7 +1557,7 @@ def selectlikarrofil(listrofillikar):
         workdirection = True
         familylikar = False
         addfamilylikar = True
-
+        dellikar = True
     if settingsvar.backpage == 'addfamilylikar':
         compl = 'Перелік лікарів'
         workdirection = True
@@ -1573,7 +1579,8 @@ def selectlikarrofil(listrofillikar):
         'familylikar': familylikar,
         'namediagnoz': settingsvar.icdGrDiagnoz,
         'likarikolegi': likarikolegi,
-        'addfamilylikar': addfamilylikar
+        'addfamilylikar': addfamilylikar,
+        'dellikar': dellikar
     }
     if len(settingsvar.pacient) > 0:
         if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'selectfamilylikar' and settingsvar.backpage != 'addfamilylikar':
@@ -3710,7 +3717,8 @@ def selectfamilylikar(request):
             accountuser(request)
         else:
             funcselectfamilylikar()
-
+            if len(settingsvar.listlikar) == 0:
+                errorprofil('Щановний користувач! За вашим запитом відсутні приписані до вас лікарі.')
     return render(request, settingsvar.html, settingsvar.nextstepdata)
 
 
@@ -3718,8 +3726,15 @@ def funcselectfamilylikar():
     settingsvar.backpage = settingsvar.kabinet
     settingsvar.kabinetitem = 'selectfamilylikar'
     settingsvar.receptitem = 'selectfamilylikar'
-    likarspec = []
     settingsvar.html = 'diagnoz/selectlikarprofil.html'
+    listfamilylikar()
+    selectlikarrofil(settingsvar.listlikar)
+
+    return
+
+
+def listfamilylikar():
+    likarspec = []
     listfamilylikar = rest_api('/api/ControlerFamilyLikar/', '', 'GET')
     if len(listfamilylikar) > 0:
         for item in listfamilylikar:
@@ -3733,13 +3748,10 @@ def funcselectfamilylikar():
             item['zakladname'] = medzaklad['name']
             item['adreszak'] = medzaklad['adres']
             item['tel'] = medzaklad['telefon']
+            item['checklikar'] = False
             likarspec.append(item)
-        selectlikarrofil(likarspec)
-
-    else:
-        errorprofil('Шановний користувач! За вашим запитом відсутні приписані до вас сімейні лікарі')
+    settingsvar.listlikar = likarspec
     return
-
 
 def addfamilylikar(request):
     settingsvar.backpage = 'addfamilylikar'
@@ -3752,10 +3764,52 @@ def addfamilylikar(request):
         item['adreszak'] = medzaklad['adres']
         item['tel'] = medzaklad['telefon']
         likarspec.append(item)
-
     selectlikarrofil(likarspec)
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def likar_checkbox_view(request, select_likar):
+    tmp = []
+    dellikar = False
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        activ_checkbox = data['active']
+
+        for item in settingsvar.listlikar:
+            if item['kodDoctor'] == select_likar:
+                if activ_checkbox == True: item['checklikar'] = True
+                if activ_checkbox == False: item['checklikar'] = False
+            else:
+                if 'checklikar' not in item:
+                    item['checklikar'] = False
+            tmp.append(item)
+
+        for item in tmp:
+            if item['checklikar'] == True: dellikar = True
+        settingsvar.listlikar = []
+        for item in tmp:
+            settingsvar.listlikar.append(item)
+
+        request.method = 'GET'
+    settingsvar.nextstepdata['detalinglist'] = settingsvar.listlikar
+    settingsvar.nextstepdata['dellikar'] = dellikar
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def deletefamilylikar(request):
+    tmp = []
+
+    for item in settingsvar.listlikar:
+        if item['checklikar'] == True:
+            dellikar = rest_api(
+                '/api/ControlerFamilyLikar/' + '0/0/' + item['kodDoctor'], '', 'DEL')
+
+    listfamilylikar()
+    settingsvar.nextstepdata['detalinglist'] = settingsvar.listlikar
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
 
 
 # --------- Лікар

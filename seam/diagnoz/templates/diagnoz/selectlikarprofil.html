@@ -43,67 +43,110 @@
     {% endif %}
     {% endif %}
     {% if addfamilylikar %}
-    <div class="container-fluid text-center justify-content-center d-flex align-items-center"
-         style="display: inline-block">
-        <a class="btn btn-sm text-white rounded-pill text-center justify-content-center d-flex align-items-center"
+    <div class="container-fluid text-center " style="display: inline-block">
+        {% if dellikar %}
+        <a class="btn btn-sm text-white rounded-pill "
+           href="{% url 'deletefamilylikar' %}" role="button"
+           style="font-size: 13px; background-color: #558787;  ">Видалити</a>
+        {% endif %}
+
+        <a class="btn btn-sm text-white rounded-pill  "
            href="{% url 'addfamilylikar' %}" role="button"
-           style="font-size: 13px; background-color: #558787; width: 90px; height: 20px;">Додати</a>
+           style="font-size: 13px; background-color: #558787; ">Додати</a>
     </div>
     {% endif %}
     {% endif %}
 </div>
 <p></p>
 {% block list %}
-<div class="table-container" style="max-height: 500px; overflow-y: auto;">
-    <table class="table table-striped table-hover table-bordered">
-        <thead>
-        <tr>
-            <th class="fw-normal" style="font-size: 15px;"> Ім'я, прізвище</th>
-            <th class="fw-normal" style="font-size: 15px;"> Проф. діяльність</th>
-            <th class="fw-normal" style="font-size: 15px;"> Мед. заклад</th>
-            <th class="fw-normal" style="font-size: 15px;"> Адреса закладу</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in detalinglist %}
-        <tr>
-            {% if likar %}
-            <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
-                {{item.name}} {{item.surname}}</a>
-            </td>
+<form method="POST">
+    {% csrf_token %}
+    <div class="table-container" style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
+            <tr>
+                <th class="fw-normal" style="font-size: 15px;"> Ім'я, прізвище</th>
+                <th class="fw-normal" style="font-size: 15px;"> Проф. діяльність</th>
+                <th class="fw-normal" style="font-size: 15px;"> Мед. заклад</th>
+                <th class="fw-normal" style="font-size: 15px;"> Адреса закладу</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in detalinglist %}
+            <tr>
+                {% if likar %}
+                <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                    {{item.name}} {{item.surname}}</a>
+                </td>
 
-            <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
-                {{item.specialnoct}} {{item.resume}}</a>
-            </td>
-            <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
-                {{item.zakladname}}</a>
-            </td>
-            <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
-                {{item.adreszak}}</a>
-            </td>
-            {% else %}
-            <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
-                   style="vertical-align: inherit;">
-                {{item.name}} {{item.surname}}</a>
-            </td>
+                <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                    {{item.specialnoct}} {{item.resume}}</a>
+                </td>
+                <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                    {{item.zakladname}}</a>
+                </td>
+                <td><a aria-current="page" class="nav-link" href="" style="vertical-align: inherit;">
+                    {{item.adreszak}}</a>
+                </td>
+                {% else %}
+                <td>
+                    <div class="form-check ">
+                        {% if addfamilylikar %}
+                        <input %}
+                               %}checked{%
+                               class="form-check-input ajax-checkbox"
+                               data-id="{{ item.kodDoctor }}" data-url="{% url 'likar_checkbox_view' item.kodDoctor %}" endif if item.checklikar name="likar_checkbox" style=" font-size: 25px; background-color: #a2baba;"
+                               type="checkbox" {%>
+                        {% endif %}
+                        <a class="col container  text-dark text-decoration-none"
+                           href="{% url 'inputprofilpacient' item.kodDoctor  %}"
+                           style="vertical-align: inherit;"> {{item.name}} {{item.surname}}</a>
+                    </div>
 
-            <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
-                   style="vertical-align: inherit;">
-                {{item.specialnoct}} {{item.resume}}</a>
-            </td>
-            <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
-                   style="vertical-align: inherit;">
-                {{item.zakladname}}</a>
-            </td>
-            <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
-                   style="vertical-align: inherit;">
-                {{item.adreszak}}</a>
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+                </td>
+
+                <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
+                       style="vertical-align: inherit;">
+                    {{item.specialnoct}} {{item.resume}}</a>
+                </td>
+                <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
+                       style="vertical-align: inherit;">
+                    {{item.zakladname}}</a>
+                </td>
+                <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
+                       style="vertical-align: inherit;">
+                    {{item.adreszak}}</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</form>
 {% endblock %}
+<script>
+    document.querySelectorAll('.ajax-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+
+            const url = this.dataset.url;
+            const itemId = this.getAttribute('data-id');
+            const isChecked = this.checked;
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                        idlikar: itemId,
+                        active: isChecked
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log("Успех:", data))
+            .catch(error => console.error("Ошибка:", error));
+        });
+    });
+</script>
 {% endblock %}

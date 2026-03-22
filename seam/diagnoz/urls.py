@@ -120,7 +120,8 @@ urlpatterns = [
     path('detaling_checkbox_view/<str:select_detaling>', views.detaling_checkbox_view, name='detaling_checkbox_view'),
     path('endgrdetaling', views.endgrdetaling, name='endgrdetaling'),
     path('addfamilylikar', views.addfamilylikar, name='addfamilylikar'),
-
+    path('likar_checkbox_view/<str:select_likar>', views.likar_checkbox_view, name='likar_checkbox_view'),
+    path('deletefamilylikar', views.deletefamilylikar, name='deletefamilylikar'),
 ]
 #
 urlpatterns += [

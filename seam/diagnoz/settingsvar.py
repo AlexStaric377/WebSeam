@@ -127,3 +127,4 @@ feature_keyComplaint = []
 grDetaling_keyGrDetaling = []
 continuegrdetaling = False
 ongrupdetaling = False
+listlikar = []
