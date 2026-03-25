@@ -25,7 +25,7 @@
                            class="form-check-input ajax-checkbox" endif
                            data-id="{{ item.kodDetailing }}"
                            data-url="{% url 'grdetaling_checkbox_view' item.kodDetailing %}"
-                           if item.checkfeat name="grdetaling_checkbox" style="font-size: 25px; background-color: #a2baba;" type="checkbox" {%>
+                           item.checkfeat name="grdetaling_checkbox" style="font-size: 25px; background-color: #a2baba;" type="checkbox" {%if>
 
                     <a class="col container  text-dark text-decoration-none" href="">{{item.nameGrDetailing}}</a>
                 </div>

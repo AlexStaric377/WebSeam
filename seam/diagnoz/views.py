@@ -581,7 +581,7 @@ def interwievcomplaint(request):
             case 'guest':
                 settingsvar.setpostlikar = False
                 settingsvar.interviewcompl = True
-                settingsvar.backpage = 'reception'
+                settingsvar.backpage = 'interwievcomplaint'
 
             case 'pacient' | 'interwiev' | 'likar' | 'likarinterwiev':
                 settingsvar.setpostlikar = True
@@ -606,16 +606,16 @@ def funcinterwiev(request):
     funsearchcomplform(request)
     match settingsvar.kabinet:
         case 'guest':
-            if settingsvar.receptitem == 'getsearchcomplateForm':
-                if settingsvar.backpage == 'interwievcomplaint': settingsvar.backpage = 'reception'
-            else:
+            # if settingsvar.receptitem == 'getsearchcomplateForm':
+            #     # if settingsvar.backpage == 'interwievcomplaint': settingsvar.backpage = 'reception'
+            # else:
                 if settingsvar.receptitem == 'InputsearchcomplateForm':
                     if settingsvar.backpage == 'interwievcomplaint':
                         settingsvar.backpage = 'reception'
                     else:
                         settingsvar.backpage = 'interwievcomplaint'
-                else:
-                    settingsvar.backpage = 'reception'
+            # else:
+            #     settingsvar.backpage = 'reception'
 
         case 'pacientinterwiev':
             settingsvar.receptitem = 'pacient'
@@ -1261,31 +1261,84 @@ def writediagnoz():
                 iduser = funciduser()
                 settingsvar.url = item['nametInterview'] + 'як+лікувати'
                 settingsvar.namediagnoz = item['nametInterview']
-
                 reason_url = 'https://www.google.com/search'
                 search_reason = settingsvar.namediagnoz + '+причини+захворювання'
-                settingsvar.nextstepdata = {
-                    'opis': item['opistInterview'],
-                    'http': item['uriInterview'],
-                    'rekomendaciya': contentRecommendation,
-                    'compl': settingsvar.namediagnoz,
-                    'detalinglist': settingsvar.diagnozStroka,
-                    'iduser': iduser,
-                    'piblikar': '',
-                    'base_url': 'https://www.google.com/search',
-                    'search_term': settingsvar.url,
-                    'backurl': settingsvar.nawpage,
-                    'reason_url': reason_url,
-                    'search_reason': search_reason
-                }
-                if len(settingsvar.pacient) > 0:
-                    settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
-                                                          settingsvar.pacient['name'] + " " + settingsvar.pacient[
-                                                              'surname']
-                if len(settingsvar.likar) > 0:
-                    settingsvar.nextstepdata[
-                        'piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
-                settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
+                likarfamily = []
+                if len(settingsvar.pacient) > 0 and settingsvar.kabinet == 'interwiev':
+                    likarfamily = rest_api('/api/ControlerFamilyLikar/' + settingsvar.pacient['kodPacient'] + "/0", '',
+                                           'GET')
+                if len(likarfamily) > 0:
+                    settingsvar.html = 'diagnoz/finishinterviewpacient.html'
+                    settingsvar.backpage = 'interwiev'
+                    for item in likarfamily:
+                        likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/'
+                                                    + item['kodDoctor'] + '/0', '', 'GET')
+                        if len(likarGrupDiagnoz) > 0:
+                            for itemdiagnoz in likarGrupDiagnoz:
+                                if itemdiagnoz['icdGrDiagnoz'] == settingsvar.icdGrDiagnoz:
+                                    settingsvar.likar = rest_api(
+                                        '/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '',
+                                        'GET')
+                                    if 'name' in settingsvar.likar:
+                                        settingsvar.namelikar = settingsvar.likar['name'] + " " + settingsvar.likar[
+                                            'surname']
+                                        #        settingsvar.mobtellikar = CmdStroka['telefon']
+                                        settingsvar.likar = settingsvar.likar
+                                        medzaklad = rest_api(
+                                            '/api/MedicalInstitutionController/' + settingsvar.likar[
+                                                'edrpou'] + '/0/0/0', '',
+                                            'GET')
+                                        settingsvar.namemedzaklad = medzaklad['name']
+                                        settingsvar.adrzaklad = medzaklad['adres']
+                                        break
+                        else:
+                            settingsvar.likar = rest_api('/api/ApiControllerDoctor/'
+                                                         + item['kodDoctor'] + "/0/0", '', 'GET')
+                            if 'name' in settingsvar.likar:
+                                settingsvar.namelikar = settingsvar.likar['name'] + " " + settingsvar.likar['surname']
+                                medzaklad = rest_api('/api/MedicalInstitutionController/'
+                                                     + settingsvar.likar['edrpou'] + '/0/0/0', '', 'GET')
+                                settingsvar.namemedzaklad = medzaklad['name']
+
+                    settingsvar.nextstepdata = {
+                        'iduser': iduser,
+                        'pacient': 'Увага! ' + settingsvar.pacient['name'] + " " + settingsvar.pacient['surname'],
+                        'shapka': 'Ви сформували запит на обстеження у лікаря.',
+                        'medzaklad': settingsvar.namemedzaklad + " " + settingsvar.adrzaklad,
+                        'likar': 'Ваш призначений лікар: ' + settingsvar.namelikar,
+                        # ++ " тел.: ",  settingsvar.mobtellikar,
+                        'datereception': 'Дата прийому: ' + settingsvar.datereception,
+                        'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
+                        'backurl': funcbakurl(),
+                        'base_url': 'https://www.google.com/search',
+                        'search_term': settingsvar.url,
+                        'reason_url': reason_url,
+                        'search_reason': search_reason
+                    }
+
+                else:
+                    settingsvar.nextstepdata = {
+                        'opis': item['opistInterview'],
+                        'http': item['uriInterview'],
+                        'rekomendaciya': contentRecommendation,
+                        'compl': settingsvar.namediagnoz,
+                        'detalinglist': settingsvar.diagnozStroka,
+                        'iduser': iduser,
+                        'piblikar': '',
+                        'base_url': 'https://www.google.com/search',
+                        'search_term': settingsvar.url,
+                        'backurl': settingsvar.nawpage,
+                        'reason_url': reason_url,
+                        'search_reason': search_reason
+                    }
+                    if len(settingsvar.pacient) > 0:
+                        settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
+                                                              settingsvar.pacient['name'] + " " + settingsvar.pacient[
+                                                                  'surname']
+                    if len(settingsvar.likar) > 0:
+                        settingsvar.nextstepdata[
+                            'piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+                        settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
 
         settingsvar.nextstepdata['fameli'] = True
         if 'kodDoctor' in settingsvar.likar:
@@ -1791,6 +1844,18 @@ def saveselectlikar(pacient):
         settingsvar.backpage = 'likarinterwiev'
     settingsvar.selectlikar = True
 
+    point = settingsvar.icdGrDiagnoz[settingsvar.icdGrDiagnoz.rindex('.', 0):]
+    namediagnoz = 'Діагноз : ' + point.replace('.', ' ')
+
+    prof_url = 'https://www.google.com/search'
+    search_prof = namediagnoz + '+профілактика+захворювання'
+    base_url = 'https://www.google.com/search'
+    search_term = namediagnoz + '+як+лікувати'
+
+    settingsvar.namediagnoz = settingsvar.icdGrDiagnoz
+    reason_url = 'https://www.google.com/search'
+    search_reason = namediagnoz + '+причини+захворювання'
+
     if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
         settingsvar.datereception = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         settingsvar.nextstepdata = {
@@ -1802,7 +1867,11 @@ def saveselectlikar(pacient):
             'datereception': 'Дата прийому: ' + settingsvar.datereception,
             'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
             'podval': 'Зберегти опитування?',
-            'backurl': backurl
+            'backurl': backurl,
+            'reason_url': reason_url,
+            'search_reason': search_reason,
+            'base_url': base_url,
+            'search_term': search_term
         }
     else:
 
@@ -1816,7 +1885,11 @@ def saveselectlikar(pacient):
                 'datereception': 'Дата прийому: ' + settingsvar.datereception,
                 'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
                 'podval': 'Ви підтверджуєте свій вибір?',
-                'backurl': backurl
+                'backurl': backurl,
+                'reason_url': reason_url,
+                'search_reason': search_reason,
+                'base_url': base_url,
+                'search_term': search_term
             }
             # settingsvar.kodDoctor = ""
 

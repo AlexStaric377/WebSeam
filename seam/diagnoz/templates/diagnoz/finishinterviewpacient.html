@@ -6,6 +6,16 @@
     <div class="container-fluid text-center" style="display: inline-block">
         <a class="btn btn-sm text-white rounded-pill" href="{% url 'contentinterwiev' %}" role="button"
            style="font-size: 12px; background-color: #558787; height=12;">Зміст опитування</a>
+        <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+           rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Причини
+            захворювання
+        </a>
+        <a class="btn btn-sm text-white rounded-pill" href="{{ base_url }}?q={{ search_term }}"
+           rel="noopener noreferrer"
+           role="button" style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Рекомендації
+            щодо лікування
+        </a>
     </div>
     <div class="card shadow">
         <div class="card-body">
@@ -48,6 +58,7 @@
                        role="button" style="font-size: 12px; background-color: #558787; height=12;">Записати до іншого
                         лікаря</a>
                 </div>
+                <p></p>
             </div>
         </div>
     </div>

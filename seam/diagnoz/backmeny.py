@@ -38,10 +38,10 @@ def backpage(request):
                 views.backshablonselect(request)
 
         case 'interwievcomplaint':
-            if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm' or settingsvar.receptitem == 'likar':
+            if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm':
                 views.funcinterwiev(request)
             else:
-                if settingsvar.receptitem == 'reception':
+                if settingsvar.receptitem == 'reception' or settingsvar.receptitem == 'likar':
                     views.backreception()
                 else:
                     if settingsvar.selectbackmeny == True and settingsvar.receptitem == 'interwievcomplaint':
@@ -139,15 +139,19 @@ def backpage(request):
                 views.funcinterwiev(request)
                 settingsvar.selectbackmeny = True
             else:
-                if settingsvar.receptitem == 'getsearchcomplateForm' and settingsvar.selectbackmeny == True:
+                if settingsvar.receptitem == 'getsearchcomplateForm' and settingsvar.backpage == 'pacientinterwiev':
                     views.funcinterwiev(request)
                     settingsvar.selectbackmeny = False
                 else:
-                    if settingsvar.receptitem == 'getsearchcomplateForm' and settingsvar.selectbackmeny == False:
-                        views.writediagnoz()
-                        settingsvar.receptitem = 'pacient'
+                    if settingsvar.receptitem == 'getsearchcomplateForm' and settingsvar.selectbackmeny == True:
+                        views.funcinterwiev(request)
+                        settingsvar.selectbackmeny = False
                     else:
-                        views.pacient(request)
+                        if settingsvar.receptitem == 'getsearchcomplateForm' and settingsvar.selectbackmeny == False:
+                            views.writediagnoz()
+                            settingsvar.receptitem = 'pacient'
+                        else:
+                            views.pacient(request)
         case 'likarinterwiev':
             if settingsvar.receptitem == 'pacientinterwiev':
                 views.pacient(request)

@@ -20,12 +20,12 @@
         <tr>
             <td>
                 <div class="form-check ">
-                    <input
-                            %}
+                    <input %} %}checked{%
+                           class="form-check-input ajax-checkbox" endif
                            data-id="{{ item.kodDetailing }}"
                            data-url="{% url 'detaling_checkbox_view' item.kodDetailing %}"
-                            %}checked{% class="form-check-input ajax-checkbox" endif if item.checkfeat name="detaling_checkbox" style=" font-size: 25px; background-color: #a2baba;"
-                            type="checkbox" {%>
+                           item.checkfeat name="detaling_checkbox" style=" font-size: 25px; background-color: #a2baba;" type="checkbox" {%if>
+
 
                     <a class="col container  text-dark text-decoration-none" href="">{{item.nameDetailing}}</a>
                 </div>
