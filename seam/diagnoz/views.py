@@ -600,6 +600,7 @@ def funcinterwiev(request):
     settingsvar.spisokkeyfeature = []
     settingsvar.spisokselectDetailing = []
     settingsvar.spisoklistdetaling = []
+    settingsvar.spisokGrDetailing = []
     settingsvar.сomplaintselect = []
     settingsvar.strokagrdetaling = ""
     settingsvar.ongrupdetaling = False
@@ -842,6 +843,7 @@ def funcfeature(request):
                     'backurl': 'reception'
                 }
             settingsvar.nawpage = 'backfeature'
+            settingsvar.forspisokkeyfeature = False
             if len(settingsvar.listfeature) > 1:
                 settingsvar.html = 'diagnoz/nextfeature.html'
                 del settingsvar.listfeature[indexfeature]
@@ -905,8 +907,9 @@ def nextstepgrdetaling():
         settingsvar.listdetaling = {}
         settingsvar.spisokGrDetailing = []
         settingsvar.spisoklistdetaling = []
-        if len(settingsvar.spisokkeyfeature) > 0:
+        if len(settingsvar.spisokkeyfeature) > 0:  # and settingsvar.forspisokkeyfeature == False
             for keyfeature in settingsvar.spisokkeyfeature:
+                # settingsvar.forspisokkeyfeature = True
                 listkeyfeature = rest_api('api/DetailingController/' + "0/" + keyfeature + "/0/", '', 'GET')
                 for itemkeyfeature in listkeyfeature:
                     set = ""
@@ -987,7 +990,7 @@ def nextstepgrdetaling():
                 iduser = funciduser()
                 if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
                 shablongrdetaling()
-                del settingsvar.spisokGrDetailing[0]
+                # del settingsvar.spisokGrDetailing[0]
                 if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
                 break
         if len(settingsvar.spisoklistdetaling) == 0 and len(settingsvar.spisokGrDetailing) == 0 and len(
@@ -1048,8 +1051,9 @@ def continuegrdetaling(request):
                 if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
                 shablongrdetaling()
-                del settingsvar.spisokGrDetailing[0]
+                # del settingsvar.spisokGrDetailing[0]
                 if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
+                break
         else:
             return redirect(request.path)
     return
@@ -1115,7 +1119,7 @@ def endvibor(request):
             settingsvar.viewdetaling = True
             del settingsvar.spisokkeyfeature[0]
             del settingsvar.spisoknamefeature[0]
-            return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
     else:
         if settingsvar.continuegrdetaling == False:
             if len(settingsvar.spisokGrDetailing) > 0:
@@ -1125,34 +1129,24 @@ def endvibor(request):
                         settingsvar.spisokselectDetailing.append(item['kodDetailing'])
                         settingsvar.DiagnozRecomendaciya.append(item['kodDetailing'] + ";")
                         settingsvar.spisokkeyinterview.append(item['kodDetailing'] + ";")
-                    else:
-                        settingsvar.spselectnameDetailing.append(item['nameGrDetailing'])
-                for itemgrdetaling in settingsvar.spisokGrDetailing:
-                    settingsvar.rest_apiGrDetaling = rest_api(
-                        '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/",
-                        '', 'GET')
-                    addgrGrDetaling()
-                    if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
-                    shablongrdetaling()
-                    settingsvar.nawpage = 'nextgrdetaling'
-                    if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
-                    del settingsvar.spisokGrDetailing[0]
-
-                    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-            else:
-                if len(settingsvar.spisokkeyfeature) > 0:
-                    if (settingsvar.itemkeyfeature == settingsvar.spisokkeyfeature[0] and len(
-                            settingsvar.spisokkeyfeature) > 0):
-                        del settingsvar.spisokkeyfeature[0]
-                        if len(settingsvar.spisoknamefeature) > 0: del settingsvar.spisoknamefeature[0]
-            if len(settingsvar.spisokkeyfeature) > 0:
-                settingsvar.itemstep = 'spisokkeyfeature'
-
-                nextstepgrdetaling()
-                if len(settingsvar.spisokkeyfeature) == 0 and len(settingsvar.spisoklistdetaling) == 0 and len(
-                        settingsvar.spisokGrDetailing) == 0:
+                del settingsvar.spisokGrDetailing[0]
+                if len(settingsvar.spisokGrDetailing) > 0:
+                    for itemgrdetaling in settingsvar.spisokGrDetailing:
+                        settingsvar.rest_apiGrDetaling = rest_api(
+                            '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/",
+                            '', 'GET')
+                        addgrGrDetaling()
+                        if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
+                        shablongrdetaling()
+                        settingsvar.nawpage = 'nextgrdetaling'
+                        if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
+                        break
+                else:
+                    settingsvar.spisokkeyfeature = []
                     diagnoz()
             else:
+                settingsvar.spisokkeyfeature = []
+                settingsvar.spisoknamefeature = []
                 diagnoz()
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -1432,13 +1426,23 @@ def selectmedzaklad(request, statuszaklad):
     iduser = funciduser()
     match statuszaklad:
         case "2":
+            tmp = []
+            listlikarfamily = rest_api('/api/ApiControllerDoctor/' + '0/2/0/', '', 'GET')
+            if len(listlikarfamily) > 0:
+                for item in listlikarfamily:
+                    medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
+                    if len(medzaklad) > 0:
+                        item['zakladname'] = medzaklad['name']
+                        item['adreszak'] = item['uriwebDoctor'] + ', ' + item['email'] + ', тел. ' + item['telefon']
+                        item['tel'] = item['telefon']
+                    tmp.append(item)
+                settingsvar.receptitem = 'selectlikarfamily'
+                settingsvar.listlikar = tmp
+                selectlikarrofil(tmp)
+            else:
+                errorprofil('Шановний користувач! За вашим запитом відсутні профільні лікарі.')
+            return
 
-            medzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad, '', 'GET')
-            for item in medzaklad:
-                if len(settingsvar.grupmedzaklad) == 0: settingsvar.grupmedzaklad.append(item)
-                for itemmedzaklad in settingsvar.grupmedzaklad:
-                    if item['edrpou'] not in itemmedzaklad['edrpou']:
-                        settingsvar.grupmedzaklad.append(item)
         case "5":
             settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/" +
                                                settingsvar.icdGrDiagnoz + "/0/0", '', 'GET')  # settingsvar.icddiagnoz
@@ -1561,7 +1565,7 @@ def receptfamilylikar(request):
 def selectlikarrofil(listrofillikar):
     settingsvar.listlikar = []
     itemlistlikar = {}
-    if settingsvar.receptitem == 'selectfamilylikar':
+    if settingsvar.receptitem == 'selectfamilylikar' or settingsvar.receptitem == 'selectlikarfamily':
         settingsvar.listlikar = listrofillikar
     else:
         for item in listrofillikar:
@@ -1600,7 +1604,7 @@ def selectlikarrofil(listrofillikar):
     dellikar = False
     addfamilylikar = likar = familylikar = False
     compl = 'Перелік спеціалізованих лікарів'
-    if settingsvar.receptitem == 'familylikar':
+    if settingsvar.receptitem == 'familylikar' or settingsvar.receptitem == 'selectlikarfamily':
         compl = 'Перелік сімейних лікарів'
         workdirection = True
 
@@ -1966,7 +1970,7 @@ def inputprofilpacient(request, selected_doctor):
                             }
                         else:
                             settingsvar.nextstepdata = {}
-            case 'interwievcomplaint' | 'interwiev' | 'pacientinterwiev' | 'likarinterwiev' | 'getsearchcomplateForm':
+            case 'selectlikarfamily' | 'interwievcomplaint' | 'interwiev' | 'pacientinterwiev' | 'likarinterwiev' | 'getsearchcomplateForm':
                 dateregistrationappointment(request)
 
             case 'replaceproflikar':

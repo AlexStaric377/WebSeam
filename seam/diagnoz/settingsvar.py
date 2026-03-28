@@ -128,3 +128,4 @@ grDetaling_keyGrDetaling = []
 continuegrdetaling = False
 ongrupdetaling = False
 listlikar = []
+forspisokkeyfeature = False
