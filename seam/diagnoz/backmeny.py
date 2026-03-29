@@ -38,7 +38,8 @@ def backpage(request):
                 views.backshablonselect(request)
 
         case 'interwievcomplaint':
-            if settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm':
+            if (settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev'
+                    or settingsvar.receptitem == 'getsearchcomplateForm' or settingsvar.receptitem == 'selectlikarfamily'):
                 views.funcinterwiev(request)
             else:
                 if settingsvar.receptitem == 'reception' or settingsvar.receptitem == 'likar':
@@ -207,47 +208,49 @@ def backpage(request):
         case 'workdiagnozlikar':
             views.listworkdiagnoz()
         case 'contentinterview' | 'contentinterwiev':
-
-            if settingsvar.receptitem == 'interwievcomplaint' or settingsvar.receptitem == 'replaceproflikar':
-                if settingsvar.kabinet == 'guest':
-                    match settingsvar.nawpage:
-                        case 'backprofilinterview':
-                            # views.backprofilinterview(request)
-                            views.saveselectlikar(settingsvar.pacient)
-                        case 'backshablonselect':
-                            views.shablonselect(request)
-                        case _:
-                            views.writediagnoz()
-                else:
-                    views.writediagnoz()
+            if settingsvar.receptitem == 'selectlikarfamily':
+                views.saveselectlikar(settingsvar.pacient)
             else:
-
-                if settingsvar.kabinet == 'interwiev' and (
-                        settingsvar.receptitem == 'pacientinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm'):
-                    if settingsvar.nawpage == 'backfromcontent':
-                        views.writediagnoz()
+                if settingsvar.receptitem == 'interwievcomplaint' or settingsvar.receptitem == 'replaceproflikar':
+                    if settingsvar.kabinet == 'guest':
+                        match settingsvar.nawpage:
+                            case 'backprofilinterview':
+                                # views.backprofilinterview(request)
+                                views.saveselectlikar(settingsvar.pacient)
+                            case 'backshablonselect':
+                                views.shablonselect(request)
+                            case _:
+                                views.writediagnoz()
                     else:
-                        views.saveselectlikar(settingsvar.pacient)
+                        views.writediagnoz()
                 else:
-                    if settingsvar.receptitem == 'receptinterwiev':
-                        views.writediagnoz()
-                    else:
-                        if settingsvar.receptitem == 'receptprofillmedzaklad':
-                            views.backprofilinterview(request)
+
+                    if settingsvar.kabinet == 'interwiev' and (
+                            settingsvar.receptitem == 'pacientinterwiev' or settingsvar.receptitem == 'getsearchcomplateForm'):
+                        if settingsvar.nawpage == 'backfromcontent':
+                            views.writediagnoz()
                         else:
-                            if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'likarworkdiagnoz' or settingsvar.kabinet == 'likarprofil':
-                                if settingsvar.kabinet == 'guest' and settingsvar.receptitem == 'getsearchcomplateForm':
-                                    views.writediagnoz()
-                                else:
-                                    views.backworkdiagnozlikar(request)
+                            views.saveselectlikar(settingsvar.pacient)
+                    else:
+                        if settingsvar.receptitem == 'receptinterwiev':
+                            views.writediagnoz()
+                        else:
+                            if settingsvar.receptitem == 'receptprofillmedzaklad':
+                                views.backprofilinterview(request)
                             else:
-                                if settingsvar.kabinet == 'likarinterwiev':
-                                    views.saveselectlikar(settingsvar.pacient)
-                                else:
-                                    if settingsvar.kabinet == 'likarlibdiagnoz':
-                                        views.funclibdiagnoz()
+                                if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'likarworkdiagnoz' or settingsvar.kabinet == 'likarprofil':
+                                    if settingsvar.kabinet == 'guest' and settingsvar.receptitem == 'getsearchcomplateForm':
+                                        views.writediagnoz()
                                     else:
-                                        views.backprofilinterview(request)
+                                        views.backworkdiagnozlikar(request)
+                                else:
+                                    if settingsvar.kabinet == 'likarinterwiev':
+                                        views.saveselectlikar(settingsvar.pacient)
+                                    else:
+                                        if settingsvar.kabinet == 'likarlibdiagnoz':
+                                            views.funclibdiagnoz()
+                                        else:
+                                            views.backprofilinterview(request)
 
         case 'libdiagnoz':
             views.listlibdiagnoz()

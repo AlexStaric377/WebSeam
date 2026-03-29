@@ -257,6 +257,7 @@ def likar(request):  # httpRequest
         settingsvar.setintertview = False
         settingsvar.search = False
         settingsvar.interviewcompl = False
+        settingsvar.ongrupdetaling = False
 
         settingsvar.pacient = {}
         settingsvar.datereception = 'призначається за тел:'
@@ -1323,7 +1324,8 @@ def writediagnoz():
                         'search_term': settingsvar.url,
                         'backurl': settingsvar.nawpage,
                         'reason_url': reason_url,
-                        'search_reason': search_reason
+                        'search_reason': search_reason,
+
                     }
                     if len(settingsvar.pacient) > 0:
                         settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
@@ -1335,8 +1337,7 @@ def writediagnoz():
                         settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
 
         settingsvar.nextstepdata['fameli'] = True
-        if 'kodDoctor' in settingsvar.likar:
-            settingsvar.nextstepdata['fameli'] = False
+        if settingsvar.kabinet == 'likarinterwiev': settingsvar.nextstepdata['fameli'] = False
     json = ('IdUser:  ' + settingsvar.kabinet + ', ' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: writediagnoz')
     unloadlog(json)
@@ -1392,7 +1393,6 @@ def contentinterwiev(request):  # httpRequest
             api.append(tmp)
     settingsvar.html = 'diagnoz/contentinterwiev.html'
     iduser = funciduser()
-    backurl = settingsvar.nawpage
     PacientName = ""
     if len(settingsvar.pacient) > 0:
         PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
@@ -1400,7 +1400,7 @@ def contentinterwiev(request):  # httpRequest
         'compl': 'Попередній діагноз: ' + settingsvar.namediagnoz,
         'detalinglist': api,
         'iduser': iduser,
-        'backurl': backurl,
+        'backurl': settingsvar.nawpage,
         'pacient': PacientName,
 
     }
@@ -1557,6 +1557,7 @@ def backreceptprofillmedzaklad(request):
 # --- вибір Амбулаторно-поліклінічного закладу до сімейного лікаря
 def receptfamilylikar(request):
     status = "2"
+    settingsvar.nawpage = 'backsaveselectlikar'
     selectmedzaklad(request, status)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -1841,6 +1842,7 @@ def saveselectlikar(pacient):
     if settingsvar.kabinet == 'guest':
         settingsvar.backpage = 'interwievcomplaint'
         settingsvar.nawpage = 'backprofilinterview'
+        if settingsvar.receptitem == 'selectlikarfamily': settingsvar.nawpage = 'backsaveselectlikar'
     if settingsvar.kabinet == 'interwiev':
         settingsvar.backpage = 'interwiev'
     if settingsvar.kabinet == 'likarinterwiev':
@@ -1864,7 +1866,7 @@ def saveselectlikar(pacient):
         settingsvar.datereception = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         settingsvar.nextstepdata = {
             'iduser': iduser,
-            'shapka': 'Увага! сформовано попередній діаноз на прийомі у лікаря.',
+            'shapka': 'Увага! сформовано попередній діаноз на обстежені у лікаря.',
             'pacient': 'Пацієнт: ' + pacient['name'] + " " + pacient['surname'],
             'medzaklad': settingsvar.namemedzaklad + " " + settingsvar.adrzaklad,
             'likar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
@@ -1883,7 +1885,7 @@ def saveselectlikar(pacient):
             settingsvar.nextstepdata = {
                 'iduser': iduser,
                 'pacient': 'Увага! ' + pacient['name'] + " " + pacient['surname'],
-                'shapka': 'Ви сформували запит на прийом до лікаря.',
+                'shapka': 'Ви сформували запит на обстеження у лікаря.',
                 'medzaklad': settingsvar.namemedzaklad + " " + settingsvar.adrzaklad,
                 'likar': 'Лікар: ' + settingsvar.namelikar,  # ++ " тел.: ",  settingsvar.mobtellikar,
                 'datereception': 'Дата прийому: ' + settingsvar.datereception,
@@ -1905,6 +1907,11 @@ def saveselectlikar(pacient):
                 'backurl': backurl
             }
     return
+
+
+def backsaveselectlikar(request):
+    saveselectlikar(settingsvar.pacient)
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
 # --- введення профілю пацієнта для запису на прийом до лікаря
@@ -4183,43 +4190,42 @@ def listreceptionpacient(request):
         if len(settingsvar.listapi) > 0:
             settingsvar.listreception = []
             settingsvar.listprofpacient = []
-        for item in settingsvar.listapi:
+            for item in settingsvar.listapi:
 
-            if len(item['dateVizita']) > 0:
-                profpacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
-                if len(profpacient) > 0:
+                if len(item['dateVizita']) > 0:
+                    profpacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
+                    if len(profpacient) > 0:
 
-                    settingsvar.listprofpacient.append(profpacient)
+                        settingsvar.listprofpacient.append(profpacient)
 
-                    if item['kodDiagnoz'] != None and len(item['kodDiagnoz']) > 0:
-                        profdiagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
-                        if len(profdiagnoz) > 0:
-                            nameDiagnoza = profdiagnoz['nameDiagnoza']
-                            kodDiagnoz = item['kodDiagnoz']
-                            strreception = {'kodDoctor': item['kodDoctor'],
-                                            'kodPacient': item['kodPacient'],
-                                            'namePacient': profpacient['name'] + ' ' + profpacient['surname'],
-                                            'dateVizita': item['dateVizita'],
-                                            'dateInterview': item['dateInterview'],
-                                            'kodProtokola': item['kodProtokola'],
-                                            'kodDiagnoz': kodDiagnoz,
-                                            'nameDiagnoza': nameDiagnoza,
-                                            }
-                            settingsvar.listreception.append(strreception)
+                        if item['kodDiagnoz'] != None and len(item['kodDiagnoz']) > 0:
+                            profdiagnoz = rest_api('api/DiagnozController/' + item['kodDiagnoz'] + '/0/0', '', 'GET')
+                            if len(profdiagnoz) > 0:
+                                nameDiagnoza = profdiagnoz['nameDiagnoza']
+                                kodDiagnoz = item['kodDiagnoz']
+                                strreception = {'kodDoctor': item['kodDoctor'],
+                                                'kodPacient': item['kodPacient'],
+                                                'namePacient': profpacient['name'] + ' ' + profpacient['surname'],
+                                                'dateVizita': item['dateVizita'],
+                                                'dateInterview': item['dateInterview'],
+                                                'kodProtokola': item['kodProtokola'],
+                                                'kodDiagnoz': kodDiagnoz,
+                                                'nameDiagnoza': nameDiagnoza,
+                                                }
+                                settingsvar.listreception.append(strreception)
 
             settingsvar.pacientselect = settingsvar.listreception
             settingsvar.selectbackmeny = False
+            settingsvar.nextstepdata = {
+                'iduser': iduser,
+                'complaintlist': settingsvar.pacientselect,
+                'backurl': backurl,
+                'piblikar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
+                'medzaklad': settingsvar.namemedzaklad,
+                'form': settingsvar.formsearchpacient,
+            }
         else:
             errorprofil('Шановний користувач! За вашим запитом немає пацієнтів записаних для обстеження  .')
-
-    settingsvar.nextstepdata = {
-        'iduser': iduser,
-        'complaintlist': settingsvar.pacientselect,
-        'backurl': backurl,
-        'piblikar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
-        'medzaklad': settingsvar.namemedzaklad,
-        'form': settingsvar.formsearchpacient,
-    }
     return
 
 
