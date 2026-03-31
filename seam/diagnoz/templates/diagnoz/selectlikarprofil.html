@@ -69,6 +69,9 @@
                 <th class="fw-normal" style="font-size: 15px;"> Проф. діяльність</th>
                 <th class="fw-normal" style="font-size: 15px;"> Мед. заклад</th>
                 <th class="fw-normal" style="font-size: 15px;"> Адреса закладу</th>
+                {% if addfamilylikar %}
+                <th class="fw-normal" style="font-size: 15px;"> Кількість звернень</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -92,11 +95,10 @@
                 <td>
                     <div class="form-check ">
                         {% if addfamilylikar %}
-                        <input %}
-                               %}checked{%
-                               class="form-check-input ajax-checkbox"
-                               data-id="{{ item.kodDoctor }}" data-url="{% url 'likar_checkbox_view' item.kodDoctor %}" endif if item.checklikar name="likar_checkbox" style=" font-size: 25px; background-color: #a2baba;"
-                               type="checkbox" {%>
+                        <input %} %}checked{%
+                               class="form-check-input ajax-checkbox" data-id="{{ item.kodDoctor }}"
+                               data-url="{% url 'likar_checkbox_view' item.kodDoctor %}" endif
+                               if item.checklikar name="likar_checkbox" style=" font-size: 25px; background-color: #a2baba;" type="checkbox" {%>
                         {% endif %}
                         <a class="col container  text-dark text-decoration-none"
                            href="{% url 'inputprofilpacient' item.kodDoctor  %}"
@@ -117,6 +119,11 @@
                        style="vertical-align: inherit;">
                     {{item.adreszak}}</a>
                 </td>
+                {% if addfamilylikar %}
+                <td><a aria-current="page" class="nav-link" href="{% url 'inputprofilpacient' item.kodDoctor  %}"
+                       style="vertical-align: inherit;"> {{item.numberrequests}}</a>
+                </td>
+                {% endif %}
                 {% endif %}
             </tr>
             {% endfor %}

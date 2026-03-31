@@ -595,7 +595,7 @@ def funcinterwiev(request):
     settingsvar.complate = 'funcsearchcomplate'
     iduser = funciduser()
     settingsvar.kodDoctor = ""
-    settingsvar.pacient = {}
+    # settingsvar.pacient = {}
     settingsvar.DiagnozRecomendaciya = []
     settingsvar.spisokkeyinterview = []
     settingsvar.spisokkeyfeature = []
@@ -608,16 +608,12 @@ def funcinterwiev(request):
     funsearchcomplform(request)
     match settingsvar.kabinet:
         case 'guest':
-            # if settingsvar.receptitem == 'getsearchcomplateForm':
-            #     # if settingsvar.backpage == 'interwievcomplaint': settingsvar.backpage = 'reception'
-            # else:
-                if settingsvar.receptitem == 'InputsearchcomplateForm':
-                    if settingsvar.backpage == 'interwievcomplaint':
+            settingsvar.pacient = {}
+            if settingsvar.receptitem == 'InputsearchcomplateForm':
+                if settingsvar.backpage == 'interwievcomplaint':
                         settingsvar.backpage = 'reception'
-                    else:
+                else:
                         settingsvar.backpage = 'interwievcomplaint'
-            # else:
-            #     settingsvar.backpage = 'reception'
 
         case 'pacientinterwiev':
             settingsvar.receptitem = 'pacient'
@@ -626,6 +622,7 @@ def funcinterwiev(request):
                 settingsvar.receptitem = 'pacientinterwiev'
 
         case 'likar':
+
             if settingsvar.receptitem == 'getsearchcomplateForm':
                 if settingsvar.backpage == 'likarinterwiev': settingsvar.backpage = 'likar'
             else:
@@ -1275,6 +1272,7 @@ def writediagnoz():
                                         '/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '',
                                         'GET')
                                     if 'name' in settingsvar.likar:
+                                        settingsvar.kodDoctor = item['kodDoctor']
                                         settingsvar.namelikar = settingsvar.likar['name'] + " " + settingsvar.likar[
                                             'surname']
                                         #        settingsvar.mobtellikar = CmdStroka['telefon']
@@ -1289,6 +1287,7 @@ def writediagnoz():
                         else:
                             settingsvar.likar = rest_api('/api/ApiControllerDoctor/'
                                                          + item['kodDoctor'] + "/0/0", '', 'GET')
+                            settingsvar.kodDoctor = item['kodDoctor']
                             if 'name' in settingsvar.likar:
                                 settingsvar.namelikar = settingsvar.likar['name'] + " " + settingsvar.likar['surname']
                                 medzaklad = rest_api('/api/MedicalInstitutionController/'
@@ -2517,20 +2516,21 @@ def profilinfopacient():
     if settingsvar.receptitem == 'registrprofil': registrprofil = True
     if settingsvar.receptitem == 'registrkabinet': registrkabinet = True
     email = ""
-    if len(settingsvar.pacient['email']) != "": email = settingsvar.pacient['email']
-    settingsvar.nextstepdata = {
-        'namesurname': "Імя, прізвище: " + settingsvar.pacient['name'] + " " + settingsvar.pacient['surname'],
-        'gender': 'Стать : ' + settingsvar.pacient['gender'],
-        'age': 'Вік(рік.): ' + str(settingsvar.pacient['age']),
-        'weight': 'Вага(кг.): ' + str(settingsvar.pacient['weight']),
-        'growth': 'Зріст(см.): ' + str(settingsvar.pacient['growth']),
-        'profession': 'Профессія: ' + settingsvar.pacient['profession'],
-        'pind': 'Поштовий індекс: ' + settingsvar.pacient['pind'],
-        'tel': 'Телефон: ' + settingsvar.pacient['tel'],
-        'email': 'Поштова електронна адреса: ' + email,
-        'registrprofil': registrprofil,
-        'registrkabinet': registrkabinet,
-    }
+    if len(settingsvar.pacient) > 0:
+        if len(settingsvar.pacient['email']) != "": email = settingsvar.pacient['email']
+        settingsvar.nextstepdata = {
+            'namesurname': "Імя, прізвище: " + settingsvar.pacient['name'] + " " + settingsvar.pacient['surname'],
+            'gender': 'Стать : ' + settingsvar.pacient['gender'],
+            'age': 'Вік(рік.): ' + str(settingsvar.pacient['age']),
+            'weight': 'Вага(кг.): ' + str(settingsvar.pacient['weight']),
+            'growth': 'Зріст(см.): ' + str(settingsvar.pacient['growth']),
+            'profession': 'Профессія: ' + settingsvar.pacient['profession'],
+            'pind': 'Поштовий індекс: ' + settingsvar.pacient['pind'],
+            'tel': 'Телефон: ' + settingsvar.pacient['tel'],
+            'email': 'Поштова електронна адреса: ' + email,
+            'registrprofil': registrprofil,
+            'registrkabinet': registrkabinet,
+        }
     return
 
 
@@ -3038,6 +3038,14 @@ def addReceptionPacient():
             }
     # --- записати в Бд
     saveprofil = rest_api('/api/LifePacientController/', json, 'POST')
+
+    # --- додати звернення в Бд до лікаря
+    familylikar = rest_api('/api/ControlerFamilyLikar/' + settingsvar.kodPacienta + "/" + settingsvar.kodDoctor, '',
+                           'GET')
+    if len(familylikar) > 0:
+        likar = familylikar[0]
+        likar['numberrequests'] = likar['numberrequests'] + 1
+        saveprofil = rest_api('/api/ControlerFamilyLikar/', likar, 'PUT')
     return
 
 
