@@ -123,6 +123,8 @@ urlpatterns = [
     path('likar_checkbox_view/<str:select_likar>', views.likar_checkbox_view, name='likar_checkbox_view'),
     path('deletefamilylikar', views.deletefamilylikar, name='deletefamilylikar'),
     path('backsaveselectlikar', views.backsaveselectlikar, name='backsaveselectlikar'),
+    path('feature_checkbox_view/<str:select_keyComplaint>, <str:select_keyFeature>', views.feature_checkbox_view,
+         name='feature_checkbox_view'),
 ]
 #
 urlpatterns += [

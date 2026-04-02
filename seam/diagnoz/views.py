@@ -553,6 +553,7 @@ def cleanvars():
     settingsvar.viewdetaling = False
     settingsvar.viewgrdetaling = False
     settingsvar.zgodayes = False
+    settingsvar.ongrupdetaling = False
     settingsvar.DiagnozRecomendaciya = []
     settingsvar.rest_apisetdiagnoz = ""
 
@@ -694,26 +695,76 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     settingsvar.listfeature = {}
     settingsvar.diagnozStroka = []
     settingsvar.dictfeature = []
+    settingsvar.keyComplaint = nextfeature_keyComplaint
     if len(settingsvar.listfeature) <= 0:
         settingsvar.listfeature = rest_api('api/FeatureController/' + "0/" + nextfeature_keyComplaint + "/0/", '',
                                            'GET')
         tmp = []
         for item in settingsvar.listfeature:
             item['checkfeat'] = False
+            item['checkfeature'] = False
             tmp.append(item)
         settingsvar.listfeature = tmp
+        funcselectfeature()
     iduser = funciduser()
     settingsvar.nawpage = 'backfeature'
     settingsvar.html = 'diagnoz/nextfeature.html'
 
     if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
-    settingsvar.nextstepdata['featurelist'] = tmp
+    settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
     settingsvar.nextstepdata['next'] = '  Далі '
     settingsvar.nextstepdata['compl'] = settingsvar.feature_name
     settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
     settingsvar.nextstepdata['iduser'] = iduser
+    settingsvar.nextstepdata['selectfeature'] = settingsvar.selectfeature
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# --- Вибір харектеру прояву. Одинокий чи груповий (чиханння, соплі, свербіння)
+def funcselectfeature():
+    settingsvar.selectfeature = False
+    tmplist = []
+    index = settingsvar.indexfeature = 0
+    settingsvar.html = 'diagnoz/errorfeature.html'
+    if len(settingsvar.dictfeature) == 0:
+        listkeyFeature = settingsvar.keyComplaint
+        if len(settingsvar.keyFeature) != 0:
+            listkeyFeature = settingsvar.keyComplaint + ";" + settingsvar.keyFeature + ";"
+        settingsvar.dictfeature = rest_api('api/InterviewController/' + "0/0/0/0/" + listkeyFeature, '', 'GET')
+    if len(settingsvar.dictfeature) > 0:
+        if len(settingsvar.keyFeature) != 0:
+            for item in settingsvar.listfeature:
+                if item['keyFeature'] == settingsvar.keyFeature and item['keyComplaint'] == settingsvar.keyComplaint:
+                    item['checkfeature'] = True
+                    break
+            for item in settingsvar.listfeature:
+                for itemfeature in settingsvar.dictfeature:
+                    if item['keyFeature'] in itemfeature['grDetail']:
+                        if settingsvar.keyFeature == item['keyFeature']:
+                            settingsvar.indexfeature = index
+                            settingsvar.spisoknamefeature.append(item['name'])
+                            settingsvar.spselectnameDetailing.append(item['name'])
+                        index = index + 1
+                        settingsvar.selectfeature = True
+                        break
+                for itemfeature in settingsvar.dictfeature:
+                    if item['keyFeature'] in itemfeature['grDetail']:
+                        if item not in tmplist:
+                            tmplist.append(item)
+            settingsvar.listfeature = tmplist
+    else:
+        cleanvars()
+        iduser = funciduser()
+        settingsvar.nawpage = 'receptinterwiev'
+        settingsvar.html = 'diagnoz/receptinterwiev.html'
+        api = rest_api('api/ApiControllerComplaint/', '', 'GET')
+        settingsvar.nextstepdata = {
+            'complaintlist': api,
+            'iduser': iduser,
+            'backurl': 'reception'
+        }
+    return
 
 
 # --- Формування масиву обраних симптомів групових деталей характеру прояву знедужання
@@ -804,47 +855,17 @@ def backfeature(request):
 def funcfeature(request):
     if len(settingsvar.spisoklistdetaling) == 0:
         if len(settingsvar.spisokGrDetailing) == 0 and settingsvar.ongrupdetaling == False:
-            index = 0
-            indexfeature = 0
             iduser = funciduser()
             settingsvar.nextstepdata = {}
             settingsvar.itemstep = 'spisokkeyfeature'
-
-            tmplist = []
-            settingsvar.html = 'diagnoz/errorfeature.html'
-            if len(settingsvar.dictfeature) == 0:
-                listkeyFeature = settingsvar.keyComplaint + ";" + settingsvar.keyFeature + ";";
-                settingsvar.dictfeature = rest_api('api/InterviewController/' + "0/0/0/0/" + listkeyFeature, '', 'GET')
-            if len(settingsvar.dictfeature) > 0:
-                for item in settingsvar.listfeature:
-                    for itemfeature in settingsvar.dictfeature:
-                        if item['keyFeature'] in itemfeature['grDetail']:
-                            if settingsvar.keyFeature == item['keyFeature']:
-                                indexfeature = index
-                                settingsvar.spisoknamefeature.append(item['name'])
-                                settingsvar.spselectnameDetailing.append(item['name'])
-                            index = index + 1
-                            break
-                    for itemfeature in settingsvar.dictfeature:
-                        if item['keyFeature'] in itemfeature['grDetail']:
-                            if item not in tmplist:
-                                tmplist.append(item)
-                settingsvar.listfeature = tmplist
-            else:
-                cleanvars()
-                settingsvar.nawpage = 'receptinterwiev'
-                settingsvar.html = 'diagnoz/receptinterwiev.html'
-                api = rest_api('api/ApiControllerComplaint/', '', 'GET')
-                settingsvar.nextstepdata = {
-                    'complaintlist': api,
-                    'iduser': iduser,
-                    'backurl': 'reception'
-                }
             settingsvar.nawpage = 'backfeature'
             settingsvar.forspisokkeyfeature = False
+            funcselectfeature()
             if len(settingsvar.listfeature) > 1:
                 settingsvar.html = 'diagnoz/nextfeature.html'
-                del settingsvar.listfeature[indexfeature]
+                if settingsvar.selectfeature == False:
+                    del settingsvar.listfeature[settingsvar.indexfeature]
+
                 if len(settingsvar.pacient) > 0:
                     shablonpacient(settingsvar.pacient)
                 settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
@@ -852,6 +873,7 @@ def funcfeature(request):
                 settingsvar.nextstepdata['compl'] = settingsvar.feature_name
                 settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
                 settingsvar.nextstepdata['iduser'] = iduser
+                settingsvar.nextstepdata['selectfeature'] = settingsvar.selectfeature
 
             if len(settingsvar.listfeature) == 1:
                 nextstepgrdetaling()
@@ -861,6 +883,32 @@ def funcfeature(request):
         return redirect(request.path)
     return
 
+
+def feature_checkbox_view(request, select_keyComplaint, select_keyFeature):
+    tmp = []
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        activ_checkbox = data['active']
+
+        for item in settingsvar.listfeature:
+            if item['keyFeature'] == select_keyFeature and item['keyComplaint'] == select_keyComplaint:
+                if activ_checkbox == True: item['checkfeature'] = True
+                if activ_checkbox == False: item['checkfeature'] = False
+            else:
+                if 'checkfeature' not in item:
+                    item['checkfeature'] = False
+            tmp.append(item)
+
+        settingsvar.listfeature = []
+        for item in tmp:
+            settingsvar.listfeature.append(item)
+
+        request.method = 'GET'
+    settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
+
+    return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+    return
 
 # ---- чистка переменніх перед поавторным началом диагностика
 def claenvarfuture():
@@ -905,6 +953,11 @@ def nextstepgrdetaling():
         settingsvar.listdetaling = {}
         settingsvar.spisokGrDetailing = []
         settingsvar.spisoklistdetaling = []
+
+        for item in settingsvar.listfeature:
+            if item['checkfeature'] == True:
+                settingsvar.spisokkeyfeature.append(item['keyFeature'])
+
         if len(settingsvar.spisokkeyfeature) > 0:  # and settingsvar.forspisokkeyfeature == False
             for keyfeature in settingsvar.spisokkeyfeature:
                 # settingsvar.forspisokkeyfeature = True
