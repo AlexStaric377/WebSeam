@@ -606,6 +606,8 @@ def funcinterwiev(request):
     settingsvar.сomplaintselect = []
     settingsvar.strokagrdetaling = ""
     settingsvar.ongrupdetaling = False
+    settingsvar.selectfeature = False
+    settingsvar.viewdetaling = False
     funsearchcomplform(request)
     match settingsvar.kabinet:
         case 'guest':
@@ -705,7 +707,7 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
             item['checkfeature'] = False
             tmp.append(item)
         settingsvar.listfeature = tmp
-        funcselectfeature()
+        # funcselectfeature()
     iduser = funciduser()
     settingsvar.nawpage = 'backfeature'
     settingsvar.html = 'diagnoz/nextfeature.html'
@@ -728,10 +730,11 @@ def funcselectfeature():
     index = settingsvar.indexfeature = 0
     settingsvar.html = 'diagnoz/errorfeature.html'
     if len(settingsvar.dictfeature) == 0:
-        listkeyFeature = settingsvar.keyComplaint
-        if len(settingsvar.keyFeature) != 0:
-            listkeyFeature = settingsvar.keyComplaint + ";" + settingsvar.keyFeature + ";"
+        # listkeyFeature = settingsvar.keyComplaint
+        # if len(settingsvar.keyFeature) != 0:
+        listkeyFeature = settingsvar.keyComplaint + ";" + settingsvar.keyFeature + ";"
         settingsvar.dictfeature = rest_api('api/InterviewController/' + "0/0/0/0/" + listkeyFeature, '', 'GET')
+
     if len(settingsvar.dictfeature) > 0:
         if len(settingsvar.keyFeature) != 0:
             for item in settingsvar.listfeature:
@@ -908,7 +911,7 @@ def feature_checkbox_view(request, select_keyComplaint, select_keyFeature):
     settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
-    return
+
 
 # ---- чистка переменніх перед поавторным началом диагностика
 def claenvarfuture():
@@ -918,6 +921,7 @@ def claenvarfuture():
     settingsvar.spisokkeyfeature = []
     settingsvar.spisokselectDetailing = []
     settingsvar.ongrupdetaling = False
+    settingsvar.viewdetaling = False
     settingsvar.keyFeature = {}
     settingsvar.keyComplaint = {}
     return
@@ -948,7 +952,8 @@ def nextgrdetaling(request):
 # --- функция распределения списков симптомов по локальным и групповым
 def nextstepgrdetaling():
     if settingsvar.itemstep == 'spisokkeyfeature':
-
+        settingsvar.viewdetaling = False
+        settingsvar.continuegrdetaling = False
         settingsvar.detalingname = []
         settingsvar.listdetaling = {}
         settingsvar.spisokGrDetailing = []
@@ -956,7 +961,8 @@ def nextstepgrdetaling():
 
         for item in settingsvar.listfeature:
             if item['checkfeature'] == True:
-                settingsvar.spisokkeyfeature.append(item['keyFeature'])
+                if item['keyFeature'] not in settingsvar.spisokkeyfeature:
+                    settingsvar.spisokkeyfeature.append(item['keyFeature'])
 
         if len(settingsvar.spisokkeyfeature) > 0:  # and settingsvar.forspisokkeyfeature == False
             for keyfeature in settingsvar.spisokkeyfeature:
