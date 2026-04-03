@@ -556,12 +556,10 @@ def cleanvars():
     settingsvar.ongrupdetaling = False
     settingsvar.DiagnozRecomendaciya = []
     settingsvar.rest_apisetdiagnoz = ""
-
     settingsvar.spisokkeyinterview = []
     settingsvar.spisoknameinterview = []
     settingsvar.strokagrdetaling = ""
     settingsvar.diagnozStroka = []
-
     settingsvar.kodProtokola = ""
     settingsvar.setintertview = False
     settingsvar.interviewcompl = False
@@ -681,7 +679,7 @@ def funsearchcomplform(request):
         settingsvar.apiсomplaint = rest_api('api/ApiControllerComplaint/', '', 'GET')
         settingsvar.сomplaintselect = settingsvar.apiсomplaint
         settingsvar.formsearchtext = InputsearchcomplateForm()
-        # settingsvar.receptitem = 'receptinterwiev'
+
     return
 
 
@@ -699,8 +697,8 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     settingsvar.dictfeature = []
     settingsvar.keyComplaint = nextfeature_keyComplaint
     if len(settingsvar.listfeature) <= 0:
-        settingsvar.listfeature = rest_api('api/FeatureController/' + "0/" + nextfeature_keyComplaint + "/0/", '',
-                                           'GET')
+        settingsvar.listfeature = rest_api('api/FeatureController/' + "0/"
+                                           + nextfeature_keyComplaint + "/0/", '', 'GET')
         tmp = []
         for item in settingsvar.listfeature:
             item['checkfeat'] = False
@@ -730,8 +728,6 @@ def funcselectfeature():
     index = settingsvar.indexfeature = 0
     settingsvar.html = 'diagnoz/errorfeature.html'
     if len(settingsvar.dictfeature) == 0:
-        # listkeyFeature = settingsvar.keyComplaint
-        # if len(settingsvar.keyFeature) != 0:
         listkeyFeature = settingsvar.keyComplaint + ";" + settingsvar.keyFeature + ";"
         settingsvar.dictfeature = rest_api('api/InterviewController/' + "0/0/0/0/" + listkeyFeature, '', 'GET')
 
@@ -792,11 +788,9 @@ def detaling_checkbox_view(request, select_detaling):
                 if 'checkfeat' not in item:
                     item['checkfeat'] = False
             tmp.append(item)
-
         settingsvar.spisoklistdetaling = []
         for item in tmp:
             settingsvar.spisoklistdetaling.append(item)
-
         request.method = 'GET'
     settingsvar.nextstepdata['detalinglist'] = settingsvar.spisoklistdetaling
 
@@ -807,13 +801,6 @@ def detaling_checkbox_view(request, select_detaling):
 def grdetaling_checkbox_view(request, select_grdetaling):
     tmp = []
     if request.method == 'POST':
-
-        # time.sleep(1)
-        # tmp = request.body
-        # string_data = tmp.decode('utf-8')
-        # if '{' in string_data:
-        #     data = eval(string_data)
-        # Если флажок включен, вернется 'True', иначе False
         data = json.loads(request.body)
         activ_checkbox = data['active']
 
@@ -825,11 +812,9 @@ def grdetaling_checkbox_view(request, select_grdetaling):
                 if 'checkfeat' not in item:
                     item['checkfeat'] = False
             tmp.append(item)
-
         settingsvar.rest_apiGrDetaling = []
         for item in tmp:
             settingsvar.rest_apiGrDetaling.append(item)
-
         request.method = 'GET'
     settingsvar.nextstepdata['detalinglist'] = settingsvar.rest_apiGrDetaling
 
@@ -964,9 +949,8 @@ def nextstepgrdetaling():
                 if item['keyFeature'] not in settingsvar.spisokkeyfeature:
                     settingsvar.spisokkeyfeature.append(item['keyFeature'])
 
-        if len(settingsvar.spisokkeyfeature) > 0:  # and settingsvar.forspisokkeyfeature == False
+        if len(settingsvar.spisokkeyfeature) > 0:
             for keyfeature in settingsvar.spisokkeyfeature:
-                # settingsvar.forspisokkeyfeature = True
                 listkeyfeature = rest_api('api/DetailingController/' + "0/" + keyfeature + "/0/", '', 'GET')
                 for itemkeyfeature in listkeyfeature:
                     set = ""
@@ -1060,7 +1044,6 @@ def nextstepgrdetaling():
 def selectdetaling(request, select_kodDetailing):
     settingsvar.spisokkeyinterview.append(select_kodDetailing + ";")
     settingsvar.spisokselectDetailing.append(select_kodDetailing)
-
     index = 0
     settingsvar.nawpage = 'receptinterwiev'
     if len(settingsvar.spisoklistdetaling) > 0:
@@ -1108,7 +1091,6 @@ def continuegrdetaling(request):
                 if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
                 shablongrdetaling()
-                # del settingsvar.spisokGrDetailing[0]
                 if len(settingsvar.detalingname) > 0: del settingsvar.detalingname[0]
                 break
         else:
@@ -1286,7 +1268,7 @@ def shablongrdetaling():
 def writediagnoz():
     settingsvar.selectlikar = False
 
-    if settingsvar.kabinet == 'likarinterwiev':
+    if settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'listinterwiev':
         saveselectlikar(settingsvar.pacient)
     else:
         if settingsvar.kabinet == 'guest':
@@ -2174,12 +2156,20 @@ def putvisitinglikar():
 # --- Видалити запис до лікаря на обстеження
 
 def removeappointments(request):
-    Appointment = rest_api(
+    if settingsvar.kabinet == 'listinterwiev':
+        Appointment = rest_api(
+            'api/ColectionInterviewController/' + '0/' + settingsvar.itemlikarAdmission['kodPacient'] +
+            '/' + settingsvar.itemlikarAdmission['kodDoctor'] + '/' + settingsvar.itemlikarAdmission['dateInterview'] +
+            '/' + settingsvar.itemlikarAdmission['kodProtokola'], '', 'DEL')
+
+        funcshablonlistpacient()
+    else:
+        Appointment = rest_api(
         '/api/RegistrationAppointmentController/' + '0/' + settingsvar.itemlikarAdmission['kodPacient'] +
         '/' + settingsvar.itemlikarAdmission['kodDoctor'] + '/' + settingsvar.itemlikarAdmission['dateInterview'] +
         '/' + settingsvar.itemlikarAdmission['kodProtokola'], '', 'DEL')
 
-    funcshablonlistreceptionlikar()
+        funcshablonlistreceptionlikar()
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -2264,7 +2254,7 @@ def SelectNewKodComplInteriew():
         repl = "000000000000"
         indexcmp = "CMP." + repl[0: len(repl) - len(str(indexdia))] + str(indexdia + 1)
 
-    return indexcmp;
+    return indexcmp
 
 
 # --- визначення нового коду протоколу опитування
@@ -3338,7 +3328,12 @@ def profilinterview(request, selected_protokol, selected_datevizita, selected_ko
                 funcshablonlistpacient()
     else:
         if settingsvar.addinterviewrecept == True:
-            selectmedzakladpacien()
+            settingsvar.datereception = settingsvar.datevizita
+            settingsvar.kodDoctor = settingsvar.itemlikarAdmission['kodDoctor']
+            settingsvar.kodComplInterv = settingsvar.itemlikarAdmission['kodComplInterv']
+            addReceptionLikar()
+            settingsvar.addinterviewrecept = False
+            funcshablonlistreceptionlikar()
         else:
             nextprofilinterview(request)
 
