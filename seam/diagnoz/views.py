@@ -1287,7 +1287,7 @@ def writediagnoz():
                         if len(apiicd['keyIcd']) > 0: settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
                         settingsvar.icdGrDiagnoz = apiicd['icdGrDiagnoz']
                     apiRecommen = rest_api('/api/RecommendationController/' + api[0]['kodRecommend'] + "/0", '', 'GET')
-                    if len(apiRecommen) > 0: contentRecommendation = apiRecommen['contentRecommendation']
+                    if len(apiRecommen) > 0: settingsvar.contentRecommendation = apiRecommen['contentRecommendation']
                 settingsvar.nawpage = 'backfromcontent'
                 settingsvar.html = 'diagnoz/versiyadiagnoza.html'
 
@@ -1917,7 +1917,8 @@ def saveselectlikar(pacient):
             'reason_url': reason_url,
             'search_reason': search_reason,
             'base_url': base_url,
-            'search_term': search_term
+            'search_term': search_term,
+            'rekomendaciya': settingsvar.contentRecommendation
         }
     else:
 
@@ -1935,7 +1936,8 @@ def saveselectlikar(pacient):
                 'reason_url': reason_url,
                 'search_reason': search_reason,
                 'base_url': base_url,
-                'search_term': search_term
+                'search_term': search_term,
+                'rekomendaciya': settingsvar.contentRecommendation
             }
             # settingsvar.kodDoctor = ""
 
@@ -1969,63 +1971,65 @@ def inputprofilpacient(request, selected_doctor):
         settingsvar.namemedzaklad = medzaklad['name']
         likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
                                     settingsvar.kodDoctor + '/0', '', 'GET')
-        # settingsvar.receptitem = 'selectfamilylikar'
-        iduser = funciduser()
-        match settingsvar.receptitem:
-            case 'selectfamilylikar' | 'profillikar' | 'likarinapryamok' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
-                if settingsvar.addinterviewrecept == True and settingsvar.receptitem != 'directiondiagnoz':
-                    dateregistrationappointment(request)
-                else:
-                    if settingsvar.receptitem == 'selectfamilylikar' and settingsvar.backpage == 'addfamilylikar':
-                        writefamilylikar()
+        if len(likarGrupDiagnoz) == 0 and settingsvar.receptitem == 'selectlikarfamily':
+            errorprofil('Шановний користувач! за вашим запитом немає робочих напрямків у сімейного лікаря')
+        else:
+            iduser = funciduser()
+            match settingsvar.receptitem:
+                case 'selectfamilylikar' | 'profillikar' | 'likarinapryamok' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
+                    if settingsvar.addinterviewrecept == True and settingsvar.receptitem != 'directiondiagnoz':
+                        dateregistrationappointment(request)
                     else:
-                        settingsvar.html = 'diagnoz/likarworkdirection.html'
-                        backurl = 'receptprofillmedzaklad'
-                        settingsvar.nawpage = 'receptprofillmedzaklad'
-
-                        match settingsvar.receptitem:
-                            case 'likarinapryamok':
-                                settingsvar.backpage = 'likarinapryamok'
-                            case 'profillikar':
-                                settingsvar.backurl = 'profillikar'
-                            case 'familylikar':
-                                settingsvar.backurl = 'familylikar'
-                            case 'receptprofillmedzaklad':
-                                settingsvar.receptitem = 'likarworkdirection'
-
-                                settingsvar.likar = {}
-                            case 'selectedprofillikar':
-                                settingsvar.receptitem = 'likarworkdiagnoz'
-                            case 'directiondiagnoz':
-                                settingsvar.backpage = 'shablonlistlikar'
-
-                            case 'likarworkdirection':
-                                settingsvar.backpage = 'selectedprofillikar'
-                            case 'selectfamilylikar':
-                                settingsvar.backpage = 'selectfamilylikar'
-                                backurl = 'selectfamilylikar'
-                        if len(likarGrupDiagnoz) > 0:
-                            settingsvar.nextstepdata = {
-                                'iduser': iduser,
-                                'complaintlist': likarGrupDiagnoz,
-                                'backurl': backurl,
-                                'piblikar': settingsvar.namelikar,  # + " т." + settingsvar.mobtellikar,
-                                'medzaklad': settingsvar.namemedzaklad,  # + " " + settingsvar.adrzaklad,
-                                'directdiagnoz': settingsvar.directdiagnoz,
-                                'listapinull': True,
-                                'сontentnull': ''
-                            }
+                        if settingsvar.receptitem == 'selectfamilylikar' and settingsvar.backpage == 'addfamilylikar':
+                            writefamilylikar()
                         else:
-                            settingsvar.nextstepdata = {}
-            case 'selectlikarfamily' | 'interwievcomplaint' | 'interwiev' | 'pacientinterwiev' | 'likarinterwiev' | 'getsearchcomplateForm':
-                dateregistrationappointment(request)
+                            settingsvar.html = 'diagnoz/likarworkdirection.html'
+                            backurl = 'receptprofillmedzaklad'
+                            settingsvar.nawpage = 'receptprofillmedzaklad'
 
-            case 'replaceproflikar':
-                if len(settingsvar.itemlikarAdmission) == 0:
-                    saveselectlikar(settingsvar.pacient)
-                else:
-                    putvisitinglikar()
-                    backprofilinterview(request)
+                            match settingsvar.receptitem:
+                                case 'likarinapryamok':
+                                    settingsvar.backpage = 'likarinapryamok'
+                                case 'profillikar':
+                                    settingsvar.backurl = 'profillikar'
+                                case 'familylikar':
+                                    settingsvar.backurl = 'familylikar'
+                                case 'receptprofillmedzaklad':
+                                    settingsvar.receptitem = 'likarworkdirection'
+
+                                    settingsvar.likar = {}
+                                case 'selectedprofillikar':
+                                    settingsvar.receptitem = 'likarworkdiagnoz'
+                                case 'directiondiagnoz':
+                                    settingsvar.backpage = 'shablonlistlikar'
+
+                                case 'likarworkdirection':
+                                    settingsvar.backpage = 'selectedprofillikar'
+                                case 'selectfamilylikar':
+                                    settingsvar.backpage = 'selectfamilylikar'
+                                    backurl = 'selectfamilylikar'
+                            if len(likarGrupDiagnoz) > 0:
+                                settingsvar.nextstepdata = {
+                                    'iduser': iduser,
+                                    'complaintlist': likarGrupDiagnoz,
+                                    'backurl': backurl,
+                                    'piblikar': settingsvar.namelikar,  # + " т." + settingsvar.mobtellikar,
+                                    'medzaklad': settingsvar.namemedzaklad,  # + " " + settingsvar.adrzaklad,
+                                    'directdiagnoz': settingsvar.directdiagnoz,
+                                    'listapinull': True,
+                                    'сontentnull': ''
+                                }
+                            else:
+                                settingsvar.nextstepdata = {}
+                case 'selectlikarfamily' | 'interwievcomplaint' | 'interwiev' | 'pacientinterwiev' | 'likarinterwiev' | 'getsearchcomplateForm':
+                    dateregistrationappointment(request)
+
+                case 'replaceproflikar':
+                    if len(settingsvar.itemlikarAdmission) == 0:
+                        saveselectlikar(settingsvar.pacient)
+                    else:
+                        putvisitinglikar()
+                        backprofilinterview(request)
 
     else:
         shablonselect(request)
@@ -3065,6 +3069,7 @@ def errorprofil(compl):
     if settingsvar.kabinet == "guest" and settingsvar.receptitem == 'registrkabinet': backurl = 'reestraccountuser'
     if settingsvar.kabinet == 'listinterwiev' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listreceptionlikar' or settingsvar.kabinet == 'pacientstanhealth': backurl = 'pacient'
     if settingsvar.kabinet == 'pacient': backurl = 'reestraccountuser'
+    if settingsvar.kabinet == "guest" and settingsvar.receptitem == 'clinicmedzaklad': backurl = 'reception'
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': compl,
@@ -3902,7 +3907,7 @@ def funcselectfamilylikar():
 
 def listfamilylikar():
     likarspec = []
-    listfamilylikar = rest_api('/api/ControlerFamilyLikar/', '', 'GET')
+    listfamilylikar = rest_api('/api/ControlerFamilyLikar/' + settingsvar.kodPacienta + '/0', '', 'GET')
     if len(listfamilylikar) > 0:
         for item in listfamilylikar:
             settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + '/0/0', '', 'GET')

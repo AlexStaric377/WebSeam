@@ -18,7 +18,7 @@ class PacientForm(forms.Form):
                                 widget=forms.NumberInput(attrs={'class': 'form-control'}))
     growth = forms.IntegerField(max_value=230, min_value=115, label="Зріст(см.)", required=False, initial=0,
                                 widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    pind = forms.CharField(max_length=5, min_length=5, label="Поштовий індекс",
+    pind = forms.CharField(max_length=5, min_length=5, label="Пошт.індекс",
                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "xxxxx"}))
     tel = forms.CharField(label="Телефон", required=True, widget=forms.TextInput(
                               attrs={'class': 'form-control is-invalid', 'placeholder': " +xxx xx xx xxx xx"}))

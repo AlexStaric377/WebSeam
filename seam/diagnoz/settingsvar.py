@@ -131,3 +131,4 @@ listlikar = []
 forspisokkeyfeature = False
 selectfeature = False
 indexfeature = 0
+contentRecommendation = ""
