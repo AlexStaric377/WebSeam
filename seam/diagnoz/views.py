@@ -3057,11 +3057,16 @@ def shablonpacient(profilpacient):
 # ----- Функция виведення діагностичного повідомлення
 def errorprofil(compl):
     settingsvar.html = 'diagnoz/savediagnoz.html'
+
     iduser = funciduser()
     backurl = funcbakurl()
     next = 'Повторити запит'
     if 'існує' in compl: next = 'Далі'
     if 'лікар' in compl: next = 'Далі'
+
+    if settingsvar.kabinet == "likarlistinterwiev" or settingsvar.kabinet == "likarreceptionpacient":
+        iduser = 'Лікар: ' + settingsvar.likar['name'] + settingsvar.likar['surname']
+
     if settingsvar.kabinet == "pacient" and settingsvar.backpage == 'selectfamilylikar':  backurl = 'pacient'
     if settingsvar.kabinet == "guest" and settingsvar.backpage == "checkvisitinglikar":  backurl = 'backshablonselect'
     if settingsvar.kabinet == "guest" and settingsvar.receptitem != 'registrprofil': backurl = 'backshablonselect'
@@ -3364,7 +3369,7 @@ def nextprofilinterview(request):
             settingsvar.backurl = funcbakurl()
             funcshablonlistpacient()
         case 'likarlistinterwiev':
-            listlikar()
+            # listlikar()
             removefunc = 'removeinterview'
             remove = True
     match settingsvar.kabinetitem:
@@ -3438,7 +3443,7 @@ def nextprofilinterview(request):
                         if item['kodPacient'] != None and len(item['kodPacient']) > 0:
                             doc = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
                             settingsvar.kodPacienta = item['kodPacient']
-                            PacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
+                            settingsvar.pacientName = doc['name'] + ' ' + doc['surname'] + ' Телефон: ' + doc['tel']
                         likarName = settingsvar.namelikar  # + " тел.: " + settingsvar.mobtellikar
                         settingsvar.pacient = doc
                         medzaklad = settingsvar.namemedzaklad
@@ -3469,7 +3474,7 @@ def nextprofilinterview(request):
     settingsvar.html = 'diagnoz/profilinterview.html'
     settingsvar.backpage = 'profilinterview'
     shablonpacient(settingsvar.pacient)
-    settingsvar.nextstepdata['namepacient'] = 'Пацієнт:        ' + settingsvar.PacientName
+    settingsvar.nextstepdata['namepacient'] = 'Пацієнт:        ' + settingsvar.pacientName
     settingsvar.nextstepdata['namelikar'] = 'Лікар:          ' + likarName
     settingsvar.nextstepdata['medzaklad'] = 'Мед. заклад: ' + medzaklad
     settingsvar.nextstepdata['dateinterv'] = 'Дата опитування: ' + dateint
@@ -4201,8 +4206,7 @@ def listlikar():
     settingsvar.nawpage = 'likarlistinterweiv'
     settingsvar.html = 'diagnoz/likarlistinterwiev.html'
     settingsvar.listapi = rest_api('api/ColectionInterviewController/' + '0/' + settingsvar.kodDoctor + '/0', '', 'GET')
-    pacient = {}
-    # settingsvar.itemlikarAdmission = []
+
     if len(settingsvar.listapi) > 0:
         for item in settingsvar.listapi:
             pacient = rest_api('api/PacientController/' + item['kodPacient'] + '/0/0/0/0', '', 'GET')
@@ -4211,7 +4215,6 @@ def listlikar():
             api = rest_api('/api/DependencyDiagnozController/' + "0/" + item['kodProtokola'] + "/0", '', 'GET')
             if len(api) > 0:
                 item['kodDiagnoz'] = api[0]['kodDiagnoz']
-            # settingsvar.itemlikarAdmission.append(item)
 
         settingsvar.nextstepdata = {
             'iduser': iduser,
@@ -4245,7 +4248,7 @@ def likarreceptionpacient(request):  # httpRequest
 
 
 def listreceptionpacient(request):
-    iduser = funciduser()
+    iduser = ""  # funciduser()
     backurl = funcbakurl()
     settingsvar.backpage = 'likarreceptionpacient'
     settingsvar.nawpage = 'likarreceptionpacient'
@@ -4287,7 +4290,7 @@ def listreceptionpacient(request):
                 'iduser': iduser,
                 'complaintlist': settingsvar.pacientselect,
                 'backurl': backurl,
-                'piblikar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
+                'piblikar': 'Лікар: ' + settingsvar.likar['name'],  # + " тел.: " + settingsvar.mobtellikar,
                 'medzaklad': settingsvar.namemedzaklad,
                 'form': settingsvar.formsearchpacient,
             }

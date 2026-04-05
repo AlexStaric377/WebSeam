@@ -127,8 +127,9 @@ feature_keyComplaint = []
 grDetaling_keyGrDetaling = []
 continuegrdetaling = False
 ongrupdetaling = False
-listlikar = []
+
 forspisokkeyfeature = False
 selectfeature = False
 indexfeature = 0
 contentRecommendation = ""
+pacientName = ""

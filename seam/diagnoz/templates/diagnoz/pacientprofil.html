@@ -2,9 +2,8 @@
 {% block nav %}
 <div class=" container-fluid text-center d-flex justify-content-center align-items-center ">
 
-    <h6>{{iduser}}</h6>
-    <h5 class="mb-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профіль
-        пацієнта</font></font></h5>
+    <!--    <h6>{{iduser}}</h6>-->
+    <h5 class="mb-3">Профіль пацієнта</h5>
     <p></p>
     <div class="card shadow">
         <div class="card-body">
@@ -14,66 +13,53 @@
         <div class="row g-2">
             <div class="row text-center d-flex justify-content-center">
                 <div class="col-md-3">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{form.tel.label}}</font></font>
-                    </label>
+                    <label class="form-label">{{form.tel.label}}</label>
                     {{ form.tel }}
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
                 <div class="col-sm-3">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{ form.name.label }}</font></font>
-                    </label>
+                    <label class="form-label">{{ form.name.label }}</label>
                     {{form.name}}
 
                 </div>
                 <div class="col-sm-3">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{ form.surname.label }}</font></font></label>
+                    <label class="form-label">{{ form.surname.label }}</label>
                     {{form.surname}}
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
                 <div class="col-md-2">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{form.gender.label}}</font></font></label>
+                    <label class="form-label">{{form.gender.label}}</label>
                     {{form.gender}}
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{form.age.label}}</font></font>
-                    </label>
+                    <label class="form-label">{{form.age.label}}</label>
                     {{form.age}}
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{form.profession.label}}</font></font></label>
+                    <label class="form-label">{{form.profession.label}}</label>
                     {{form.profession}}
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
                 <div class="col-md-2">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{form.weight.label}}</font></font></label>
+                    <label class="form-label">{{form.weight.label}}</label>
                     {{form.weight}}
                 </div>
 
                 <div class="col-md-2">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{form.growth.label}}</font></font></label>
+                    <label class="form-label">{{form.growth.label}}</label>
                     {{form.growth}}
                 </div>
             </div>
             <div class="row text-center d-flex justify-content-center">
                 <div class="col-md-2">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{form.pind.label}}</font></font></label>
+                    <label class="form-label">{{form.pind.label}}</label>
                     {{form.pind}}
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label"><font style="vertical-align: inherit;"><font
-                            style="vertical-align: inherit;">{{form.email.label}} </font></font></label>
+                    <label class="form-label">{{form.email.label}} </label>
                     {{form.email}}
                 </div>
             </div>
