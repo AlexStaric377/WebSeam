@@ -1,0 +1,106 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<div class="container text-center">
+    <div class="row">
+        <div class="d-flex justify-content-center align-items-start border shadow p-3 mb-5 bg-white rounded overflow-y: auto">
+            <div class="col justify-content-md-center">
+                <h6>Реєстратура </h6>
+                <p>Перша домедична допомога:</p>
+                <p></p>
+                <nav class="navbar navbar-light bg-light">
+                    <div class="container-fluid  ">
+                        <!-- Вертикальное меню -->
+                        <ul class="navbar-nav flex-column text-start">
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'headache' %}"
+                                   style="font-size: 23px;">- Головний біль</a><br>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'krovotecha' %}"
+                                   style="font-size: 23px;">- Кровотеча</a><br>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Зупинка серця</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Непритомність</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Опік</a><br>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Хімічний опік</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Електричні травми</a><br>
+                            </li>
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"-->
+                            <!--                                   style="font-size: 23px;">- Поріз</a><br>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"-->
+                            <!--                                   style="font-size: 23px;">- Гематома (синяк)</a>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"-->
+                            <!--                                   style="font-size: 23px;">- Засади, забиті місця, подряпини</a><br>-->
+                            <!--                            </li>-->
+
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'receptprofillmedzaklad' %}"-->
+                            <!--                                   style="font-size: 23px;">- Септичний шок</a><br>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'profillikar' %}"-->
+                            <!--                                   style="font-size: 23px;">- Спонтанний пневмоторакс</a><br>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"-->
+                            <!--                                   style="font-size: 23px;">- Сонячний удар</a>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"-->
+                            <!--                                   style="font-size: 23px;">- Відмороження</a>-->
+                            <!--                            </li>-->
+
+
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Асфіксія (заду́ха)</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Кліщовий енцефаліт</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Укуси тварин</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"
+                                   style="font-size: 23px;">- Укуси комах</a>
+                            </li>
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"-->
+                            <!--                                   style="font-size: 23px;">- Гостра алкогольна інтоксикація</a>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="nav-item mb-2">-->
+                            <!--                                <a class="text-primary text-decoration-none " href="{% url 'ambulance' %}"-->
+                            <!--                                   style="font-size: 23px;">- Засоби для обробки мікротравм і дрібних ушкоджень шкіри</a>-->
+                            <!--                            </li>-->
+
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<div class="container">
+    <p class="fs-5 text-center ">Перша домедична допомога при головному болі</p>
+    <a class="fw-semibold text-decoration-none text-black">Припинити діяльність.</a><a> Випити склянку води
+    (зневоднення часто викликає біль). Лягти у тихій, темній, провітреній кімнаті на 20-30 хвилин, заплющити очі,
+    зробити
+    м'який легкий масаж скроні, чола та шиї, прикласти холодний компрес
+    до чола або потилиці (для звуження судин). За потреби можна прийняти знеболювальне (парацетамол/ібупрофен)
+    або спазмолітики (дротаверин), якщо біль супроводжується спазмами.</a><br>
+    <a>Якщо головний біль виник миттєво і за силою якої ви до цього ніколи не відчували,
+        або кінцівки почали німити, чи сталося порушення мовлення, перекіс обличчя, двоїння в очах,
+        висока температура + неможливість притиснути підборіддя до грудей, сильна нудота чи блювання,
+        високий артеріальний тиск.</a>
+    <a class="fw-semibold text-decoration-none text-black"> Негайно викликати швидку (103).</a><br>
+    <p></p>
+</div>
+<div class="container-fluid text-center" style="display: inline-block">
+    <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+       rel="noopener noreferrer" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Більше тут...</a>
+</div>
+
+{% endblock %}

@@ -125,6 +125,9 @@ urlpatterns = [
     path('backsaveselectlikar', views.backsaveselectlikar, name='backsaveselectlikar'),
     path('feature_checkbox_view/<str:select_keyComplaint>, <str:select_keyFeature>', views.feature_checkbox_view,
          name='feature_checkbox_view'),
+    path('ambulance', views.ambulance, name='ambulance'),
+    path('headache', views.headache, name='headache'),
+    path('krovotecha', views.krovotecha, name='krovotecha'),
 ]
 #
 urlpatterns += [

@@ -1,0 +1,35 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<div class="container">
+    <p class="fs-5 text-center ">Перша домедична допомога при кровотечі</p>
+
+
+    <a class="fw-semibold text-decoration-none text-black">Одягніть рукавички,</a><a> якщо є або витріть руки
+    вологою серветкою.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Сильно натисніть на рану</a><a> чистою тканиною, бинтом
+    або рукою (якщо нічого немає).</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Кровотеча венозна або помірна.</a>
+    <a>Накладіть тугу тиснучу пов'язку не видаляючи з рани сторонні предмети. При накладенні пов'язки не знімайте
+        просочену кров'ю тканину,
+        покладіть новий тампон зверху.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Артеріальна кровотеча (яскраво-червона кров, пульсує).</a>
+    <a> Накладіть джгут/турнікет, не видаляючи з рани сторонні предмети, вище рани, на 5–7 см (не на суглоб).
+        Обов'язково зафіксуйте час накладання.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Пошкоджена рука або нога</a>
+    <a> Підніміть її вище рівня серця. При носовій кровотечі нахиліть голову вперед, затисніть крила носа і ні в якому
+        разі
+        не закидати голову назад.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Внутрішня кровотеча (ознаки: блідість, запаморочення,
+        холодний піт).</a>
+    <a>Забезпечте спокій, прикладіть холодне до ймовірного місця травми.</a>
+    <a class="fw-semibold text-decoration-none text-black"> Негайно викличте швидку (103).</a><br>
+    <p></p>
+</div>
+<div class="container-fluid text-center" style="display: inline-block">
+    <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+       rel="noopener noreferrer" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Більше тут...</a>
+</div>
+
+{% endblock %}

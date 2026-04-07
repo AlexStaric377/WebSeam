@@ -95,7 +95,10 @@ def backpage(request):
 
         case 'guest':
             match settingsvar.receptitem:
-
+                case 'ambulance':
+                    views.reception(request)
+                case 'headache' | 'krovotecha':
+                    views.ambulance(request)
                 case 'registrprofil' | 'registrkabinet' | 'applicregulat' | 'manuallikar':
                     views.reception(request)
                     settingsvar.backpage = 'index'

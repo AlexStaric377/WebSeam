@@ -469,14 +469,10 @@ def replaceproflikar(request):
 
 # ---- Амбулаторно-поліклінічні заклади
 def clinicmedzaklad(request):
-    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likarinterwiev':
-        settingsvar.backpage = settingsvar.kabinet
-        shablonlikar(request, settingsvar.pacient)
-    else:
-        settingsvar.backpage = settingsvar.kabinet
-        settingsvar.receptitem = 'clinicmedzaklad'
-        statuszaklad = '2'
-        selectmedzaklad(request, statuszaklad)
+    settingsvar.backpage = settingsvar.kabinet
+    settingsvar.receptitem = 'clinicmedzaklad'
+    statuszaklad = '2'
+    selectmedzaklad(request, statuszaklad)
 
     json = ('IdUser: clinicmedzaklad' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: clinicmedzaklad')
@@ -486,30 +482,75 @@ def clinicmedzaklad(request):
 
 # ---- Сімейні лікарі
 def familylikar(request):
-    if settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'likarinterwiev':
-        settingsvar.backpage = settingsvar.kabinet
-        shablonlikar(request, settingsvar.pacient)
-    else:
-        settingsvar.backpage = settingsvar.kabinet
-        settingsvar.receptitem = 'familylikar'
-        likarspec = []
+    settingsvar.backpage = settingsvar.kabinet
+    settingsvar.receptitem = 'familylikar'
+    likarspec = []
 
-        settingsvar.likar = rest_api('/api/ApiControllerDoctor/', '', 'GET')
-        for item in settingsvar.likar:
-            medzaklad = rest_api(
+    settingsvar.likar = rest_api('/api/ApiControllerDoctor/', '', 'GET')
+    for item in settingsvar.likar:
+        medzaklad = rest_api(
                 '/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '',
                 'GET')
-            if medzaklad['idStatus'] == '2':
+        if medzaklad['idStatus'] == '2':
                 likarspec.append(item)
-        if len(likarspec) > 0:
-            selectlikarrofil(likarspec)
-        else:
-            errorprofil('Шановний користувач! за вашим запитом немає сімейних лікарів')
+    if len(likarspec) > 0:
+        selectlikarrofil(likarspec)
+    else:
+        errorprofil('Шановний користувач! за вашим запитом немає сімейних лікарів')
 
     json = ('IdUser: familylikar' + 'dateseanse :' +
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: familylikar')
     unloadlog(json)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+# Дії при першій допомозі людині що нездужає
+def ambulance(request):
+    settingsvar.backpage = settingsvar.kabinet
+    settingsvar.receptitem = 'ambulance'
+    settingsvar.html = 'diagnoz/ambulance.html'
+    json = ('IdUser: ambulance' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: ambulance')
+    unloadlog(json)
+    return render(request, settingsvar.html)
+
+
+# Дії при першій допомозі Головний біль.
+def headache(request):
+    settingsvar.backpage = settingsvar.kabinet
+    settingsvar.receptitem = 'headache'
+    reason_url = reason_url = 'https://www.google.com/search'
+    search_reason = 'Перша+домедична+допомога+біль+в+голові'
+    settingsvar.nextstepdata = {
+        'reason_url': reason_url,
+        'search_reason': search_reason,
+
+    }
+    json = ('IdUser: headache' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: headache')
+    unloadlog(json)
+
+    return render(request, 'diagnoz/headache.html', settingsvar.nextstepdata)
+
+
+# Перші дії в допомозі при кровотечі.
+def krovotecha(request):
+    settingsvar.backpage = settingsvar.kabinet
+    settingsvar.receptitem = 'krovotecha'
+    reason_url = reason_url = 'https://www.google.com/search'
+    search_reason = 'Перша+домедична+допомога+при+кровотечі'
+    settingsvar.nextstepdata = {
+        'reason_url': reason_url,
+        'search_reason': search_reason,
+
+    }
+    json = ('IdUser: krovotecha' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: krovotecha')
+    unloadlog(json)
+
+    return render(request, 'diagnoz/krovotecha.html', settingsvar.nextstepdata)
+
+
 
 
 
