@@ -43,7 +43,7 @@ def backpage(request):
 
         case 'interwievcomplaint':
             if (settingsvar.receptitem == 'InputsearchcomplateForm' or settingsvar.receptitem == 'receptinterwiev'
-                    or settingsvar.receptitem == 'getsearchcomplateForm' or settingsvar.receptitem == 'selectlikarfamily'):
+                    or settingsvar.receptitem == 'getsearchcomplateForm' or settingsvar.receptitem == 'receptfamilylikar'):
                 views.funcinterwiev(request)
             else:
                 if settingsvar.receptitem == 'reception' or settingsvar.receptitem == 'likar':
@@ -97,7 +97,7 @@ def backpage(request):
             match settingsvar.receptitem:
                 case 'ambulance':
                     views.reception(request)
-                case 'headache' | 'krovotecha':
+                case 'headache' | 'krovotecha' | 'singe':
                     views.ambulance(request)
                 case 'registrprofil' | 'registrkabinet' | 'applicregulat' | 'manuallikar':
                     views.reception(request)

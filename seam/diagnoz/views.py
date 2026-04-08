@@ -551,7 +551,21 @@ def krovotecha(request):
     return render(request, 'diagnoz/krovotecha.html', settingsvar.nextstepdata)
 
 
+def singe(request):
+    settingsvar.backpage = settingsvar.kabinet
+    settingsvar.receptitem = 'singe'
+    reason_url = reason_url = 'https://www.google.com/search'
+    search_reason = 'Перша+домедична+допомога+при+опіку'
+    settingsvar.nextstepdata = {
+        'reason_url': reason_url,
+        'search_reason': search_reason,
 
+    }
+    json = ('IdUser: singe' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: singe')
+    unloadlog(json)
+
+    return render(request, 'diagnoz/singe.html', settingsvar.nextstepdata)
 
 
 # напрямки проведення діагностики в системі
@@ -742,10 +756,20 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
                                            + nextfeature_keyComplaint + "/0/", '', 'GET')
         tmp = []
         for item in settingsvar.listfeature:
+
             item['checkfeat'] = False
             item['checkfeature'] = False
             tmp.append(item)
         settingsvar.listfeature = tmp
+        # for item in settingsvar.listfeature:
+        #     listkeyFeature = settingsvar.keyComplaint + ";" + item['keyFeature'] + ";"
+        #     dictfeature = rest_api('api/InterviewController/' + "0/0/0/0/" + listkeyFeature, '', 'GET')
+        #     if len(dictfeature) > 0:
+        #         for itemfeature in dictfeature:
+        #             if item['keyFeature'] in itemfeature['grDetail']:
+        #                 settingsvar.selectfeature = True
+        #                 settingsvar.spisoknamefeature.append(item['name'])
+        #                 settingsvar.spselectnameDetailing.append(item['name'])
         # funcselectfeature()
     iduser = funciduser()
     settingsvar.nawpage = 'backfeature'
@@ -950,6 +974,7 @@ def claenvarfuture():
     settingsvar.viewdetaling = False
     settingsvar.keyFeature = {}
     settingsvar.keyComplaint = {}
+    settingsvar.itemstep = ""
     return
 
 
@@ -977,7 +1002,7 @@ def nextgrdetaling(request):
 
 # --- функция распределения списков симптомов по локальным и групповым
 def nextstepgrdetaling():
-    if settingsvar.itemstep == 'spisokkeyfeature':
+    if settingsvar.itemstep == 'spisokkeyfeature' or settingsvar.itemstep == "":
         settingsvar.viewdetaling = False
         settingsvar.continuegrdetaling = False
         settingsvar.detalingname = []
@@ -1383,6 +1408,7 @@ def writediagnoz():
                         'medzaklad': settingsvar.namemedzaklad + " " + settingsvar.adrzaklad,
                         'likar': 'Ваш призначений лікар: ' + settingsvar.namelikar,
                         # ++ " тел.: ",  settingsvar.mobtellikar,
+                        'rekomendaciya': settingsvar.contentRecommendation,
                         'datereception': 'Дата прийому: ' + settingsvar.datereception,
                         'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
                         'backurl': funcbakurl(),
@@ -1396,7 +1422,7 @@ def writediagnoz():
                     settingsvar.nextstepdata = {
                         'opis': item['opistInterview'],
                         'http': item['uriInterview'],
-                        'rekomendaciya': contentRecommendation,
+                        'rekomendaciya': settingsvar.contentRecommendation,
                         'compl': settingsvar.namediagnoz,
                         'detalinglist': settingsvar.diagnozStroka,
                         'iduser': iduser,
@@ -1427,6 +1453,7 @@ def writediagnoz():
 
 def diagnoz():
     diagnozselect = ""
+    settingsvar.itemstep = ""
     for item in settingsvar.DiagnozRecomendaciya:
         diagnozselect = diagnozselect + item
     while ";" in diagnozselect:
@@ -1517,7 +1544,7 @@ def selectmedzaklad(request, statuszaklad):
                         item['adreszak'] = item['uriwebDoctor'] + ', ' + item['email'] + ', тел. ' + item['telefon']
                         item['tel'] = item['telefon']
                     tmp.append(item)
-                settingsvar.receptitem = 'selectlikarfamily'
+                settingsvar.receptitem = 'receptfamilylikar'
                 settingsvar.listlikar = tmp
                 selectlikarrofil(tmp)
             else:
@@ -1639,6 +1666,7 @@ def backreceptprofillmedzaklad(request):
 def receptfamilylikar(request):
     status = "2"
     settingsvar.nawpage = 'backsaveselectlikar'
+    settingsvar.addinterviewrecept = True
     selectmedzaklad(request, status)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -1647,7 +1675,7 @@ def receptfamilylikar(request):
 def selectlikarrofil(listrofillikar):
     settingsvar.listlikar = []
     itemlistlikar = {}
-    if settingsvar.receptitem == 'selectfamilylikar' or settingsvar.receptitem == 'selectlikarfamily':
+    if settingsvar.receptitem == 'receptfamilylikar' or settingsvar.receptitem == 'selectlikarfamily':
         settingsvar.listlikar = listrofillikar
     else:
         for item in listrofillikar:
@@ -1690,7 +1718,7 @@ def selectlikarrofil(listrofillikar):
         compl = 'Перелік сімейних лікарів'
         workdirection = True
 
-    if settingsvar.backpage == 'selectfamilylikar':
+    if settingsvar.backpage == 'receptfamilylikar':
         compl = 'Перелік призначених лікарів'
         workdirection = True
         familylikar = False
@@ -1727,7 +1755,7 @@ def selectlikarrofil(listrofillikar):
         'search_medic': settingsvar.namediagnoz + '+як+лікувати',
     }
     if len(settingsvar.pacient) > 0:
-        if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'pacientinterwiev' and settingsvar.backpage != 'selectfamilylikar' and settingsvar.backpage != 'addfamilylikar':
+        if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'pacientinterwiev' and settingsvar.backpage != 'receptfamilylikar' and settingsvar.backpage != 'addfamilylikar':
             settingsvar.nextstepdata['likar'] = True
         settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
                                               settingsvar.pacient['name'] + " " + settingsvar.pacient['surname']
@@ -2017,11 +2045,11 @@ def inputprofilpacient(request, selected_doctor):
         else:
             iduser = funciduser()
             match settingsvar.receptitem:
-                case 'selectfamilylikar' | 'profillikar' | 'likarinapryamok' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
+                case 'receptfamilylikar' | 'profillikar' | 'likarinapryamok' | 'likarinapryamok' | 'familylikar' | 'receptprofillmedzaklad' | 'directiondiagnoz' | 'selectedprofillikar' | 'backreceptprofillmedzaklad':
                     if settingsvar.addinterviewrecept == True and settingsvar.receptitem != 'directiondiagnoz':
                         dateregistrationappointment(request)
                     else:
-                        if settingsvar.receptitem == 'selectfamilylikar' and settingsvar.backpage == 'addfamilylikar':
+                        if settingsvar.receptitem == 'receptfamilylikar' and settingsvar.backpage == 'addfamilylikar':
                             writefamilylikar()
                         else:
                             settingsvar.html = 'diagnoz/likarworkdirection.html'
