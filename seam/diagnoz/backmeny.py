@@ -5,7 +5,7 @@ from diagnoz import views
 
 
 def backpage(request):
-    #    views.exitkab()
+
     match settingsvar.backpage:
         case 'home_view':
             views.pacient(request)
@@ -21,11 +21,17 @@ def backpage(request):
             # views.selectfamilylikar(request)
             settingsvar.backpage = 'index'
         case "likar":
-            if settingsvar.receptitem == 'manuallikar' or settingsvar.receptitem == 'likarinapryamok':
-                views.likar(request)
-
-            else:
-                views.index(request)
+            match settingsvar.receptitem:
+                case 'manuallikar':
+                    views.likar(request)
+                case 'likarinapryamok':
+                    if settingsvar.Onlikarinapryamok == False:
+                        views.likarinapryamok(request)
+                        settingsvar.Onlikarinapryamok = True
+                    else:
+                        views.likar(request)
+                case _:
+                    views.index(request)
         case 'reception':
             views.backreception()
         case 'likarinapryamok':

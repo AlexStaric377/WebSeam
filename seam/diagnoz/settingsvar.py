@@ -127,7 +127,7 @@ feature_keyComplaint = []
 grDetaling_keyGrDetaling = []
 continuegrdetaling = False
 ongrupdetaling = False
-
+Onlikarinapryamok = False
 forspisokkeyfeature = False
 selectfeature = False
 indexfeature = 0

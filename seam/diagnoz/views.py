@@ -60,6 +60,7 @@ def loginuser(request):
                         settingsvar.setpost = True
                         settingsvar.readprofil = True
                         settingsvar.setpostlikar = True
+                        settingsvar.kabinet = settingsvar.backpage = 'pacient'
                         settingsvar.html = 'diagnoz/pacient.html'
 
                 case '3' | '4' | '5':  # 3- лікар, 4 - лікар адміністратор, 5- резерв
@@ -80,6 +81,7 @@ def loginuser(request):
                         settingsvar.readprofil = True
                         settingsvar.setpostlikar = True
                         settingsvar.initialprofil = True
+                        settingsvar.kabinet = settingsvar.backpage = 'likar'
                         settingsvar.html = 'diagnoz/likar.html'
 
         else:
@@ -2040,7 +2042,8 @@ def inputprofilpacient(request, selected_doctor):
         settingsvar.namemedzaklad = medzaklad['name']
         likarGrupDiagnoz = rest_api('/api/LikarGrupDiagnozController/' +
                                     settingsvar.kodDoctor + '/0', '', 'GET')
-        if len(likarGrupDiagnoz) == 0 and settingsvar.receptitem == 'selectlikarfamily':
+        if len(likarGrupDiagnoz) == 0 and settingsvar.receptitem == 'likarinapryamok':
+            settingsvar.Onlikarinapryamok = False
             errorprofil('Шановний користувач! за вашим запитом немає робочих напрямків у сімейного лікаря')
         else:
             iduser = funciduser()
@@ -4970,33 +4973,43 @@ def likarinapryamok(request):  # httpRequest
 
 
 def funclikarnapryamok():
-    iduser = funciduser()
+
     backurl = funcbakurl()
-    tmp = []
     itemgrupdiagnoz = []
     listworknapryamok = []
     listlikarall = []
     likargrupdiagnoz = rest_api(
         '/api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + "/0", '', 'GET')
+    if len(likargrupdiagnoz) > 0:
+        for item in likargrupdiagnoz:
+            itemgrupdiagnoz = rest_api('/api/LikarGrupDiagnozController/' + "0/" + item['icdGrDiagnoz'], '', 'GET')
+            for item in itemgrupdiagnoz:
+                listworknapryamok.append(item)
 
-    for item in likargrupdiagnoz:
-        itemgrupdiagnoz = rest_api('/api/LikarGrupDiagnozController/' + "0/" + item['icdGrDiagnoz'], '', 'GET')
-        for item in itemgrupdiagnoz:
-            listworknapryamok.append(item)
-        itemgrupdiagnoz = []
+        for item in listworknapryamok:
+            CmdStroka = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
+            doctorfalse = False
+            for itemkod in listlikarall:
+                if item['kodDoctor'] == itemkod['kodDoctor']:
+                    doctorfalse = True
+            if doctorfalse == False:
+                medzaklad = rest_api('/api/MedicalInstitutionController/' + CmdStroka['edrpou'] + '/0/0/0', '',
+                                     'GET')
+                CmdStroka['zakladname'] = medzaklad['name']
+                CmdStroka['adreszak'] = medzaklad['adres']
+                listlikarall.append(CmdStroka)
+    else:
+        CmdStroka = rest_api('/api/ApiControllerDoctor/' + "0/2/0", '', 'GET')
+        # CmdStroka = rest_api('/api/ApiControllerDoctor/'  + "/0/0/0/сімейний", '', 'GET')
+        if len(CmdStroka) > 0:
+            for item in CmdStroka:
+                if item['specialnoct'] == 'сімейний лікар':
+                    medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '',
+                                         'GET')
+                    item['zakladname'] = medzaklad['name']
+                    item['adreszak'] = medzaklad['adres']
+                    listlikarall.append(item)
 
-    for item in listworknapryamok:
-        CmdStroka = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
-        doctorfalse = False
-        for itemkod in listlikarall:
-            if item['kodDoctor'] == itemkod['kodDoctor']:
-                doctorfalse = True
-        if doctorfalse == False:
-            medzaklad = rest_api('/api/MedicalInstitutionController/' + CmdStroka['edrpou'] + '/0/0/0', '',
-                                 'GET')
-            CmdStroka['zakladname'] = medzaklad['name']
-            CmdStroka['adreszak'] = medzaklad['adres']
-            listlikarall.append(CmdStroka)
     settingsvar.html = 'diagnoz/selectlikarprofil.html'
     settingsvar.nextstepdata = {
         'detalinglist': listlikarall,
