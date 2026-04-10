@@ -1,0 +1,38 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<div class="container">
+    <p class="fs-5 text-center ">Перша домедична допомога при хімічному опіку</p>
+    <a class="fw-semibold text-decoration-none text-black">Припинити контакт потерпілого з речовиною.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Одягнути рукавички,</a>
+    <a> щоб не пошкодити власну шкіру.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Негайно видалити </a>
+    <a> хімічні речовини з поверхні шкіри або слизових оболонок.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Суху речовину (порошок) </a>
+    <a>струсити або змести залишки сухої хімічної речовини зі шкіри і лише потім промити.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">У випадку рідкої речовини </a>
+    <a>обережно зніміть забруднений одяг та прикраси, уникаючи їх розтирання по шкірі.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Промити уражене місце</a>
+    <a> під струменем холодної проточної води не менше 20-30 хвилин (не теплою!).</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Зняти одяг, взуття або прикраси, </a>
+    <a> на які потрапила хімічна речовина, поки проводиться промивання.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Після промивання </a>
+    <a>накладіть на місце опіку чисту суху або стерильну пов'язку.</a><br>
+    <a class="fw-semibold text-decoration-none text-black"> Якщо опік великий </a>
+    <a>(долоня, > 10% тіла), опік обличчя, шиї, очей, або якщо це дитина.</a>
+    <a class="fw-semibold text-decoration-none text-black"> Негайно викличте швидку (103).</a><br>
+    <a class="fw-semibold text-decoration-none text-black"> Забороняється :</a><br>
+    <a> - використовувати вату для пов’язок, оскільки її волокна прилипають до рани;</a><br>
+    <a> - застосовувати мазі, гелі чи жири;</a><br>
+    <a> - використовувати крижану воду або лід;</a><br>
+    <a> - проколювати пухирі;</a><br>
+    <a> - намагатися нейтралізувати опік, якщо не впевнені в типі речовини.</a><br>
+    <p></p>
+</div>
+<div class="container-fluid text-center" style="display: inline-block">
+    <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+       rel="noopener noreferrer" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Більше тут...</a>
+</div>
+
+{% endblock %}

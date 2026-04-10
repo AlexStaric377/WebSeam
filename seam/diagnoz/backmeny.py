@@ -103,7 +103,7 @@ def backpage(request):
             match settingsvar.receptitem:
                 case 'ambulance':
                     views.reception(request)
-                case 'headache' | 'krovotecha' | 'singe':
+                case 'headache' | 'krovotecha' | 'singe' | 'chemicalburn':
                     views.ambulance(request)
                 case 'registrprofil' | 'registrkabinet' | 'applicregulat' | 'manuallikar':
                     views.reception(request)

@@ -570,6 +570,22 @@ def singe(request):
     return render(request, 'diagnoz/singe.html', settingsvar.nextstepdata)
 
 
+def chemicalburn(request):
+    settingsvar.backpage = settingsvar.kabinet
+    settingsvar.receptitem = 'chemicalburn'
+    reason_url = reason_url = 'https://www.google.com/search'
+    search_reason = 'Перша+домедична+допомога+при+хімічному+опіку'
+    settingsvar.nextstepdata = {
+        'reason_url': reason_url,
+        'search_reason': search_reason,
+
+    }
+    json = ('IdUser: chemicalburn' + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: chemicalburn')
+    unloadlog(json)
+
+    return render(request, 'diagnoz/chemicalburn.html', settingsvar.nextstepdata)
+
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):
     json = ('IdUser: directiondiagnoz,' + 'dateseanse :' +

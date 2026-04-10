@@ -129,6 +129,7 @@ urlpatterns = [
     path('headache', views.headache, name='headache'),
     path('krovotecha', views.krovotecha, name='krovotecha'),
     path('singe', views.singe, name='singe'),
+    path('chemicalburn', views.chemicalburn, name='chemicalburn'),
 ]
 #
 urlpatterns += [
