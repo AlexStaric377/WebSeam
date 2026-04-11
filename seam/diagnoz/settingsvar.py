@@ -133,3 +133,5 @@ selectfeature = False
 indexfeature = 0
 contentRecommendation = ""
 pacientName = ""
+search_reason = ""
+procedura = ""

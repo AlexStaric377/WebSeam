@@ -519,72 +519,57 @@ def ambulance(request):
 
 # Дії при першій допомозі Головний біль.
 def headache(request):
-    settingsvar.backpage = settingsvar.kabinet
-    settingsvar.receptitem = 'headache'
-    reason_url = reason_url = 'https://www.google.com/search'
-    search_reason = 'Перша+домедична+допомога+біль+в+голові'
-    settingsvar.nextstepdata = {
-        'reason_url': reason_url,
-        'search_reason': search_reason,
-
-    }
-    json = ('IdUser: headache' + 'dateseanse :' +
-            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: headache')
-    unloadlog(json)
-
+    settingsvar.procedura = settingsvar.receptitem = 'headache'
+    settingsvar.search_reason = 'Перша+домедична+допомога+біль+в+голові'
+    homemedicalcare()
     return render(request, 'diagnoz/headache.html', settingsvar.nextstepdata)
 
 
 # Перші дії в допомозі при кровотечі.
 def krovotecha(request):
-    settingsvar.backpage = settingsvar.kabinet
-    settingsvar.receptitem = 'krovotecha'
-    reason_url = reason_url = 'https://www.google.com/search'
-    search_reason = 'Перша+домедична+допомога+при+кровотечі'
-    settingsvar.nextstepdata = {
-        'reason_url': reason_url,
-        'search_reason': search_reason,
-
-    }
-    json = ('IdUser: krovotecha' + 'dateseanse :' +
-            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: krovotecha')
-    unloadlog(json)
-
+    settingsvar.procedura = settingsvar.receptitem = 'krovotecha'
+    settingsvar.search_reason = 'Перша+домедична+допомога+при+кровотечі'
+    homemedicalcare()
     return render(request, 'diagnoz/krovotecha.html', settingsvar.nextstepdata)
 
 
+# ---  Oпік
 def singe(request):
-    settingsvar.backpage = settingsvar.kabinet
-    settingsvar.receptitem = 'singe'
-    reason_url = reason_url = 'https://www.google.com/search'
-    search_reason = 'Перша+домедична+допомога+при+опіку'
-    settingsvar.nextstepdata = {
-        'reason_url': reason_url,
-        'search_reason': search_reason,
-
-    }
-    json = ('IdUser: singe' + 'dateseanse :' +
-            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: singe')
-    unloadlog(json)
-
+    settingsvar.procedura = settingsvar.receptitem = 'singe'
+    settingsvar.search_reason = 'Перша+домедична+допомога+при+опіку'
+    homemedicalcare()
     return render(request, 'diagnoz/singe.html', settingsvar.nextstepdata)
 
 
+# ---  Хімічий опік
 def chemicalburn(request):
+    settingsvar.procedura = settingsvar.receptitem = 'chemicalburn'
+    settingsvar.search_reason = 'Перша+домедична+допомога+при+хімічному+опіку'
+    homemedicalcare()
+    return render(request, 'diagnoz/chemicalburn.html', settingsvar.nextstepdata)
+
+
+# --- Біль у голрі
+
+def sorethroat(request):
+    settingsvar.procedura = settingsvar.receptitem = 'sorethroat'
+    settingsvar.search_reason = 'Перша+домедична+допомога+при+болю+у+горлі'
+    homemedicalcare()
+    return render(request, 'diagnoz/sorethroat.html', settingsvar.nextstepdata)
+
+
+# --- процедура формування шаблону сторінки
+def homemedicalcare():
     settingsvar.backpage = settingsvar.kabinet
-    settingsvar.receptitem = 'chemicalburn'
     reason_url = reason_url = 'https://www.google.com/search'
-    search_reason = 'Перша+домедична+допомога+при+хімічному+опіку'
     settingsvar.nextstepdata = {
         'reason_url': reason_url,
-        'search_reason': search_reason,
-
+        'search_reason': settingsvar.search_reason,
     }
-    json = ('IdUser: chemicalburn' + 'dateseanse :' +
-            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura: chemicalburn')
+    json = ('IdUser: ' + settingsvar.procedura + 'dateseanse :' +
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura:' + settingsvar.procedura)
     unloadlog(json)
-
-    return render(request, 'diagnoz/chemicalburn.html', settingsvar.nextstepdata)
+    return
 
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):
