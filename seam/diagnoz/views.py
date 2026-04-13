@@ -43,50 +43,61 @@ def loginuser(request):
         # Если форма отправлена, обрабатываем данные
         login_form = AuthenticationForm(request, data=request.POST)
         settingsvar.formsearch = login_form.data
+        if len(settingsvar.formsearch['username']) > 0:
+            numbtel = settingsvar.formsearch['username'][1:]
+            if numbtel.isnumeric():
+                if len(numbtel) == 12:
+                    json = "0/" + settingsvar.formsearch['username'] + "/" + settingsvar.formsearch['password'] + '/0'
+                    Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+                    if 'idStatus' in Stroka:
+                        request.method = 'GET'
+                        login_form = AuthenticationForm()
+                        match Stroka['idStatus']:
+                            case '1':  # 1- адміністратор,
+                                settingsvar.setpost = True
+                            case '2':  # 2- пацієнт,
+                                settingsvar.kodPacienta = Stroka['idUser']
+                                settingsvar.pacient = rest_api(
+                                    '/api/PacientController/' + settingsvar.kodPacienta + '/0/0/0/0', '', 'GET')
+                                if len(settingsvar.pacient) > 0:
+                                    settingsvar.setpost = True
+                                    settingsvar.readprofil = True
+                                    settingsvar.setpostlikar = True
+                                    settingsvar.kabinet = settingsvar.backpage = 'pacient'
+                                    settingsvar.html = 'diagnoz/pacient.html'
 
-        json = "0/" + settingsvar.formsearch['username'] + "/" + settingsvar.formsearch['password'] + '/0'
-        Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
-        if 'idStatus' in Stroka:
-            request.method = 'GET'
-            login_form = AuthenticationForm()
-            match Stroka['idStatus']:
-                case '1':  # 1- адміністратор,
-                    settingsvar.setpost = True
-                case '2':  # 2- пацієнт,
-                    settingsvar.kodPacienta = Stroka['idUser']
-                    settingsvar.pacient = rest_api(
-                        '/api/PacientController/' + settingsvar.kodPacienta + '/0/0/0/0', '', 'GET')
-                    if len(settingsvar.pacient) > 0:
-                        settingsvar.setpost = True
-                        settingsvar.readprofil = True
-                        settingsvar.setpostlikar = True
-                        settingsvar.kabinet = settingsvar.backpage = 'pacient'
-                        settingsvar.html = 'diagnoz/pacient.html'
+                            case '3' | '4' | '5':  # 3- лікар, 4 - лікар адміністратор, 5- резерв
 
-                case '3' | '4' | '5':  # 3- лікар, 4 - лікар адміністратор, 5- резерв
-
-                    settingsvar.kodLikar = Stroka['idUser']
-                    settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
-                                                 '', 'GET')
-                    if 'kodDoctor' in settingsvar.likar:
-                        settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
-                        medzaklad = rest_api(
-                            '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
-                            'GET')
-                        settingsvar.namemedzaklad = medzaklad['name']
-                        settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
-                        settingsvar.mobtellikar = settingsvar.likar['telefon']
-                        settingsvar.statuslikar = medzaklad['idStatus']
-                        settingsvar.setpost = True
-                        settingsvar.readprofil = True
-                        settingsvar.setpostlikar = True
-                        settingsvar.initialprofil = True
-                        settingsvar.kabinet = settingsvar.backpage = 'likar'
-                        settingsvar.html = 'diagnoz/likar.html'
-
+                                settingsvar.kodLikar = Stroka['idUser']
+                                settingsvar.likar = rest_api(
+                                    '/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
+                                    '', 'GET')
+                                if 'kodDoctor' in settingsvar.likar:
+                                    settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
+                                    medzaklad = rest_api(
+                                        '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0',
+                                        '',
+                                        'GET')
+                                    settingsvar.namemedzaklad = medzaklad['name']
+                                    settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar[
+                                        'surname']
+                                    settingsvar.mobtellikar = settingsvar.likar['telefon']
+                                    settingsvar.statuslikar = medzaklad['idStatus']
+                                    settingsvar.setpost = True
+                                    settingsvar.readprofil = True
+                                    settingsvar.setpostlikar = True
+                                    settingsvar.initialprofil = True
+                                    settingsvar.kabinet = settingsvar.backpage = 'likar'
+                                    settingsvar.html = 'diagnoz/likar.html'
+                    else:
+                        messages.error(request, 'Неверное имя пользователя или пароль.')
+                else:
+                    errorprofil("Шановний користувач!  Номер телефону меньше 12 цифр.")
+            else:
+                errorprofil("Шановний користувач!  Номер телефону містить не цифрові символи.")
         else:
-            messages.error(request, 'Неверное имя пользователя или пароль.')
-        formsearch = {}
+            errorprofil("Шановний користувач!  Не введено номер телефону.")
+
     #        else:
     # Если форма невалидна (неверный пароль/логин),
     # мы НЕ перенаправляем, а просто даем странице
@@ -158,6 +169,7 @@ def rest_api(api_url, data, method):
 
 def index(request):  # httpRequest
     settingsvar.html = 'diagnoz/index.html'
+    settingsvar.kabinet = 'index'
     loginuser(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -2426,50 +2438,68 @@ def funcaddaccount(login, password):
 def reestraccountuser(request):
     settingsvar.html = 'diagnoz/reestraccountuser.html'
     settingsvar.readprofil = False
-    if settingsvar.kabinet == "": settingsvar.kabinet = 'pacient'
+
+    if settingsvar.kabinet == "":
+        settingsvar.kabinet = 'pacient'
+        settingsvar.backpage = 'reestraccountuser'
+    if settingsvar.kabinet == "likar":
+        settingsvar.backpage = 'reestraccountuser'
     iduser = funciduser()
     if request.method == 'POST':
         if settingsvar.setReestrAccount == False:
             form = ReestrAccountUserForm(request.POST)
             settingsvar.formaccount = form.data
             request.method = 'GET'
-            if len(settingsvar.formaccount['dwpassword']) == 0:
-                settingsvar.setReestrAccount = False
-                errorprofil('Шановний користувач! Облікові дані не корректно введені')
-            else:
-                if settingsvar.formaccount['password'] != settingsvar.formaccount['dwpassword']:
-                    settingsvar.setReestrAccount = False
-                    errorprofil('Шановний користувач! Введені паролі не співпадають')
-                else:
-                    json = "0/" + settingsvar.formaccount['login'] + "/" + settingsvar.formaccount['password'] + '/0'
-                    Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
-                    if len(Stroka) == 0:
-                        Stroka = rest_api(
-                            '/api/AccountUserController/' + "0/" + settingsvar.formaccount['login'] + "/0/0", '', 'GET')
-                    if len(Stroka) > 0:
-                        settingsvar.setReestrAccount = False
-                        errorprofil('Шановний користувач! Обліковий запис за введеними даними вже існує')
-                    else:
-                        backurl = funcbakurl()
-                        doc = rest_api('api/PacientController/' + '0/0/0/0/' + settingsvar.formaccount['login'], '',
-                                       'GET')
-                        if len(doc) > 0:
-                            settingsvar.zgodayes = True
-                            settingsvar.html = 'diagnoz/pacientprofil.html'
-                            settingsvar.kodPacienta = doc[0]['kodPacient']
-                            settingsvar.pacient = doc[0]
-                            getpostpacientprofil(request)
+            if len(settingsvar.formaccount['login']) > 0:
+                numbtel = settingsvar.formaccount['login'][1:]
+                if numbtel.isnumeric():
+                    if len(numbtel) == 12:
+                        if len(settingsvar.formaccount['dwpassword']) == 0:
+                            settingsvar.setReestrAccount = False
+                            errorprofil('Шановний користувач! Облікові дані не корректно введені')
                         else:
-                            settingsvar.setReestrAccount = True
-                            settingsvar.setpostlikar = True
-                            settingsvar.html = 'diagnoz/pacientprofil.html'
-                            form = PacientForm()
-                            settingsvar.nextstepdata = {
-                                'form': form,
-                                'next': settingsvar.readprofil,
-                                'backurl': backurl,
-                                'iduser': iduser
-                            }
+                            if settingsvar.formaccount['password'] != settingsvar.formaccount['dwpassword']:
+                                settingsvar.setReestrAccount = False
+                                errorprofil('Шановний користувач! Введені паролі не співпадають')
+                            else:
+                                json = "0/" + settingsvar.formaccount['login'] + "/" + settingsvar.formaccount[
+                                    'password'] + '/0'
+                                Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+                                if len(Stroka) == 0:
+                                    Stroka = rest_api(
+                                        '/api/AccountUserController/' + "0/" + settingsvar.formaccount[
+                                            'login'] + "/0/0", '', 'GET')
+                                if len(Stroka) > 0:
+                                    settingsvar.setReestrAccount = False
+                                    errorprofil('Шановний користувач! Обліковий запис за введеними даними вже існує')
+                                else:
+                                    backurl = funcbakurl()
+                                    doc = rest_api(
+                                        'api/PacientController/' + '0/0/0/0/' + settingsvar.formaccount['login'], '',
+                                        'GET')
+                                    if len(doc) > 0:
+                                        settingsvar.zgodayes = True
+                                        settingsvar.html = 'diagnoz/pacientprofil.html'
+                                        settingsvar.kodPacienta = doc[0]['kodPacient']
+                                        settingsvar.pacient = doc[0]
+                                        getpostpacientprofil(request)
+                                    else:
+                                        settingsvar.setReestrAccount = True
+                                        settingsvar.setpostlikar = True
+                                        settingsvar.html = 'diagnoz/pacientprofil.html'
+                                        form = PacientForm()
+                                        settingsvar.nextstepdata = {
+                                            'form': form,
+                                            'next': settingsvar.readprofil,
+                                            'backurl': backurl,
+                                            'iduser': iduser
+                                        }
+                    else:
+                        errorprofil("Шановний користувач!  Номер телефону меньше 12 цифр.")
+                else:
+                    errorprofil("Шановний користувач!  Номер телефону містить не цифрові символи.")
+            else:
+                errorprofil("Шановний користувач!  Не введено номер телефону.")
         else:
 
             pacientprofil(request)
@@ -2505,61 +2535,84 @@ def accountuser(request):
             if settingsvar.searchaccount == True:
                 form = SearchPacient(request.POST)
                 settingsvar.formsearch = form.data
-                funcsearchpacient(request, settingsvar.formsearch)
-                settingsvar.setpost = True
-                settingsvar.readprofil = True
-                request.method = 'GET'
-
-            else:
-                settingsvar.formaccount = AccountUserForm(request.POST)
-                json = "0/" + settingsvar.formaccount.data['login'] + "/" + settingsvar.formaccount.data[
-                    'password'] + '/0'
-                Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
-                request.method = 'GET'
-                if len(Stroka) > 0:
-                    match settingsvar.kabinetitem:
-                        case "profil" | "pacient" | "interwiev" | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth' | 'selectfamilylikar':
-                            settingsvar.kodPacienta = Stroka['idUser']
-                            settingsvar.pacient = rest_api(
-                                '/api/PacientController/' + settingsvar.kodPacienta + '/0/0/0/0',
-                                '', 'GET')
-                            if 'tel' in settingsvar.pacient:
-                                settingsvar.setpost = True
-                                settingsvar.readprofil = True
-                                settingsvar.setpostlikar = True
-                                caseprofil(request)
-                            else:
-                                errorprofil(
-                                    'Шановний користувач! За вказаним обліковим записом профіль пацієнта не знайдено.')
-                        case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarvisitngdays' | 'likarworkdiagnoz' | 'likarlibdiagnoz' | 'likarinapryamok':
-                            settingsvar.kodLikar = Stroka['idUser']
-                            settingsvar.likar = rest_api('/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
-                                                         '', 'GET')
-                            if len(settingsvar.likar) > 0:
-                                settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
-                                medzaklad = rest_api(
-                                    '/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '',
-                                    'GET')
-
-                                settingsvar.namemedzaklad = medzaklad['name']
-                                settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar['surname']
-                                #                               settingsvar.mobtellikar = settingsvar.likar['telefon']
-                                settingsvar.statuslikar = medzaklad['idStatus']
-                                settingsvar.setpostlikar = True
-
-                                if settingsvar.kabinetitem == 'likarinterwiev':
-                                    search_pacient()
-                                    settingsvar.searchaccount = True
-                                else:
-                                    settingsvar.setpost = True
-                                    settingsvar.readprofil = True
-                                    caseprofil(request)
-                            else:
-                                errorprofil(
-                                    'Шановний користувач! За вказаним обліковим записом профіль лікаря не знайдено.')
+                if len(settingsvar.formpacient['tel']) > 0:
+                    numbtel = settingsvar.formpacient['tel'][1:]
+                    if numbtel.isnumeric():
+                        if len(numbtel) == 12:
+                            funcsearchpacient(request, settingsvar.formsearch)
+                            settingsvar.setpost = True
+                            settingsvar.readprofil = True
+                            request.method = 'GET'
+                        else:
+                            errorprofil("Шановний користувач!  Номер телефону меньше 12 цифр.")
+                    else:
+                        errorprofil("Шановний користувач!  Номер телефону містить не цифрові символи.")
                 else:
-                    errorprofil('Шановний користувач! Невірно введено номер телефону або пароль.')
+                    errorprofil("Шановний користувач!  Не введено номер телефону.")
+            else:
+                form = AccountUserForm(request.POST)
+                settingsvar.formaccount = form.data
+                if len(settingsvar.formaccount['login']) > 0:
+                    numbtel = settingsvar.formaccount['login'][1:]
+                    if numbtel.isnumeric():
+                        if len(numbtel) == 12:
 
+                            json = "0/" + settingsvar.formaccount['login'] + "/" + settingsvar.formaccount[
+                                'password'] + '/0'
+                            Stroka = rest_api('/api/AccountUserController/' + json, '', 'GET')
+                            request.method = 'GET'
+                            if len(Stroka) > 0:
+                                match settingsvar.kabinetitem:
+                                    case "profil" | "pacient" | "interwiev" | 'listinterwiev' | 'listreceptionlikar' | 'pacientstanhealth' | 'selectfamilylikar':
+                                        settingsvar.kodPacienta = Stroka['idUser']
+                                        settingsvar.pacient = rest_api(
+                                            '/api/PacientController/' + settingsvar.kodPacienta + '/0/0/0/0',
+                                            '', 'GET')
+                                        if 'tel' in settingsvar.pacient:
+                                            settingsvar.setpost = True
+                                            settingsvar.readprofil = True
+                                            settingsvar.setpostlikar = True
+                                            caseprofil(request)
+                                        else:
+                                            errorprofil(
+                                                'Шановний користувач! За вказаним обліковим записом профіль пацієнта не знайдено.')
+                                    case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarvisitngdays' | 'likarworkdiagnoz' | 'likarlibdiagnoz' | 'likarinapryamok':
+                                        settingsvar.kodLikar = Stroka['idUser']
+                                        settingsvar.likar = rest_api(
+                                            '/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
+                                            '', 'GET')
+                                        if len(settingsvar.likar) > 0:
+                                            settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
+                                            medzaklad = rest_api(
+                                                '/api/MedicalInstitutionController/' + settingsvar.likar[
+                                                    'edrpou'] + '/0/0/0', '',
+                                                'GET')
+
+                                            settingsvar.namemedzaklad = medzaklad['name']
+                                            settingsvar.namelikar = settingsvar.likar['name'] + ' ' + settingsvar.likar[
+                                                'surname']
+                                            #                               settingsvar.mobtellikar = settingsvar.likar['telefon']
+                                            settingsvar.statuslikar = medzaklad['idStatus']
+                                            settingsvar.setpostlikar = True
+
+                                            if settingsvar.kabinetitem == 'likarinterwiev':
+                                                search_pacient()
+                                                settingsvar.searchaccount = True
+                                            else:
+                                                settingsvar.setpost = True
+                                                settingsvar.readprofil = True
+                                                caseprofil(request)
+                                        else:
+                                            errorprofil(
+                                                'Шановний користувач! За вказаним обліковим записом профіль лікаря не знайдено.')
+                            else:
+                                errorprofil('Шановний користувач! Невірно введено номер телефону або пароль.')
+                        else:
+                            errorprofil("Шановний користувач!  Номер телефону меньше 12 цифр.")
+                    else:
+                        errorprofil("Шановний користувач!  Номер телефону містить не цифрові символи.")
+                else:
+                    errorprofil("Шановний користувач!  Не введено номер телефону.")
         else:
             cab = 'Кабінет пацієнта'
             backurl = 'pacient'
@@ -2878,26 +2931,46 @@ def pacientprofil(request):  # httpRequest
         if request.method == 'POST':
             form = PacientForm(request.POST)
             settingsvar.formpacient = form.data
+            request.method = 'GET'
             if len(settingsvar.formpacient['tel']) > 0 and len(settingsvar.formpacient['name']) > 0 and len(
                     settingsvar.formpacient['surname']) > 0:
-
-                settingsvar.jsonformpacient = {'id': 0,
-                                           'KodPacient': newpacientprofil(),
-                                           'KodKabinet': "",
-                                           'Age': settingsvar.formpacient['age'],
-                                           'Weight': settingsvar.formpacient['weight'],
-                                           'Growth': settingsvar.formpacient['growth'],
-                                           'Gender': settingsvar.formpacient['gender'],
-                                           'Tel': settingsvar.formpacient['tel'],
-                                           'Email': settingsvar.formpacient['email'],
-                                           'Name': settingsvar.formpacient['name'],
-                                           'Surname': settingsvar.formpacient['surname'],
-                                           'Pind': settingsvar.formpacient['pind'],
-                                           'Profession': settingsvar.formpacient['profession']
-                                               }
+                numbtel = settingsvar.formpacient['tel'][1:]
+                if numbtel.isnumeric():
+                    if len(numbtel) == 12:
+                        if int(settingsvar.formpacient['weight']) < 250 and int(settingsvar.formpacient['weight']) > 15:
+                            if int(settingsvar.formpacient['growth']) < 230 and int(
+                                    settingsvar.formpacient['growth']) > 115:
+                                if int(settingsvar.formpacient['growth']) < 120 and int(
+                                        settingsvar.formpacient['growth']) > 5:
+                                    settingsvar.jsonformpacient = {'id': 0,
+                                                                   'KodPacient': newpacientprofil(),
+                                                                   'KodKabinet': "",
+                                                                   'Age': settingsvar.formpacient['age'],
+                                                                   'Weight': settingsvar.formpacient['weight'],
+                                                                   'Growth': settingsvar.formpacient['growth'],
+                                                                   'Gender': settingsvar.formpacient['gender'],
+                                                                   'Tel': settingsvar.formpacient['tel'],
+                                                                   'Email': settingsvar.formpacient['email'],
+                                                                   'Name': settingsvar.formpacient['name'],
+                                                                   'Surname': settingsvar.formpacient['surname'],
+                                                                   'Pind': settingsvar.formpacient['pind'],
+                                                                   'Profession': settingsvar.formpacient['profession']
+                                                                   }
+                                else:
+                                    errorprofil(
+                                        "Шановний користувач!  Введений показник віку виходить за межі не більше 120р. і не меньше 5р.")
+                            else:
+                                errorprofil(
+                                    "Шановний користувач!  Введений показник росту виходить за межі не вище 230см. і не меньше 115см.")
+                        else:
+                            errorprofil(
+                                "Шановний користувач!  Введений показник ваги виходить за межі не більше 250кг. і не меньше 15кг.")
+                    else:
+                        errorprofil("Шановний користувач!  Номер телефону меньше 12 цифр.")
+                else:
+                    errorprofil("Шановний користувач!  Номер телефону містить не цифрові символи.")
             else:
                 settingsvar.error = True
-                request.method = 'GET'
                 settingsvar.zgodayes = False
                 errorprofil("Шановний користувач!  Не введено обов'язкові показника реєстрції профілю.")
         else:
@@ -2987,21 +3060,47 @@ def getpostpacientprofil(request):
             form = PacientForm(request.POST)
             settingsvar.formpacient = form.data
             settingsvar.pacient = {}
-            settingsvar.jsonformpacient = {'id': 0,
-                                           'KodPacient': newpacientprofil(),
-                                           'KodKabinet': "",
-                                           'Age': settingsvar.formpacient['age'],
-                                           'Weight': settingsvar.formpacient['weight'],
-                                           'Growth': settingsvar.formpacient['growth'],
-                                           'Gender': settingsvar.formpacient['gender'],
-                                           'Tel': settingsvar.formpacient['tel'],
-                                           'Email': settingsvar.formpacient['email'],
-                                           'Name': settingsvar.formpacient['name'],
-                                           'Surname': settingsvar.formpacient['surname'],
-                                           'Pind': settingsvar.formpacient['pind'],
-                                           'Profession': settingsvar.formpacient['profession']
-                                           }
-
+            if len(settingsvar.formpacient['tel']) > 0 and len(settingsvar.formpacient['name']) > 0 and len(
+                    settingsvar.formpacient['surname']) > 0:
+                numbtel = settingsvar.formpacient['tel'][1:]
+                if numbtel.isnumeric():
+                    if len(numbtel) == 12:
+                        if int(settingsvar.formpacient['weight']) < 250 and int(settingsvar.formpacient['weight']) > 15:
+                            if int(settingsvar.formpacient['growth']) < 230 and int(
+                                    settingsvar.formpacient['growth']) > 115:
+                                if int(settingsvar.formpacient['growth']) < 120 and int(
+                                        settingsvar.formpacient['growth']) > 5:
+                                    settingsvar.jsonformpacient = {'id': 0,
+                                                                   'KodPacient': newpacientprofil(),
+                                                                   'KodKabinet': "",
+                                                                   'Age': settingsvar.formpacient['age'],
+                                                                   'Weight': settingsvar.formpacient['weight'],
+                                                                   'Growth': settingsvar.formpacient['growth'],
+                                                                   'Gender': settingsvar.formpacient['gender'],
+                                                                   'Tel': settingsvar.formpacient['tel'],
+                                                                   'Email': settingsvar.formpacient['email'],
+                                                                   'Name': settingsvar.formpacient['name'],
+                                                                   'Surname': settingsvar.formpacient['surname'],
+                                                                   'Pind': settingsvar.formpacient['pind'],
+                                                                   'Profession': settingsvar.formpacient['profession']
+                                                                   }
+                                else:
+                                    errorprofil(
+                                        "Шановний користувач!  Введений показник віку виходить за межі не більше 120р. і не меньше 5р.")
+                            else:
+                                errorprofil(
+                                    "Шановний користувач!  Введений показник росту виходить за межі не вище 230см. і не меньше 115см.")
+                        else:
+                            errorprofil(
+                                "Шановний користувач!  Введений показник ваги виходить за межі не більше 250кг. і не меньше 15кг.")
+                    else:
+                        errorprofil("Шановний користувач!  Номер телефону меньше 12 цифр.")
+                else:
+                    errorprofil("Шановний користувач!  Номер телефону містить не цифрові символи.")
+            else:
+                settingsvar.error = True
+                settingsvar.zgodayes = False
+                errorprofil("Шановний користувач!  Не введено обов'язкові показника реєстрції профілю.")
 
         match settingsvar.kabinet:
             case 'guest':
@@ -3136,9 +3235,9 @@ def errorprofil(compl):
     next = 'Повторити запит'
     if 'існує' in compl: next = 'Далі'
     if 'лікар' in compl: next = 'Далі'
-
-    if settingsvar.kabinet == "likarlistinterwiev" or settingsvar.kabinet == "likarreceptionpacient":
-        iduser = 'Лікар: ' + settingsvar.likar['name'] + settingsvar.likar['surname']
+    if len(settingsvar.likar) > 0:
+        if settingsvar.kabinet == "likarlistinterwiev" or settingsvar.kabinet == "likarreceptionpacient":
+            iduser = 'Лікар: ' + settingsvar.likar['name'] + settingsvar.likar['surname']
 
     if settingsvar.kabinet == "pacient" and settingsvar.backpage == 'selectfamilylikar':  backurl = 'pacient'
     if settingsvar.kabinet == "guest" and settingsvar.backpage == "checkvisitinglikar":  backurl = 'backshablonselect'
@@ -3148,6 +3247,8 @@ def errorprofil(compl):
     if settingsvar.kabinet == 'listinterwiev' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinet == 'listreceptionlikar' or settingsvar.kabinet == 'pacientstanhealth': backurl = 'pacient'
     if settingsvar.kabinet == 'pacient': backurl = 'reestraccountuser'
     if settingsvar.kabinet == "guest" and settingsvar.receptitem == 'clinicmedzaklad': backurl = 'reception'
+    if settingsvar.kabinet == "" and settingsvar.backpage == 'home_view': settingsvar.backpage = 'index'
+
     settingsvar.nextstepdata = {
         'iduser': iduser,
         'compl': compl,
@@ -4263,6 +4364,7 @@ def likarlistinterwiev(request):  # httpRequest
         settingsvar.nawpage = 'profilinterview'
         settingsvar.kabinetitem = 'likarlistinterwiev'
         settingsvar.kabinet = 'likarlistinterwiev'
+        settingsvar.backpage = 'likarlistinterwiev'
 
         if settingsvar.setpostlikar == False:
             accountuser(request)

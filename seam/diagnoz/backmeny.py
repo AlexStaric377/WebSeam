@@ -9,13 +9,19 @@ def backpage(request):
     match settingsvar.backpage:
         case 'home_view':
             views.pacient(request)
-        case "":
+        case "" | 'index':
             views.index(request)
-        case 'index':
-            views.index(request)
+
         case "pacient":
                 views.pacient(request)
                 settingsvar.backpage = 'index'
+        case 'reestraccountuser':
+            if settingsvar.selectbackmeny == False:
+                views.reestraccountuser(request)
+                settingsvar.selectbackmeny = True
+            else:
+                settingsvar.selectbackmeny = False
+                views.index(request)
         case 'selectfamilylikar':
             views.pacient(request)
             # views.selectfamilylikar(request)
@@ -101,7 +107,7 @@ def backpage(request):
 
         case 'guest':
             match settingsvar.receptitem:
-                case 'ambulance':
+                case 'ambulance' | 'receptfamilylikar':
                     views.reception(request)
                 case 'headache' | 'krovotecha' | 'singe' | 'chemicalburn' | 'sorethroat':
                     views.ambulance(request)
@@ -118,7 +124,8 @@ def backpage(request):
                 case 'likarworkdirection':
                     views.shablonlistlikar()
                 case 'receptprofillmedzaklad':
-                    views.backreceptprofillmedzaklad(request)
+                    views.backreception()
+                    # views.backreceptprofillmedzaklad(request)
                 case 'backreceptprofillmedzaklad':
                     views.backreception()
                 case 'clinicmedzaklad':
