@@ -2487,7 +2487,9 @@ def reestraccountuser(request):
                                         settingsvar.setReestrAccount = True
                                         settingsvar.setpostlikar = True
                                         settingsvar.html = 'diagnoz/pacientprofil.html'
-                                        form = PacientForm()
+                                        # form = PacientForm()
+                                        initalPacientForm()
+                                        form = PacientForm(initial=settingsvar.pacient)
                                         settingsvar.nextstepdata = {
                                             'form': form,
                                             'next': settingsvar.readprofil,
@@ -2522,6 +2524,15 @@ def reestraccountuser(request):
             pacientprofil(request)
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def initalPacientForm():
+    settingsvar.pacient = {'name': "", 'surname': "", 'gender': "чол.", 'age': 5, 'profession': "",
+                           'weight': 15, 'growth': 115, 'pind': "xxxxx", 'tel': " +xxx xx xx xxx xx",
+                           'email': "ви@example.com"}
+    settingsvar.pacient['tel'] = settingsvar.formaccount['login']
+
+    return
 
 
 # --- клая модальної форми реєстраціїї входу до кабінету пацієнта або лікаря
@@ -2937,11 +2948,12 @@ def pacientprofil(request):  # httpRequest
                 numbtel = settingsvar.formpacient['tel'][1:]
                 if numbtel.isnumeric():
                     if len(numbtel) == 12:
-                        if int(settingsvar.formpacient['weight']) < 250 and int(settingsvar.formpacient['weight']) > 15:
-                            if int(settingsvar.formpacient['growth']) < 230 and int(
-                                    settingsvar.formpacient['growth']) > 115:
-                                if int(settingsvar.formpacient['growth']) < 120 and int(
-                                        settingsvar.formpacient['growth']) > 5:
+                        if int(settingsvar.formpacient['weight']) <= 250 and int(
+                                settingsvar.formpacient['weight']) >= 15:
+                            if int(settingsvar.formpacient['growth']) <= 230 and int(
+                                    settingsvar.formpacient['growth']) >= 115:
+                                if int(settingsvar.formpacient['age']) <= 120 and int(
+                                        settingsvar.formpacient['age']) >= 5:
                                     settingsvar.jsonformpacient = {'id': 0,
                                                                    'KodPacient': newpacientprofil(),
                                                                    'KodKabinet': "",
@@ -3065,11 +3077,12 @@ def getpostpacientprofil(request):
                 numbtel = settingsvar.formpacient['tel'][1:]
                 if numbtel.isnumeric():
                     if len(numbtel) == 12:
-                        if int(settingsvar.formpacient['weight']) < 250 and int(settingsvar.formpacient['weight']) > 15:
-                            if int(settingsvar.formpacient['growth']) < 230 and int(
-                                    settingsvar.formpacient['growth']) > 115:
-                                if int(settingsvar.formpacient['growth']) < 120 and int(
-                                        settingsvar.formpacient['growth']) > 5:
+                        if int(settingsvar.formpacient['weight']) <= 250 and int(
+                                settingsvar.formpacient['weight']) >= 15:
+                            if int(settingsvar.formpacient['growth']) <= 230 and int(
+                                    settingsvar.formpacient['growth']) >= 115:
+                                if int(settingsvar.formpacient['age']) <= 120 and int(
+                                        settingsvar.formpacient['age']) >= 5:
                                     settingsvar.jsonformpacient = {'id': 0,
                                                                    'KodPacient': newpacientprofil(),
                                                                    'KodKabinet': "",
@@ -3087,20 +3100,31 @@ def getpostpacientprofil(request):
                                 else:
                                     errorprofil(
                                         "Шановний користувач!  Введений показник віку виходить за межі не більше 120р. і не меньше 5р.")
+                                    settingsvar.zgodayes = False
+                                    return
                             else:
                                 errorprofil(
                                     "Шановний користувач!  Введений показник росту виходить за межі не вище 230см. і не меньше 115см.")
+                                settingsvar.zgodayes = False
+                                return
                         else:
                             errorprofil(
                                 "Шановний користувач!  Введений показник ваги виходить за межі не більше 250кг. і не меньше 15кг.")
+                            settingsvar.zgodayes = False
+                            return
                     else:
                         errorprofil("Шановний користувач!  Номер телефону меньше 12 цифр.")
+                        settingsvar.zgodayes = False
+                        return
                 else:
                     errorprofil("Шановний користувач!  Номер телефону містить не цифрові символи.")
+                    settingsvar.zgodayes = False
+                    return
             else:
                 settingsvar.error = True
                 settingsvar.zgodayes = False
                 errorprofil("Шановний користувач!  Не введено обов'язкові показника реєстрції профілю.")
+                return
 
         match settingsvar.kabinet:
             case 'guest':
@@ -3123,7 +3147,7 @@ def getpostpacientprofil(request):
                         funcaddaccount(log, pas)
 
                     # --- записати в Бд введенний профіль
-                    doc = rest_api('api/PacientController/' + '0/0/0/0/' + settingsvar.jsonformpacient['Tel'], '',
+                    doc = rest_api('api/PacientController/' + '0/0/0/0/' + settingsvar.formpacient['tel'], '',
                                    'GET')
                     if len(doc) == 0:
                         settingsvar.pacient = rest_api('/api/PacientController/', settingsvar.jsonformpacient, 'POST')
