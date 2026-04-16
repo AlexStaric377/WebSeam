@@ -570,6 +570,30 @@ def sorethroat(request):
     return render(request, 'diagnoz/sorethroat.html', settingsvar.nextstepdata)
 
 
+# --- Біль у серці
+def heartache(request):
+    settingsvar.procedura = settingsvar.receptitem = 'heartache'
+    settingsvar.search_reason = 'Перша+домедична+допомога+при+болю+у+серці'
+    homemedicalcare()
+    return render(request, 'diagnoz/heartache.html', settingsvar.nextstepdata)
+
+
+# --- Біль у животі
+def abdominalpain(request):
+    settingsvar.procedura = settingsvar.receptitem = 'abdominalpain'
+    settingsvar.search_reason = 'Перша+домедична+допомога+при+болю+у+животі'
+    homemedicalcare()
+    return render(request, 'diagnoz/abdominalpain.html', settingsvar.nextstepdata)
+
+
+# --- Біль у вухах
+def earache(request):
+    settingsvar.procedura = settingsvar.receptitem = 'earache'
+    settingsvar.search_reason = 'Перша+домедична+допомога+при+болю+у+вухах'
+    homemedicalcare()
+    return render(request, 'diagnoz/earache.html', settingsvar.nextstepdata)
+
+
 # --- процедура формування шаблону сторінки
 def homemedicalcare():
     settingsvar.backpage = settingsvar.kabinet
@@ -582,6 +606,7 @@ def homemedicalcare():
             datetime.now().strftime("%d-%m-%Y %H:%M:%S") + ', procedura:' + settingsvar.procedura)
     unloadlog(json)
     return
+
 
 # напрямки проведення діагностики в системі
 def directiondiagnoz(request):

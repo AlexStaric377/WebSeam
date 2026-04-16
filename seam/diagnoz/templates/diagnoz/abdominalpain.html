@@ -1,0 +1,35 @@
+{%  extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<div class="container">
+    <p class="fs-5 text-center ">Основні заходи долікарняної допомоги при болі у животі</p>
+
+
+    <a class="fw-semibold text-decoration-none text-black">Негайно припинити будь-яку фізичну активність. </a><br>
+    <a class="fw-semibold text-decoration-none text-black">Лягти, </a>
+    <a>прийняти зручну позу на боці або спині із зігнутими ногами. Пакет з льодом або холодний компрес,
+        загорнутий у рушник, прикласти до місця болю на 10-15 хвилин.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Не можна </a>
+    <a> приймати знеболювальні до огляду лікаря, гріти живіт, робити клізми це прискорить
+        розвиток ускладнень.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Утриматися від їжі до з'ясування причин болю. </a>
+    <a>При підозрі на харчове отруєння з блювотою або діареєю — пити воду невеликими порціями, щоб уникнути
+        зневоднення</a><br>
+    <a class="fw-semibold text-decoration-none text-black"> Терміново викликати швидку (103):</a><br>
+    <a> - Біль дуже сильний, кінжальний, нестерпний або виник раптово.</a><br>
+    <a> - Живіт став твердим («дошкоподібний» живіт).</a><br>
+    <a> - Біль супроводжується блюванням, високою температурою, кривавим стільцем або втратою свідомості.</a><br>
+    <a> - Біль локалізується в правій нижній частині живота.</a><br>
+    <a class="fst-italic text-decoration-none text-black" style="font-size: 15px;">Примітка: При незначному спастичному
+        болю
+        (відомі хронічні захворювання, як-от СРК) допускається приймання спазмолітиків (наприклад, но-шпа),
+        але краще проконсультуватися з лікарем.</a><br>
+    <p></p>
+</div>
+<div class="container-fluid text-center" style="display: inline-block">
+    <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+       rel="noopener noreferrer" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Більше тут...</a>
+</div>
+
+{% endblock %}

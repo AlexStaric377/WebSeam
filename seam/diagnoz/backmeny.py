@@ -109,7 +109,7 @@ def backpage(request):
             match settingsvar.receptitem:
                 case 'ambulance' | 'receptfamilylikar':
                     views.reception(request)
-                case 'headache' | 'krovotecha' | 'singe' | 'chemicalburn' | 'sorethroat':
+                case 'headache' | 'krovotecha' | 'singe' | 'chemicalburn' | 'sorethroat' | 'heartache' | 'abdominalpain' | 'earache':
                     views.ambulance(request)
                 case 'registrprofil' | 'registrkabinet' | 'applicregulat' | 'manuallikar':
                     views.reception(request)

@@ -1,0 +1,37 @@
+{% extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<div class="container">
+    <p class="fs-5 text-center ">Основні заходи долікарняної допомоги при болі у серці</p>
+
+
+    <a class="fw-semibold text-decoration-none text-black">Забезпечити спокій, доступ повітря
+        та викликати швидку допомогу (103).</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Негайно припинити будь-яку фізичну активність.</a>
+    <a>Сісти або лягти з піднятою головою, зігнувши ноги в колінах (це зменшує навантаження на серце).
+        Відкрити вікна, розстебнути одяг, ремінь, усунути одяг, що стискає, заспокоїтись, глибоко і рівно дихати,
+        глибокий вдих — затримка дихання — повільний видих.
+    </a><br>
+    <a class="fw-semibold text-decoration-none text-black">Покласти під язик 1 таблетку нітрогліцерину </a>
+    <a> (або спрей). Якщо тиск знижений (меньше 100/60), нітрогліцерин давати не можна. У разі сильного
+        пекучого білю — розжувати 150-300 мг аспірину (якщо немає протипоказань).</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Якщо біль не минає: </a>
+    <a>Повторити приймання нітрогліцерину через 5–7 хвилин, але не більше 3-х таблеток.</a><br>
+    <a class="fw-semibold text-decoration-none text-black"> Терміново викликати швидку (103):</a><br>
+    <a> - Біль різкий, стискувальний, пекучий і триває понад 10–15 хвилин.</a><br>
+    <a> - Біль віддає в ліву руку, шию, нижню щелепу або під лопатку.</a><br>
+    <a> - З'явився холодний липкий піт, запаморочення, страх смерті або задишка.</a><br>
+    <a> - Втратата свідомісті.</a><br>
+    <a class="fst-italic text-decoration-none text-black" style="font-size: 15px;">Якщо людина без свідомості та не
+        дихає, негайно
+        розпочинайте серцево-легеневу реанімацію (30 натискань на грудну клітку / 2 вдихи) до приїзду
+        лікарів.</a><br>
+    <p></p>
+</div>
+<div class="container-fluid text-center" style="display: inline-block">
+    <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+       rel="noopener noreferrer" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Більше тут...</a>
+</div>
+
+{% endblock %}

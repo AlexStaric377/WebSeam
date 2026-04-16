@@ -1,0 +1,36 @@
+{%  extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<div class="container">
+    <p class="fs-5 text-center ">Основні заходи долікарняної допомоги при болі у вухах</p>
+
+
+    <a class="fw-semibold text-decoration-none text-black">Прийняти знеболювальне (ібупрофен або парацетамол)
+        для зменшення запалення та негайно зверніться до ЛОРа. </a><br>
+    <a class="fw-semibold text-decoration-none text-black">Можна прикласти </a>
+    <a>теплу хустку або суху марлеву пов'язку для зняття напруги. Уникайте попадання води у вухо.
+        Сидіння або сон на високій подушці сприяє кращому відтоку рідини та зменшенню тиску в середньому вусі.</a><br>
+    <a class="fw-semibold text-decoration-none text-black">Якщо біль виник на тлі нежитю, </a>
+    <a> скористайтеся судинозвужувальними краплями для носа, закапування носа допоможе зняти набряк у ділянці
+        євстахієвої труби, що зменшить тиск і біль у вусі. </a><br>
+    <a class="fw-semibold text-decoration-none text-black">Забороняється: </a>
+    <a>Самостійне використання вушних крапель (навіть антибактеріальних) може бути небезпечним, якщо є перфорація
+        (дірка)
+        в барабанній перетинці. Прикладати гарячі компреси, грілки, якщо невідома причина болю (особливо при гнійному
+        отиті).
+        Використовувати ватні палички, це може пошкодити слуховий прохід.</a><br>
+    <a class="fw-semibold text-decoration-none text-black"> Терміново звернутися до лікаря:</a><br>
+    <a> - Температура тіла вище 38 градусів.</a><br>
+    <a> - Виділення з вуха (гній, кров).</a><br>
+    <a> - Сильний, імпульсний біль, що не знімається таблетками.</a><br>
+    <a> - Зниження слуху або запаморочення.</a><br>
+
+    <p></p>
+</div>
+<div class="container-fluid text-center" style="display: inline-block">
+    <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+       rel="noopener noreferrer" role="button"
+       style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Більше тут...</a>
+</div>
+
+{% endblock %}
