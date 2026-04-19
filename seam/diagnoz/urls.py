@@ -134,6 +134,7 @@ urlpatterns = [
     path('heartache', views.heartache, name='heartache'),
     path('abdominalpain', views.abdominalpain, name='abdominalpain'),
     path('earache', views.earache, name='earache'),
+    path('chestpain', views.chestpain, name='chestpain'),
 
 ]
 #
