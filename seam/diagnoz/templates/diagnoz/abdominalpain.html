@@ -2,9 +2,10 @@
 {% block title %}SEAM{% endblock %}
 {% block nav %}
 <div class="container">
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="col-mb-3 ">
     <p class="fs-5 text-center ">Основні заходи долікарняної допомоги при болі у животі</p>
-
-
     <a class="fw-semibold text-decoration-none text-black">Негайно припинити будь-яку фізичну активність. </a><br>
     <a class="fw-semibold text-decoration-none text-black">Лягти, </a>
     <a>прийняти зручну позу на боці або спині із зігнутими ногами. Пакет з льодом або холодний компрес,
@@ -30,6 +31,9 @@
     <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
        rel="noopener noreferrer" role="button"
        style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Більше тут...</a>
+</div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

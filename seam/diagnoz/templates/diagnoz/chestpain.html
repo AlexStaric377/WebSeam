@@ -1,0 +1,48 @@
+{%  extends 'diagnoz/shablonnologin.html' %}
+{% block title %}SEAM{% endblock %}
+{% block nav %}
+<div class="container">
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="col-mb-3 ">
+                <p class="fs-5 text-center ">Основні заходи долікарняної допомоги при болі у грудній клітці</p>
+                <a class="fw-semibold text-decoration-none text-black">Негайно викликати швидку допомогу (103),</a>
+                <a> якщо біль гострий, що тисне, триває понад 15 хвилин, поширюється в руку, щелепу чи спину,
+                    супроводжується задишкою або запамороченням.</a><br>
+                <a class="fw-semibold text-decoration-none text-black">Негайно припинити будь-яку фізичну
+                    активність, </a>
+                <a>укласти або посадити людину в зручне положення (напівсидячи з опорою під спину), щоб зменшити
+                    навантаження на серце.</a><br>
+                <a class="fw-semibold text-decoration-none text-black">Забезпечити доступ свіжого повітря.</a>
+                <a> Відкрити вікна, розстебнути тісний комір, звільнити від одягу, що стискає. Заохочувати глибоке та
+                    рівне дихання,
+                    постійно стежити за свідомістю, диханням та пульсом.</a><br>
+                <a class="fw-semibold text-decoration-none text-black">Ознаки інфаркту</a><br>
+                <a> - Біль що стискає, «здавлює» у грудині, та віддає у ліву руку, щелепу або лопатку.</a><br>
+                <a> - Різка слабкість, нудота або відчуття сильного страху смерті.</a><br>
+                <a> - Блідість шкіри та виражений холодний піт. </a><br>
+                <a class="fw-semibold text-decoration-none text-black">Якщо біль виник внаслідок удару або падіння,</a>
+                <a>забезпечити нерухомість грудної клітки. При закритих травмах можна прикласти холодний
+                    компрес. </a><br>
+                <a class="fw-semibold text-decoration-none text-black">Не можна </a>
+                <a> приймати жодних ліків самостійно без призначення лікаря (виняток — нітрогліцерин, якщо він був
+                    раніше призначений лікарем саме
+                    при таких симптомах). </a><br>
+                <a class="fw-semibold text-decoration-none text-black"> Забороняється :</a><br>
+                <a> - Ходити або палити.</a><br>
+                <a> - Їсти або пити.</a><br>
+                <a class="fst-italic text-decoration-none text-black" style="font-size: 15px;">Примітка: Якщо людина
+                    втратила
+                    свідомість і дихання відсутнє, негайно розпочати серцево-легеневу реанімацію (30 натискань на грудну
+                    клітку глибина 5–6 см/ 2 вдихи, з частотою 100–120 на хвилину).</a><br>
+                <p></p>
+            </div>
+            <div class="container-fluid text-center" style="display: inline-block">
+                <a class="btn btn-sm text-white rounded-pill" href="{{ reason_url }}?q={{ search_reason }}"
+                   rel="noopener noreferrer" role="button"
+                   style="font-size: 12px; background-color: #558787; height=12;" target="_blank">Більше тут...</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

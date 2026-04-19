@@ -594,7 +594,7 @@ def earache(request):
     return render(request, 'diagnoz/earache.html', settingsvar.nextstepdata)
 
 
-# --- Біль у  грудній  клітці
+# --- Біль у грудній клітці
 def chestpain(request):
     settingsvar.procedura = settingsvar.receptitem = 'chestpain'
     settingsvar.search_reason = 'Перша+домедична+допомога+при+болю+у+грудній+клітці'
@@ -602,6 +602,12 @@ def chestpain(request):
     return render(request, 'diagnoz/chestpain.html', settingsvar.nextstepdata)
 
 
+# --- Біль у грудях при кашлі
+def chestpaincoughing(request):
+    settingsvar.procedura = settingsvar.receptitem = 'chestpaincoughing'
+    settingsvar.search_reason = 'Перша+домедична+допомога+при+болю+у+грудях+при+кашлі'
+    homemedicalcare()
+    return render(request, 'diagnoz/chestpaincoughing.html', settingsvar.nextstepdata)
 
 # --- процедура формування шаблону сторінки
 def homemedicalcare():
