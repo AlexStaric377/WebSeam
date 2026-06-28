@@ -434,21 +434,22 @@ def replaceproflikar(request):
 
     settingsvar.likar = rest_api('/api/LikarGrupDiagnozController/' + '0/' + diagnoz['icdGrDiagnoz'], '', 'GET')
     for item in settingsvar.likar:
-        itemlikar = rest_api('api/ApiControllerDoctor/' + item['kodDoctor'] + '/0/0', '', 'GET')
+        if len(item['kodDoctor']) > 0:
+            itemlikar = rest_api('api/ApiControllerDoctor/' + item['kodDoctor'] + '/0/0', '', 'GET')
 
-        tmplikar['kodDoctor'] = itemlikar['kodDoctor']
-        tmplikar['kodzaklad'] = itemlikar['edrpou']
-        tmplikar['icdGrDiagnoz'] = diagnoz['icdGrDiagnoz']
-        tmplikar['name'] = itemlikar['name']
-        tmplikar['surname'] = itemlikar['surname']
-        tmplikar['specialnoct'] = itemlikar['specialnoct']
-        zaklad = rest_api('api/MedicalInstitutionController/' + itemlikar['edrpou'] + '/0/0/0', '', 'GET')
-        tmplikar['namezaklad'] = zaklad['name']
-        tmplikar['zakladname'] = zaklad['name']
-        tmplikar['adreszak'] = zaklad['adres']
-        tmplikar['tel'] = zaklad['telefon']
-        likarspec.append(tmplikar)
-        tmplikar = {}
+            tmplikar['kodDoctor'] = itemlikar['kodDoctor']
+            tmplikar['kodzaklad'] = itemlikar['edrpou']
+            tmplikar['icdGrDiagnoz'] = diagnoz['icdGrDiagnoz']
+            tmplikar['name'] = itemlikar['name']
+            tmplikar['surname'] = itemlikar['surname']
+            tmplikar['specialnoct'] = itemlikar['specialnoct']
+            zaklad = rest_api('api/MedicalInstitutionController/' + itemlikar['edrpou'] + '/0/0/0', '', 'GET')
+            tmplikar['namezaklad'] = zaklad['name']
+            tmplikar['zakladname'] = zaklad['name']
+            tmplikar['adreszak'] = zaklad['adres']
+            tmplikar['tel'] = zaklad['telefon']
+            likarspec.append(tmplikar)
+            tmplikar = {}
     if len(likarspec) > 0:
 
         iduser = funciduser()
@@ -709,6 +710,7 @@ def funcinterwiev(request):
     settingsvar.spisokkeyinterview = []
     settingsvar.spisokkeyfeature = []
     settingsvar.spisokselectDetailing = []
+    settingsvar.spselectnameDetailing = []
     settingsvar.spisoklistdetaling = []
     settingsvar.spisokGrDetailing = []
     settingsvar.сomplaintselect = []
@@ -1025,6 +1027,7 @@ def claenvarfuture():
     settingsvar.spisokkeyinterview = []
     settingsvar.spisokkeyfeature = []
     settingsvar.spisokselectDetailing = []
+    settingsvar.spselectnameDetailing = []
     settingsvar.ongrupdetaling = False
     settingsvar.viewdetaling = False
     settingsvar.keyFeature = {}
@@ -1146,7 +1149,8 @@ def nextstepgrdetaling():
                     '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/", '', 'GET')
                 addgrGrDetaling()
                 settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
-                settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
+                if len(settingsvar.spisoknamefeature) > 0: settingsvar.detaling_feature_name = \
+                settingsvar.spisoknamefeature[0]
                 settingsvar.itemdetalingname = ""
                 if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 iduser = funciduser()
@@ -1186,6 +1190,7 @@ def selectdetaling(request, select_kodDetailing):
             settingsvar.DiagnozRecomendaciya = lstDiagnoz
             if select_kodDetailing == item['kodDetailing']:
                 settingsvar.spselectnameDetailing.append(item['nameDetailing'])
+                settingsvar.spisokselectDetailing.append(item['kodDetailing'])
                 del settingsvar.spisoklistdetaling[index]
 
             index = index + 1
@@ -1208,7 +1213,8 @@ def continuegrdetaling(request):
                     '/api/GrDetalingController/' + "0/" + itemgrdetaling + "/0/", '', 'GET')
                 addgrGrDetaling()
                 settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
-                settingsvar.detaling_feature_name = settingsvar.spisoknamefeature[0]
+                if len(settingsvar.spisoknamefeature) > 0: settingsvar.detaling_feature_name = \
+                settingsvar.spisoknamefeature[0]
                 if len(settingsvar.detalingname) > 0: settingsvar.itemdetalingname = settingsvar.detalingname[0]
                 if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
                 shablongrdetaling()
@@ -1239,6 +1245,7 @@ def selectgrdetaling(request, select_kodDetailing):
                 tmplist.append(item)
             else:
                 settingsvar.spselectnameDetailing.append(item['nameGrDetailing'])
+                settingsvar.spisokselectDetailing.append(item['kodDetailing'])
         settingsvar.rest_apiGrDetaling = tmplist
         settingsvar.nawpage = 'nextgrdetaling'
         if len(settingsvar.rest_apiGrDetaling) > 0:
@@ -1278,7 +1285,7 @@ def endvibor(request):
             settingsvar.nawpage = 'nextgrdetaling'
             settingsvar.viewdetaling = True
             del settingsvar.spisokkeyfeature[0]
-            del settingsvar.spisoknamefeature[0]
+            if len(settingsvar.spisoknamefeature) > 0: del settingsvar.spisoknamefeature[0]
 
     else:
         if settingsvar.continuegrdetaling == False:
@@ -1319,7 +1326,7 @@ def enddetaling(request):
         settingsvar.nawpage = 'nextgrdetaling'
         settingsvar.viewdetaling = True
         del settingsvar.spisokkeyfeature[0]
-        del settingsvar.spisoknamefeature[0]
+        if len(settingsvar.spisoknamefeature) > 0: del settingsvar.spisoknamefeature[0]
         return render(request, settingsvar.html, context=settingsvar.nextstepdata)
     else:
         settingsvar.spisoklistdetaling = []
@@ -1341,7 +1348,7 @@ def enddetaling(request):
                 if (settingsvar.itemkeyfeature == settingsvar.spisokkeyfeature[0] and len(
                         settingsvar.spisokkeyfeature) > 0):
                     del settingsvar.spisokkeyfeature[0]
-                    del settingsvar.spisoknamefeature[0]
+                    if len(settingsvar.spisoknamefeature) > 0: del settingsvar.spisoknamefeature[0]
         if len(settingsvar.spisokkeyfeature) > 0:
             settingsvar.itemstep = 'spisokkeyfeature'
             nextstepgrdetaling()
@@ -1695,9 +1702,8 @@ def backreceptprofillmedzaklad(request):
                     settingsvar.receptitem = 'reception'
                 case 'receptprofillmedzaklad':
                     settingsvar.receptitem = 'backreceptprofillmedzaklad'
-                case 'interwievcomplaint' | 'receptprofillmedzaklad':
-                    settingsvar.receptitem = settingsvar.receptitem
-                case 'getsearchcomplateForm':
+
+                case 'getsearchcomplateForm' | 'InputsearchcomplateForm':
                     settingsvar.receptitem = 'interwievcomplaint'
                 case _:
                     settingsvar.receptitem = 'receptprofillmedzaklad'
@@ -1734,29 +1740,31 @@ def selectlikarrofil(listrofillikar):
         settingsvar.listlikar = listrofillikar
     else:
         for item in listrofillikar:
-            if settingsvar.receptitem != 'familylikar' and settingsvar.receptitem != 'profillikar':
-                zakladlikar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
-                medzaklad = rest_api('/api/MedicalInstitutionController/' + zakladlikar['edrpou'] + '/0/0/0', '', 'GET')
-                itemlistlikar['kodDoctor'] = item['kodDoctor']
-                itemlistlikar['kodzaklad'] = zakladlikar['edrpou']
-                itemlistlikar['name'] = zakladlikar['name']
-                itemlistlikar['surname'] = zakladlikar['surname']
-                itemlistlikar['specialnoct'] = zakladlikar['specialnoct']
-                itemlistlikar['zakladname'] = medzaklad['name']
-                itemlistlikar['adreszak'] = medzaklad['adres']
-                itemlistlikar['tel'] = medzaklad['telefon']
-            else:
-                medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
-                itemlistlikar['kodDoctor'] = item['kodDoctor']
-                itemlistlikar['kodzaklad'] = item['edrpou']
-                itemlistlikar['name'] = item['name']
-                itemlistlikar['surname'] = item['surname']
-                itemlistlikar['specialnoct'] = item['specialnoct']
-                itemlistlikar['zakladname'] = medzaklad['name']
-                itemlistlikar['adreszak'] = medzaklad['adres']
-                itemlistlikar['tel'] = medzaklad['telefon']
-            settingsvar.listlikar.append(itemlistlikar)
-            itemlistlikar = {}
+            if len(item['kodDoctor']) > 0:
+                if settingsvar.receptitem != 'familylikar' and settingsvar.receptitem != 'profillikar':
+                    zakladlikar = rest_api('/api/ApiControllerDoctor/' + item['kodDoctor'] + "/0/0", '', 'GET')
+                    medzaklad = rest_api('/api/MedicalInstitutionController/' + zakladlikar['edrpou'] + '/0/0/0', '',
+                                         'GET')
+                    itemlistlikar['kodDoctor'] = item['kodDoctor']
+                    itemlistlikar['kodzaklad'] = zakladlikar['edrpou']
+                    itemlistlikar['name'] = zakladlikar['name']
+                    itemlistlikar['surname'] = zakladlikar['surname']
+                    itemlistlikar['specialnoct'] = zakladlikar['specialnoct']
+                    itemlistlikar['zakladname'] = medzaklad['name']
+                    itemlistlikar['adreszak'] = medzaklad['adres']
+                    itemlistlikar['tel'] = medzaklad['telefon']
+                else:
+                    medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
+                    itemlistlikar['kodDoctor'] = item['kodDoctor']
+                    itemlistlikar['kodzaklad'] = item['edrpou']
+                    itemlistlikar['name'] = item['name']
+                    itemlistlikar['surname'] = item['surname']
+                    itemlistlikar['specialnoct'] = item['specialnoct']
+                    itemlistlikar['zakladname'] = medzaklad['name']
+                    itemlistlikar['adreszak'] = medzaklad['adres']
+                    itemlistlikar['tel'] = medzaklad['telefon']
+                settingsvar.listlikar.append(itemlistlikar)
+                itemlistlikar = {}
 
 
     settingsvar.html = 'diagnoz/selectlikarprofil.html'
