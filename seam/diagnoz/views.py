@@ -2294,11 +2294,17 @@ def putvisitinglikar():
 
 def removeappointments(request):
     if settingsvar.kabinet == 'listinterwiev':
-        Appointment = rest_api(
-            'api/ColectionInterviewController/' + '0/' + settingsvar.itemlikarAdmission['kodPacient'] +
-            '/' + settingsvar.itemlikarAdmission['kodDoctor'] + '/' + settingsvar.itemlikarAdmission['dateInterview'] +
-            '/' + settingsvar.itemlikarAdmission['kodProtokola'], '', 'DEL')
-
+        if len(settingsvar.itemlikarAdmission['kodDoctor']) > 0:
+            Appointment = rest_api(
+                'api/ColectionInterviewController/' + '0/' + settingsvar.itemlikarAdmission['kodPacient'] +
+                '/' + settingsvar.itemlikarAdmission['kodDoctor'] + '/' + settingsvar.itemlikarAdmission[
+                    'dateInterview'] +
+                '/' + settingsvar.itemlikarAdmission['kodProtokola'], '', 'DEL')
+        else:
+            Appointment = rest_api(
+                'api/ColectionInterviewController/' + '0/' + settingsvar.itemlikarAdmission['kodPacient'] +
+                '/0/' + settingsvar.itemlikarAdmission['dateInterview'] +
+                '/' + settingsvar.itemlikarAdmission['kodProtokola'], '', 'DEL')
         funcshablonlistpacient()
     else:
         Appointment = rest_api(
@@ -3679,11 +3685,10 @@ def nextprofilinterview(request):
                             likarName = ''
                             if len(doc) > 0:
                                 likarName = doc['name'] + ' ' + doc['surname']  # + ' Телефон: ' + doc['telefon']
+                                medzak = rest_api('/api/MedicalInstitutionController/' + doc['edrpou'] + "/0/0/0", '',
+                                                  'GET')
+                                if len(medzak) > 0: medzaklad = medzak['name']
                         settingsvar.PacientName = settingsvar.pacient['name'] + ' ' + settingsvar.pacient['surname']
-
-                        medzak = rest_api('/api/MedicalInstitutionController/' + doc['edrpou'] + "/0/0/0", '', 'GET')
-
-                        if len(medzak) > 0: medzaklad = medzak['name']
 
                     case "likar" | 'likarinterwiev' | 'likarlistinterwiev' | 'likarreceptionpacient':
                         if item['kodPacient'] != None and len(item['kodPacient']) > 0:
@@ -4502,7 +4507,9 @@ def listreceptionpacient(request):
     settingsvar.html = 'diagnoz/likarreceptionpacient.html'
     funsearchpacientform(request)
     if len(settingsvar.pacientselect) == 0:
-        settingsvar.listapi = rest_api('api/ControllerAdmissionPatients/' + '0/' + settingsvar.kodDoctor + '/0/0', '',
+
+        settingsvar.listapi = rest_api('api/ControllerAdmissionPatients/' + '0/' + settingsvar.kodDoctor + '/0/0/0/0',
+                                       '',
                                    'GET')
         if len(settingsvar.listapi) > 0:
             settingsvar.listreception = []
