@@ -22,11 +22,11 @@
             <td>
                 <div class="form-check ">
                     {% if selectfeature %}
-                    <input %} %}checked{%
+                    <input %} %}checked endif if item.checkfeature
+                           name="likar_checkbox" style=" font-size: 25px; background-color: #a2baba;" type="checkbox" {% {%
                            class="form-check-input ajax-checkbox" data-id="{{ item.keyFeature }}"
                            data-url="{% url 'feature_checkbox_view' item.keyComplaint item.keyFeature %}"
-                           endif
-                           if item.checkfeature name="likar_checkbox" style=" font-size: 25px; background-color: #a2baba;" type="checkbox" {%>
+                    >
                     {% endif %}
                     <a class="col container  text-dark text-decoration-none"
                        href="{% url 'featurespisok' item.keyComplaint item.keyFeature %}">{{item.name}}</a>

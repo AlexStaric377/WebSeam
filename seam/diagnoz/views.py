@@ -188,6 +188,7 @@ def backreception():
     settingsvar.receptitem = ""
     settingsvar.kabinet = 'guest'
     settingsvar.likar = {}
+    settingsvar.receptionlikar = {}
     settingsvar.pacient = {}
     settingsvar.setintertview = False
     settingsvar.kabinetitem = 'guest'
@@ -229,6 +230,7 @@ def funcpacient():
     settingsvar.html = 'diagnoz/pacient.html'
 
     settingsvar.likar = {}
+    settingsvar.receptionlikar = {}
     settingsvar.datereception = 'призначається за тел.'
     settingsvar.datedoctor = 'призначається за тел.'
     settingsvar.funciya = ''
@@ -241,6 +243,7 @@ def exitkab():
     settingsvar.setpostlikar = False
     settingsvar.setpost = False
     settingsvar.likar = {}
+    settingsvar.receptionlikar = {}
     settingsvar.pacient = {}
     settingsvar.kabinet = {}
     settingsvar.formsearch = {}
@@ -1395,9 +1398,27 @@ def shablongrdetaling():
 
 def writediagnoz():
     settingsvar.selectlikar = False
-
+    likargrupdiagnoz = []
     if settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'listinterwiev':
-        saveselectlikar(settingsvar.pacient)
+        if len(settingsvar.likar) > 0:
+            if settingsvar.likar['napryamok'] == "":
+                api = rest_api('/api/DependencyDiagnozController/' + "0/" + settingsvar.kodProtokola + "/0", '', 'GET')
+                if len(api) > 0:
+                    settingsvar.kodDiagnoz = api[0]['kodDiagnoz']
+                    apiicd = rest_api('/api/DiagnozController/' + api[0]['kodDiagnoz'] + "/0/0", '', 'GET')
+                    settingsvar.icddiagnoz = apiicd['keyIcd'][:16]
+                    settingsvar.icdGrDiagnoz = apiicd['icdGrDiagnoz']
+                    likargrupdiagnoz = rest_api(
+                        '/api/LikarGrupDiagnozController/' + "0/" + settingsvar.icdGrDiagnoz,
+                        '', 'GET')
+                if settingsvar.kabinetitem == 'likarinterwiev' and len(likargrupdiagnoz) > 0:
+                    selectlikarrofil(likargrupdiagnoz)
+                else:
+                    saveselectlikar(settingsvar.pacient)
+            else:
+                saveselectlikar(settingsvar.pacient)
+        else:
+            saveselectlikar(settingsvar.pacient)
     else:
         if settingsvar.kabinet == 'guest':
             settingsvar.backpage = 'interwievcomplaint'
@@ -1445,7 +1466,7 @@ def writediagnoz():
                                         settingsvar.namelikar = settingsvar.likar['name'] + " " + settingsvar.likar[
                                             'surname']
                                         #        settingsvar.mobtellikar = CmdStroka['telefon']
-                                        settingsvar.likar = settingsvar.likar
+
                                         medzaklad = rest_api(
                                             '/api/MedicalInstitutionController/' + settingsvar.likar[
                                                 'edrpou'] + '/0/0/0', '',
@@ -1695,7 +1716,7 @@ def backreceptprofillmedzaklad(request):
     else:
         status = "5"
         settingsvar.directdiagnoz = False
-        if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'interwiev':
+        if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinetitem == 'likarinterwiev':
 
             match settingsvar.receptitem:
                 case 'backreceptprofillmedzaklad':
@@ -1818,7 +1839,8 @@ def selectlikarrofil(listrofillikar):
         'search_medic': settingsvar.namediagnoz + '+як+лікувати',
     }
     if len(settingsvar.pacient) > 0:
-        if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'pacientinterwiev' and settingsvar.backpage != 'receptfamilylikar' and settingsvar.backpage != 'addfamilylikar':
+        if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'pacientinterwiev' and settingsvar.backpage != 'receptfamilylikar' and settingsvar.backpage != 'addfamilylikar' and \
+                settingsvar.likar['napryamok'] != "":
             settingsvar.nextstepdata['likar'] = True
         settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
                                               settingsvar.pacient['name'] + " " + settingsvar.pacient['surname']
@@ -2098,6 +2120,7 @@ def inputprofilpacient(request, selected_doctor):
     if 'name' in CmdStroka:
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         #        settingsvar.mobtellikar = CmdStroka['telefon']
+        settingsvar.receptionlikar = settingsvar.likar
         settingsvar.likar = CmdStroka
         medzaklad = rest_api('/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '', 'GET')
         settingsvar.namemedzaklad = medzaklad['name']
@@ -2129,7 +2152,7 @@ def inputprofilpacient(request, selected_doctor):
                                     settingsvar.backurl = 'familylikar'
                                 case 'receptprofillmedzaklad':
                                     settingsvar.receptitem = 'likarworkdirection'
-
+                                    settingsvar.receptionlikar = {}
                                     settingsvar.likar = {}
                                 case 'selectedprofillikar':
                                     settingsvar.receptitem = 'likarworkdiagnoz'
@@ -2810,6 +2833,7 @@ def deletprofil(request):
     settingsvar.html = 'diagnoz/index.html'
     if settingsvar.receptitem == 'registrprofil': settingsvar.html = 'diagnoz/reception.html'
     settingsvar.nextstepdata = {}
+    settingsvar.receptionlikar = {}
     settingsvar.likar = {}
     settingsvar.pacient = {}
     settingsvar.setpost = False
