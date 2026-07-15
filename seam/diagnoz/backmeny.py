@@ -187,7 +187,9 @@ def backpage(request):
                     if settingsvar.receptitem == 'getsearchcomplateForm':
                         views.funcinterwiev(request)
                     else:
-                        if len(settingsvar.receptionlikar) > 0: settingsvar.likar = settingsvar.receptionlikar
+                        if len(settingsvar.receptionlikar) > 0:
+                            settingsvar.likar = settingsvar.receptionlikar
+                            settingsvar.receptionlikar = {}
                         views.likar(request)
         case "likarprofil" | 'likarlistinterwiev' | 'likarreceptionpacient' | 'likarworkdiagnoz' | 'likarvisitngdays' | 'likarlibdiagnoz':
 

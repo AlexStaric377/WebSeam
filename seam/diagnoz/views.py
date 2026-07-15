@@ -1401,6 +1401,7 @@ def writediagnoz():
     likargrupdiagnoz = []
     if settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'listinterwiev':
         if len(settingsvar.likar) > 0:
+            settingsvar.receptionlikar = settingsvar.likar
             if settingsvar.likar['napryamok'] == "":
                 api = rest_api('/api/DependencyDiagnozController/' + "0/" + settingsvar.kodProtokola + "/0", '', 'GET')
                 if len(api) > 0:
@@ -3369,7 +3370,8 @@ def addReceptionPacient():
             'DateInterview': settingsvar.dateInterview,
             'KodComplInterv': settingsvar.kodComplInterv,
             'KodProtokola': settingsvar.kodProtokola,
-            'TopictVizita': 'Підтвердження попереднього діагнозу, призначення плану лікування.',
+            'TopictVizita': 'Лікар :' + settingsvar.likar['specialnoct'] + " " + settingsvar.likar['name'] + " " +
+                            settingsvar.likar['surname'],
             }
     # --- записати в Бд
     saveprofil = rest_api('/api/LifePacientController/', json, 'POST')
@@ -3393,7 +3395,8 @@ def addReceptionLikar():
             'DateInterview': settingsvar.dateInterview,
             'KodComplInterv': settingsvar.kodComplInterv,
             'KodProtokola': settingsvar.kodProtokola,
-            'TopictVizita': 'Підтвердження попереднього діагнозу, призначення плану лікування.',
+            'TopictVizita': 'Опитування провів :' + settingsvar.receptionlikar['specialnoct'] + " " +
+                            settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar['surname'],
             'KodDiagnoz': settingsvar.kodDiagnoz
             }
     # --- записати в Бд
@@ -3409,7 +3412,8 @@ def addAdmissionPatientsLikar():
             'DateInterview': settingsvar.dateInterview,
             'KodComplInterv': settingsvar.kodComplInterv,
             'KodProtokola': settingsvar.kodProtokola,
-            'TopictVizita': 'Підтвердження попереднього діагнозу, призначення плану лікування.',
+            'TopictVizita': 'Опитування провів :' + settingsvar.receptionlikar['specialnoct'] + " " +
+                            settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar['surname'],
             'KodDiagnoz': settingsvar.kodDiagnoz
             }
     # --- записати в Бд
