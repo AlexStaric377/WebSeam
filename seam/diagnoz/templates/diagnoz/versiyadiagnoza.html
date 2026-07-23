@@ -64,6 +64,11 @@
     <tr>
         <td><p> {{rekomendaciya}} </p></td>
     </tr>
+    {% if iduser == 'Кабінет лікаря' %}
+    <tr>
+        <td><p>Опитування провів : {{likarinterwiev}} </p></td>
+    </tr>
+    {% endif %}
     </tbody>
 </table>
 
@@ -74,8 +79,10 @@
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'receptfamilylikar' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Запис до сімейного лікаря</a>
     {% endif %}
+    {% if iduser != 'Відвідувач'%}
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'savediagnoz' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Зберегти опитування</a>
+    {% endif %}
     <a class="btn btn-sm text-white rounded-pill" href="{% url 'receptinterwiev' %}" role="button"
        style="font-size: 12px; background-color: #558787; height=12;">Почати з початку</a>
 </div>

@@ -1451,6 +1451,8 @@ def writediagnoz():
                     likarfamily = rest_api('/api/ControlerFamilyLikar/' + settingsvar.pacient['kodPacient'] + "/0", '',
                                            'GET')
                 if len(likarfamily) > 0:
+                    likarinterwiev = "Лікар: " + settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar[
+                        'surname']
                     settingsvar.html = 'diagnoz/finishinterviewpacient.html'
                     settingsvar.backpage = 'interwiev'
                     for item in likarfamily:
@@ -1499,10 +1501,14 @@ def writediagnoz():
                         'base_url': 'https://www.google.com/search',
                         'search_term': settingsvar.url,
                         'reason_url': reason_url,
-                        'search_reason': search_reason
+                        'search_reason': search_reason,
+                        'likarinterwiev': likarinterwiev,
                     }
 
                 else:
+
+                    likarinterwiev = "Лікар: " + settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar[
+                        'surname']
                     settingsvar.nextstepdata = {
                         'opis': item['opistInterview'],
                         'http': item['uriInterview'],
@@ -1516,6 +1522,7 @@ def writediagnoz():
                         'backurl': settingsvar.nawpage,
                         'reason_url': reason_url,
                         'search_reason': search_reason,
+                        'likarinterwiev': likarinterwiev,
 
                     }
                     if len(settingsvar.pacient) > 0:
@@ -2058,13 +2065,15 @@ def saveselectlikar(pacient):
     search_reason = namediagnoz + '+причини+захворювання'
 
     if settingsvar.kabinet == 'likar' or settingsvar.kabinet == 'likarinterwiev':
+
+        likarinterwiev = "Лікар: " + settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar['surname']
         settingsvar.datereception = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         settingsvar.nextstepdata = {
             'iduser': iduser,
             'shapka': 'Увага! сформовано попередній діаноз на обстежені у лікаря.',
             'pacient': 'Пацієнт: ' + pacient['name'] + " " + pacient['surname'],
             'medzaklad': settingsvar.namemedzaklad + " " + settingsvar.adrzaklad,
-            'likar': 'Лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
+            'likar': 'Призначений лікар: ' + settingsvar.namelikar,  # + " тел.: " + settingsvar.mobtellikar,
             'datereception': 'Дата прийому: ' + settingsvar.datereception,
             'diagnoz': 'Попередній діаноз: ' + settingsvar.nametInterview,
             'podval': 'Зберегти опитування?',
@@ -2073,7 +2082,9 @@ def saveselectlikar(pacient):
             'search_reason': search_reason,
             'base_url': base_url,
             'search_term': search_term,
-            'rekomendaciya': settingsvar.contentRecommendation
+            'rekomendaciya': settingsvar.contentRecommendation,
+            'likarinterwiev': likarinterwiev
+
         }
     else:
 
@@ -2121,7 +2132,7 @@ def inputprofilpacient(request, selected_doctor):
     if 'name' in CmdStroka:
         settingsvar.namelikar = CmdStroka['name'] + " " + CmdStroka['surname']
         #        settingsvar.mobtellikar = CmdStroka['telefon']
-        settingsvar.receptionlikar = settingsvar.likar
+        if 'name' in settingsvar.likar: settingsvar.receptionlikar = settingsvar.likar
         settingsvar.likar = CmdStroka
         medzaklad = rest_api('/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '', 'GET')
         settingsvar.namemedzaklad = medzaklad['name']
