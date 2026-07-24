@@ -811,7 +811,7 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     settingsvar.diagnozStroka = []
     settingsvar.dictfeature = []
     settingsvar.keyComplaint = nextfeature_keyComplaint
-    if len(settingsvar.listfeature) <= 0:
+    if len(settingsvar.listfeature) == 0:
         settingsvar.listfeature = rest_api('api/FeatureController/' + "0/"
                                            + nextfeature_keyComplaint + "/0/", '', 'GET')
         tmp = []
@@ -821,22 +821,18 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
             item['checkfeature'] = False
             tmp.append(item)
         settingsvar.listfeature = tmp
-        # for item in settingsvar.listfeature:
-        #     listkeyFeature = settingsvar.keyComplaint + ";" + item['keyFeature'] + ";"
-        #     dictfeature = rest_api('api/InterviewController/' + "0/0/0/0/" + listkeyFeature, '', 'GET')
-        #     if len(dictfeature) > 0:
-        #         for itemfeature in dictfeature:
-        #             if item['keyFeature'] in itemfeature['grDetail']:
-        #                 settingsvar.selectfeature = True
-        #                 settingsvar.spisoknamefeature.append(item['name'])
-        #                 settingsvar.spselectnameDetailing.append(item['name'])
-        # funcselectfeature()
+
     iduser = funciduser()
     settingsvar.nawpage = 'backfeature'
     settingsvar.html = 'diagnoz/nextfeature.html'
-
+    settingsvar.nextstepdata = []
     if len(settingsvar.pacient) > 0: shablonpacient(settingsvar.pacient)
-    settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
+    if len(settingsvar.nextstepdata) == 0:
+        settingsvar.nextstepdata = {
+            'featurelist': settingsvar.listfeature,
+        }
+    else:
+        settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
     settingsvar.nextstepdata['next'] = '  Далі '
     settingsvar.nextstepdata['compl'] = settingsvar.feature_name
     settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
@@ -1399,6 +1395,7 @@ def shablongrdetaling():
 def writediagnoz():
     settingsvar.selectlikar = False
     likargrupdiagnoz = []
+    likarinterwiev = ""
     if settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'listinterwiev':
         if len(settingsvar.likar) > 0:
             settingsvar.receptionlikar = settingsvar.likar
@@ -1451,8 +1448,7 @@ def writediagnoz():
                     likarfamily = rest_api('/api/ControlerFamilyLikar/' + settingsvar.pacient['kodPacient'] + "/0", '',
                                            'GET')
                 if len(likarfamily) > 0:
-                    likarinterwiev = "Лікар: " + settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar[
-                        'surname']
+
                     settingsvar.html = 'diagnoz/finishinterviewpacient.html'
                     settingsvar.backpage = 'interwiev'
                     for item in likarfamily:
@@ -1469,7 +1465,7 @@ def writediagnoz():
                                         settingsvar.namelikar = settingsvar.likar['name'] + " " + settingsvar.likar[
                                             'surname']
                                         #        settingsvar.mobtellikar = CmdStroka['telefon']
-
+                                        likarinterwiev = "Лікар: " + settingsvar.namelikar
                                         medzaklad = rest_api(
                                             '/api/MedicalInstitutionController/' + settingsvar.likar[
                                                 'edrpou'] + '/0/0/0', '',
@@ -1506,8 +1502,9 @@ def writediagnoz():
                     }
 
                 else:
-
-                    likarinterwiev = "Лікар: " + settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar[
+                    if 'name' in settingsvar.receptionlikar:
+                        likarinterwiev = "Лікар: " + settingsvar.receptionlikar['name'] + " " + \
+                                         settingsvar.receptionlikar[
                         'surname']
                     settingsvar.nextstepdata = {
                         'opis': item['opistInterview'],
@@ -2682,6 +2679,7 @@ def accountuser(request):
                                             '/api/ApiControllerDoctor/' + settingsvar.kodLikar + '/0/0',
                                             '', 'GET')
                                         if len(settingsvar.likar) > 0:
+                                            settingsvar.receptionlikar = settingsvar.likar
                                             settingsvar.kodDoctor = settingsvar.likar['kodDoctor']
                                             medzaklad = rest_api(
                                                 '/api/MedicalInstitutionController/' + settingsvar.likar[
@@ -3333,8 +3331,10 @@ def shablonpacient(profilpacient):
             'medzaklad': ''
         }
 
-    if len(settingsvar.likar) > 0:
-        settingsvar.nextstepdata['piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+    if len(settingsvar.receptionlikar) > 0:
+        settingsvar.nextstepdata['piblikar'] = 'Лікар: ' + settingsvar.receptionlikar['specialnoct'] + " " + \
+                                               settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar[
+                                                   'surname']
         settingsvar.nextstepdata['medzaklad'] = settingsvar.namemedzaklad
 
     return
@@ -3512,6 +3512,7 @@ def backpacientinterwiev(request):
         settingsvar.kabinet = 'interwiev'
         settingsvar.receptitem = 'pacientinterwiev'
         settingsvar.backpage = 'pacientinterwiev'
+        settingsvar.selectfeature = False
         if settingsvar.setpost == False:
             accountuser(request)
         else:
@@ -4447,6 +4448,8 @@ def likarinterwiev(request):  # httpRequest
         else:
             # --- пошук даних пацієнта для проведення опитування
             backurl = 'likar'
+            if settingsvar.receptionlikar['napryamok'] == "": settingsvar.likar = []
+            settingsvar.selectfeature = False
             if settingsvar.search == False:
                 if request.method == 'POST':
                     form = SearchPacient(request.POST)
