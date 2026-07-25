@@ -1397,9 +1397,9 @@ def writediagnoz():
     likargrupdiagnoz = []
     likarinterwiev = ""
     if settingsvar.kabinet == 'likarinterwiev' or settingsvar.kabinet == 'listinterwiev':
-        if len(settingsvar.likar) > 0:
-            settingsvar.receptionlikar = settingsvar.likar
-            if settingsvar.likar['napryamok'] == "":
+        if len(settingsvar.receptionlikar) > 0:
+            # settingsvar.receptionlikar = settingsvar.likar
+            if settingsvar.receptionlikar['napryamok'] == "":
                 api = rest_api('/api/DependencyDiagnozController/' + "0/" + settingsvar.kodProtokola + "/0", '', 'GET')
                 if len(api) > 0:
                     settingsvar.kodDiagnoz = api[0]['kodDiagnoz']
@@ -1845,13 +1845,14 @@ def selectlikarrofil(listrofillikar):
     }
     if len(settingsvar.pacient) > 0:
         if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'pacientinterwiev' and settingsvar.backpage != 'receptfamilylikar' and settingsvar.backpage != 'addfamilylikar' and \
-                settingsvar.likar['napryamok'] != "":
+                settingsvar.receptionlikar['napryamok'] != "":
             settingsvar.nextstepdata['likar'] = True
         settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
                                               settingsvar.pacient['name'] + " " + settingsvar.pacient['surname']
 
-    if len(settingsvar.likar) > 0:
-        settingsvar.nextstepdata['piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+    if len(settingsvar.receptionlikar) > 0:
+        settingsvar.nextstepdata['piblikar'] = ('Лікар: ' + settingsvar.namelikar)
+        # + " тел.: " + settingsvar.mobtellikar)
 
     return
 
@@ -3401,13 +3402,13 @@ def addReceptionPacient():
 def addReceptionLikar():
     json = {'id': 0,
             'KodPacient': settingsvar.kodPacienta,
-            'KodDoctor': settingsvar.kodDoctor,
+            'KodDoctor': settingsvar.receptionlikar['kodDoctor'],
             'DateDoctor': settingsvar.datereception,
             'DateInterview': settingsvar.dateInterview,
             'KodComplInterv': settingsvar.kodComplInterv,
             'KodProtokola': settingsvar.kodProtokola,
-            'TopictVizita': 'Опитування провів :' + settingsvar.receptionlikar['specialnoct'] + " " +
-                            settingsvar.receptionlikar['name'] + " " + settingsvar.receptionlikar['surname'],
+            'TopictVizita': 'Призначений лікар :' + settingsvar.likar['specialnoct'] + " " +
+                            settingsvar.likar['name'] + " " + settingsvar.likar['surname'],
             'KodDiagnoz': settingsvar.kodDiagnoz
             }
     # --- записати в Бд
@@ -3780,6 +3781,7 @@ def nextprofilinterview(request):
     settingsvar.url = settingsvar.nametInterview + '+як+лікувати'
     settingsvar.nextstepdata['base_url'] = 'https://www.google.com/search'
     settingsvar.nextstepdata['search_term'] = settingsvar.url
+    settingsvar.nextstepdata['likarinterwiev'] = "Опитування провів :" + likarName
 
     return
 
