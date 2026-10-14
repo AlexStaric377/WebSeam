@@ -136,3 +136,4 @@ pacientName = ""
 search_reason = ""
 procedura = ""
 receptionlikar = ""
+likargrupdiagnoz = []

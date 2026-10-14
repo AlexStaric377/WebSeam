@@ -1611,7 +1611,7 @@ def backdiagnoz(request):
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 
-#  --- Кінець блоку  опитування
+#  --- Кінець блоку опитування
 
 # --- Блок вибору медзакладу та профільного лікаря
 # --- вибір профільного медзакладу
@@ -1622,6 +1622,7 @@ def selectmedzaklad(request, statuszaklad):
     iduser = funciduser()
     match statuszaklad:
         case "2":
+            # --- вибір сімейного лікаря
             tmp = []
             listlikarfamily = rest_api('/api/ApiControllerDoctor/' + '0/2/0/', '', 'GET')
             if len(listlikarfamily) > 0:
@@ -1640,6 +1641,8 @@ def selectmedzaklad(request, statuszaklad):
             return
 
         case "5":
+
+            # --- вибір профільного лікаря
             settingsvar.grupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + "0/" +
                                                settingsvar.icdGrDiagnoz + "/0/0", '', 'GET')  # settingsvar.icddiagnoz
             settingsvar.Diagnozmedgrup = settingsvar.grupDiagnoz
@@ -1654,38 +1657,110 @@ def selectmedzaklad(request, statuszaklad):
                                 apptru = False
                             else:
                                 apptru = True
+                        # --- додати лікарню до переліку лікарень які працюють з даним діагнозом.
                         if apptru == False:  settingsvar.grupmedzaklad.append(medzaklad)
             else:
 
                 settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad,
                                                      '',
                                                      'GET')
+    # --- Формування переліку лікарів із медзакладів не мають своїх напрямків
+    # --- і які працюють з визначеним діагнозом за напрямками мед. закладу.
+    # if len(settingsvar.likargrupdiagnoz) == 0:
+    itemlikar = []
+    itemlikargrupdiagnoz = {}
+    for itemzaklad in settingsvar.grupmedzaklad:
+        itemlikar = rest_api('/api/ApiControllerDoctor/' + "0/" + itemzaklad['edrpou'] + "/0", '', 'GET')
+        for item in itemlikar:
+            itemlikargrupdiagnoz = {item['kodDoctor'], settingsvar.icdGrDiagnoz, itemzaklad['edrpou']}
+        settingsvar.likargrupdiagnoz.append(itemlikargrupdiagnoz)
 
-    settingsvar.nawpage = 'receptprofillmedzaklad'
+    if len(settingsvar.likargrupdiagnoz) > 0:
+        selectlikargrdiagnozzaklad(settingsvar.likargrupdiagnoz)
+    else:
+        settingsvar.nawpage = 'receptprofillmedzaklad'
+        backurl = funcbakurl()
+        compl = 'Перелік спеціалізованих медзакладів'
+        if statuszaklad == '2': compl = 'Перелік Амбулаторно-поліклінічних закладів'
+        settingsvar.html = 'diagnoz/receptionprofilzaklad.html'
+        settingsvar.nextstepdata = {
+            'iduser': iduser,
+            'backurl': backurl,
+            'compl': compl,
+            'detalinglist': settingsvar.grupmedzaklad,
+            'piblikar': '',
+            'likar': '',
 
-    backurl = funcbakurl()
-    compl = 'Перелік спеціалізованих медзакладів'
-    if statuszaklad == '2': compl = 'Перелік Амбулаторно-поліклінічних закладів'
-    settingsvar.html = 'diagnoz/receptionprofilzaklad.html'
-    settingsvar.nextstepdata = {
-        'iduser': iduser,
-        'backurl': backurl,
-        'compl': compl,
-        'detalinglist': settingsvar.grupmedzaklad,
-        'piblikar': '',
-        'likar': '',
-
-    }
-    if len(settingsvar.pacient) > 0:
-        settingsvar.nextstepdata['likar'] = True
-        settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
-                                              settingsvar.pacient[
-                                                  'name'] + " " + settingsvar.pacient['surname']
-    if len(settingsvar.likar) > 0:
-        settingsvar.nextstepdata['piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
-        settingsvar.nextstepdata['likar'] = True
+        }
+        if len(settingsvar.pacient) > 0:
+            settingsvar.nextstepdata['likar'] = True
+            settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
+                                                  settingsvar.pacient[
+                                                      'name'] + " " + settingsvar.pacient['surname']
+        if len(settingsvar.likar) > 0:
+            settingsvar.nextstepdata[
+                'piblikar'] = 'Лікар: ' + settingsvar.namelikar + " тел.: " + settingsvar.mobtellikar
+            settingsvar.nextstepdata['likar'] = True
     return
 
+
+# --- Вибір лікаря із переліку напрямків мед. закладу.
+
+def selectlikargrdiagnozzaklad(likargrupdiagnozzaklad):
+    settingsvar.listlikar = []
+    for item in likargrupdiagnozzaklad:
+        itemlistlikar = {}
+        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
+        itemlistlikar['kodDoctor'] = item['kodDoctor']
+        itemlistlikar['kodzaklad'] = item['edrpou']
+        itemlistlikar['name'] = item['name']
+        itemlistlikar['surname'] = item['surname']
+        itemlistlikar['specialnoct'] = item['specialnoct']
+        itemlistlikar['zakladname'] = medzaklad['name']
+        itemlistlikar['adreszak'] = medzaklad['adres']
+        itemlistlikar['tel'] = medzaklad['telefon']
+        settingsvar.listlikar.append(itemlistlikar)
+        itemlistlikar = {}
+
+    iduser = funciduser()
+    backurl = funcbakurl()
+    workdirection = False
+    likarikolegi = False
+    dellikar = False
+    addfamilylikar = likar = familylikar = False
+    compl = 'Перелік спеціалізованих лікарів'
+    settingsvar.nextstepdata = {}
+    settingsvar.nextstepdata = {
+        'iduser': iduser,
+        'compl': compl,
+        'detalinglist': settingsvar.listlikar,
+        'piblikar': '',
+        'pacient': '',
+        'likar': likar,
+        'backurl': backurl,
+        'workdirection': workdirection,
+        'familylikar': familylikar,
+        'namediagnoz': settingsvar.icdGrDiagnoz,
+        'likarikolegi': likarikolegi,
+        'addfamilylikar': addfamilylikar,
+        'dellikar': dellikar,
+        'prof_url': 'https://www.google.com/search',
+        'medication_url': 'https://www.google.com/search',
+        'reason_url': 'https://www.google.com/search',
+        'search_prof': settingsvar.namediagnoz + '+профілактика+захворювання',
+        'search_reason': settingsvar.namediagnoz + '+причини+захворювання',
+        'search_medic': settingsvar.namediagnoz + '+як+лікувати',
+    }
+    if len(settingsvar.pacient) > 0:
+        if settingsvar.receptitem != 'familylikar' and settingsvar.backpage != 'pacientinterwiev' and settingsvar.backpage != 'receptfamilylikar' and settingsvar.backpage != 'addfamilylikar' and \
+                settingsvar.receptionlikar['napryamok'] != "":
+            settingsvar.nextstepdata['likar'] = True
+        settingsvar.nextstepdata['pacient'] = 'Пацієнт: ' + settingsvar.pacient['profession'] + ' ' + \
+                                              settingsvar.pacient['name'] + " " + settingsvar.pacient['surname']
+
+    if len(settingsvar.receptionlikar) > 0:
+        settingsvar.nextstepdata['piblikar'] = ('Лікар: ' + settingsvar.namelikar)
+    return
 
 # --- вибір профільного медзакладу
 def receptprofillmedzaklad(request):
@@ -1699,18 +1774,19 @@ def receptprofillmedzaklad(request):
 
 
 def backreceptprofillmedzaklad(request):
-    likargrupdiagnoz = []
+    settingsvar.likargrupdiagnoz = []
+    # --- пошук лікаря у групі діагнозів
     if len(settingsvar.icdGrDiagnoz) > 0:
         if len(settingsvar.kodDoctor) > 0:
-            likargrupdiagnoz = rest_api(
+            settingsvar.likargrupdiagnoz = rest_api(
                 '/api/LikarGrupDiagnozController/' + settingsvar.kodDoctor + "/" + settingsvar.icdGrDiagnoz,
                 '', 'GET')
         else:
-            likargrupdiagnoz = rest_api(
+            settingsvar.likargrupdiagnoz = rest_api(
                 '/api/LikarGrupDiagnozController/' + "0/" + settingsvar.icdGrDiagnoz, '', 'GET')
 
     if settingsvar.kabinetitem == 'likarinterwiev' and len(settingsvar.kodDoctor) > 0 and len(
-            likargrupdiagnoz) > 0 and settingsvar.selectlikar == False:
+            settingsvar.likargrupdiagnoz) > 0 and settingsvar.selectlikar == False:
         settingsvar.setintertview = True
         settingsvar.selectlikar = True
         medzaklad = rest_api('/api/MedicalInstitutionController/' + settingsvar.likar['edrpou'] + '/0/0/0', '', 'GET')
@@ -1733,8 +1809,8 @@ def backreceptprofillmedzaklad(request):
                     settingsvar.receptitem = 'interwievcomplaint'
                 case _:
                     settingsvar.receptitem = 'receptprofillmedzaklad'
-            if len(likargrupdiagnoz) > 0 and settingsvar.receptitem == 'interwievcomplaint':
-                selectlikarrofil(likargrupdiagnoz)
+            if len(settingsvar.likargrupdiagnoz) > 0 and settingsvar.receptitem == 'interwievcomplaint':
+                selectlikarrofil(settingsvar.likargrupdiagnoz)
             else:
                 selectmedzaklad(request, status)
         else:
