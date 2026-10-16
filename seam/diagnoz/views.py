@@ -1161,6 +1161,8 @@ def nextstepgrdetaling():
         if len(settingsvar.spisoklistdetaling) == 0 and len(settingsvar.spisokGrDetailing) == 0 and len(
                 settingsvar.spisokkeyfeature) == 0:
             diagnoz()
+    if settingsvar.itemstep == 'spisokkeyfeature':
+        diagnoz()
     return
 
 
@@ -1670,10 +1672,12 @@ def selectmedzaklad(request, statuszaklad):
     itemlikar = []
     itemlikargrupdiagnoz = {}
     for itemzaklad in settingsvar.grupmedzaklad:
-        itemlikar = rest_api('/api/ApiControllerDoctor/' + "0/" + itemzaklad['edrpou'] + "/0", '', 'GET')
+        itemlikar = rest_api('/api/ApiControllerDoctor/' + "0/" + itemzaklad['kodZaklad'] + "/0", '', 'GET')
         for item in itemlikar:
-            itemlikargrupdiagnoz = {item['kodDoctor'], settingsvar.icdGrDiagnoz, itemzaklad['edrpou']}
-        settingsvar.likargrupdiagnoz.append(itemlikargrupdiagnoz)
+            itemlikargrupdiagnoz = {"kodDoctor": item['kodDoctor'], "icdGrDiagnoz": settingsvar.icdGrDiagnoz,
+                                    "kodZaklad": itemzaklad['kodZaklad'], "name": item['name'],
+                                    "surname": item['surname'], "specialnoct": item['specialnoct']}
+            settingsvar.likargrupdiagnoz.append(itemlikargrupdiagnoz)
 
     if len(settingsvar.likargrupdiagnoz) > 0:
         selectlikargrdiagnozzaklad(settingsvar.likargrupdiagnoz)
@@ -1710,9 +1714,9 @@ def selectlikargrdiagnozzaklad(likargrupdiagnozzaklad):
     settingsvar.listlikar = []
     for item in likargrupdiagnozzaklad:
         itemlistlikar = {}
-        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
+        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['kodZaklad'] + '/0/0/0', '', 'GET')
         itemlistlikar['kodDoctor'] = item['kodDoctor']
-        itemlistlikar['kodzaklad'] = item['edrpou']
+        itemlistlikar['kodzaklad'] = medzaklad['edrpou']
         itemlistlikar['name'] = item['name']
         itemlistlikar['surname'] = item['surname']
         itemlistlikar['specialnoct'] = item['specialnoct']
@@ -1760,6 +1764,7 @@ def selectlikargrdiagnozzaklad(likargrupdiagnozzaklad):
 
     if len(settingsvar.receptionlikar) > 0:
         settingsvar.nextstepdata['piblikar'] = ('Лікар: ' + settingsvar.namelikar)
+    settingsvar.html = 'diagnoz/selectlikarprofil.html'
     return
 
 # --- вибір профільного медзакладу
