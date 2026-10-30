@@ -833,11 +833,11 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
         }
     else:
         settingsvar.nextstepdata['featurelist'] = settingsvar.listfeature
-    settingsvar.nextstepdata['next'] = '  Далі '
-    settingsvar.nextstepdata['compl'] = settingsvar.feature_name
-    settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
-    settingsvar.nextstepdata['iduser'] = iduser
-    settingsvar.nextstepdata['selectfeature'] = settingsvar.selectfeature
+        settingsvar.nextstepdata['next'] = '  Далі '
+        settingsvar.nextstepdata['compl'] = settingsvar.feature_name
+        settingsvar.nextstepdata['likar'] = settingsvar.setpostlikar
+        settingsvar.nextstepdata['iduser'] = iduser
+        settingsvar.nextstepdata['selectfeature'] = settingsvar.selectfeature
 
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
@@ -927,11 +927,19 @@ def grdetaling_checkbox_view(request, select_grdetaling):
 
         for item in settingsvar.rest_apiGrDetaling:
             if item['kodDetailing'] == select_grdetaling:
-                if activ_checkbox == True: item['checkfeat'] = True
-                if activ_checkbox == False: item['checkfeat'] = False
+                if activ_checkbox == True:
+                    item['checkfeat'] = True
+                    settingsvar.checkfeat = True
+                    settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
+                if activ_checkbox == False:
+                    item['checkfeat'] = False
+                    settingsvar.checkfeat = False
+                    settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
             else:
                 if 'checkfeat' not in item:
                     item['checkfeat'] = False
+                    settingsvar.checkfeat = False
+                    settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
             tmp.append(item)
         settingsvar.rest_apiGrDetaling = []
         for item in tmp:
@@ -1041,13 +1049,14 @@ def nextgrdetaling(request):
     if len(settingsvar.spisoklistdetaling) == 0 and len(settingsvar.spisokGrDetailing) == 0:
         nextstepgrdetaling()
 
-        if len(settingsvar.nextstepdata) == 0:
+        # if len(settingsvar.nextstepdata) == 0:
+        if len(settingsvar.spisoklistdetaling) == 0 and len(settingsvar.spisokGrDetailing) == 0:
             settingsvar.html = 'diagnoz/savediagnoz.html'
             backurl = funcbakurl()
             iduser = funciduser()
             settingsvar.nextstepdata = {
                 'iduser': iduser,
-                'compl': 'Шановний користувач! За вашим запитом відсутні проведені опитування.',
+                'compl': 'Шановний користувач! Ви не вкзазали характер прояву.',
                 'backurl': backurl
             }
     else:
@@ -1061,7 +1070,7 @@ def nextgrdetaling(request):
 def nextstepgrdetaling():
     if settingsvar.itemstep == 'spisokkeyfeature' or settingsvar.itemstep == "":
         settingsvar.viewdetaling = False
-        settingsvar.continuegrdetaling = False
+        settingsvar.continuegrdetaling = True  #False
         settingsvar.detalingname = []
         settingsvar.listdetaling = {}
         settingsvar.spisokGrDetailing = []
@@ -1163,6 +1172,7 @@ def nextstepgrdetaling():
             diagnoz()
     if settingsvar.itemstep == 'spisokkeyfeature':
         diagnoz()
+
     return
 
 
@@ -1280,6 +1290,8 @@ def endvibor(request):
                     settingsvar.spisokkeyinterview.append(item['kodDetailing'] + ";")
                     settingsvar.spisokselectDetailing.append(item['kodDetailing'])
                     settingsvar.spselectnameDetailing.append(item['nameDetailing'])
+                    settingsvar.checkfeat = True
+                    settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
             settingsvar.spisoklistdetaling = []
             continuegrdetaling(request)
             settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
@@ -1297,6 +1309,8 @@ def endvibor(request):
                         settingsvar.spisokselectDetailing.append(item['kodDetailing'])
                         settingsvar.DiagnozRecomendaciya.append(item['kodDetailing'] + ";")
                         settingsvar.spisokkeyinterview.append(item['kodDetailing'] + ";")
+                        settingsvar.checkfeat = True
+                        settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
                 del settingsvar.spisokGrDetailing[0]
                 if len(settingsvar.spisokGrDetailing) > 0:
                     for itemgrdetaling in settingsvar.spisokGrDetailing:
@@ -1316,7 +1330,9 @@ def endvibor(request):
                 settingsvar.spisokkeyfeature = []
                 settingsvar.spisoknamefeature = []
                 diagnoz()
+        else:
 
+            return redirect(request.path)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
 
 def enddetaling(request):
