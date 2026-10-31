@@ -929,12 +929,12 @@ def grdetaling_checkbox_view(request, select_grdetaling):
             if item['kodDetailing'] == select_grdetaling:
                 if activ_checkbox == True:
                     item['checkfeat'] = True
-                    settingsvar.checkfeat = True
-                    settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
+                    # settingsvar.checkfeat = True
+                    # settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
                 if activ_checkbox == False:
                     item['checkfeat'] = False
-                    settingsvar.checkfeat = False
-                    settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
+                    # settingsvar.checkfeat = False
+                    # settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
             else:
                 if 'checkfeat' not in item:
                     item['checkfeat'] = False
@@ -942,8 +942,11 @@ def grdetaling_checkbox_view(request, select_grdetaling):
                     settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
             tmp.append(item)
         settingsvar.rest_apiGrDetaling = []
+        settingsvar.html = 'diagnoz/grdetaling.html'
         for item in tmp:
             settingsvar.rest_apiGrDetaling.append(item)
+            # if item['checkfeat'] == True:
+            #     settingsvar.html = 'diagnoz/grdetalingnext.html'
         request.method = 'GET'
     settingsvar.nextstepdata['detalinglist'] = settingsvar.rest_apiGrDetaling
 

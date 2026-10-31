@@ -70,6 +70,15 @@
         });
     });
 </script>
+<script type="text/javascript">
+    // Добавляем текущую страницу в историю дважды
+    window.history.pushState(null, null, window.location.href);
+
+    window.onpopstate = function () {
+        // При попытке нажать "Назад" снова пушим состояние, блокируя переход
+        window.history.go(0);
+    };
+</script>
 {% endblock %}
 
 <!--'nextgrdetaling'-->

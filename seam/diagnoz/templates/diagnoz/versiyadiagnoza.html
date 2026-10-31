@@ -87,5 +87,13 @@
        style="font-size: 12px; background-color: #558787; height=12;">Почати з початку</a>
 </div>
 <p></p>
+<script type="text/javascript">
+    // Добавляем текущую страницу в историю дважды
+    window.history.pushState(null, null, window.location.href);
 
+    window.onpopstate = function () {
+        // При попытке нажать "Назад" снова пушим состояние, блокируя переход
+        window.history.go(0);
+    };
+</script>
 {% endblock %}
