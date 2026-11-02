@@ -804,6 +804,7 @@ def nextfeature(request, nextfeature_keyComplaint, nextfeature_name):
     settingsvar.DiagnozRecomendaciya.append(nextfeature_keyComplaint + ";")
     settingsvar.spselectnameDetailing.append(nextfeature_name)
     settingsvar.spisokselectDetailing.append(nextfeature_keyComplaint)
+    settingsvar.spisokkeyfeature.append(nextfeature_keyComplaint)
     settingsvar.strokagrdetaling = settingsvar.strokagrdetaling + nextfeature_keyComplaint + ";"
     settingsvar.spisokkeyinterview.append(nextfeature_keyComplaint + ";")
     settingsvar.feature_name = nextfeature_name
@@ -1288,6 +1289,7 @@ def endvibor(request):
     if (settingsvar.viewdetaling == False and len(settingsvar.spisoklistdetaling) > 0):
 
         if len(settingsvar.spisoklistdetaling) > 0:
+            lenspisokkey = len(settingsvar.spisokkeyinterview)
             for item in settingsvar.spisoklistdetaling:
                 if item['checkfeat'] == True:
                     settingsvar.spisokkeyinterview.append(item['kodDetailing'] + ";")
@@ -1296,13 +1298,15 @@ def endvibor(request):
                     settingsvar.checkfeat = True
                     settingsvar.nextstepdata['checkfeat'] = settingsvar.checkfeat
             settingsvar.spisoklistdetaling = []
-            continuegrdetaling(request)
-            settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
-            settingsvar.nawpage = 'nextgrdetaling'
-            settingsvar.viewdetaling = True
-            del settingsvar.spisokkeyfeature[0]
-            if len(settingsvar.spisoknamefeature) > 0: del settingsvar.spisoknamefeature[0]
-
+            if lenspisokkey != len(settingsvar.spisokkeyinterview):
+                continuegrdetaling(request)
+                settingsvar.itemkeyfeature = settingsvar.spisokkeyfeature[0]
+                settingsvar.nawpage = 'nextgrdetaling'
+                settingsvar.viewdetaling = True
+                del settingsvar.spisokkeyfeature[0]
+                if len(settingsvar.spisoknamefeature) > 0: del settingsvar.spisoknamefeature[0]
+            else:
+                funcnotdetaling()
     else:
         if settingsvar.continuegrdetaling == False:
             if len(settingsvar.spisokGrDetailing) > 0:
@@ -1334,9 +1338,21 @@ def endvibor(request):
                 settingsvar.spisoknamefeature = []
                 diagnoz()
         else:
-
-            return redirect(request.path)
+            # return redirect(request.path)
+            funcnotdetaling()
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
+
+
+def funcnotdetaling():
+    settingsvar.html = 'diagnoz/savediagnoz.html'
+    backurl = funcbakurl()
+    iduser = funciduser()
+    settingsvar.nextstepdata = {
+        'iduser': iduser,
+        'compl': 'Шановний користувач! Ви не вкзазали деталі прояву. ',
+        'backurl': backurl
+    }
+    return
 
 def enddetaling(request):
     # if len(settingsvar.spisokkeyfeature) > 0:

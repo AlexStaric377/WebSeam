@@ -5,4 +5,21 @@
     <p>{{iduser}}</p>
     <p> {{ compl }} </p>
 </div>
+
+<script>
+    // Добавляем фиктивное состояние в историю браузера
+    window.history.pushState(null, "", window.location.href);
+
+    // Перехватываем событие нажатия кнопки "Назад"
+    window.onpopstate = function () {
+        // Опционально: можно принудительно обновить страницу или отправить на главную
+         window.location.href = "{% url 'backpage' %}";
+        // Возвращаем пользователя обратно на эту же страницу (или редиректим куда нужно)
+        window.history.pushState(null, "", window.location.href);
+
+
+    };
+</script>
+
+
 {% endblock %}
