@@ -1703,16 +1703,18 @@ def selectmedzaklad(request, statuszaklad):
                                                      'GET')
     # --- Формування переліку лікарів із медзакладів не мають своїх напрямків
     # --- і які працюють з визначеним діагнозом за напрямками мед. закладу.
-    # if len(settingsvar.likargrupdiagnoz) == 0:
-    itemlikar = []
-    itemlikargrupdiagnoz = {}
-    for itemzaklad in settingsvar.grupmedzaklad:
-        itemlikar = rest_api('/api/ApiControllerDoctor/' + "0/" + itemzaklad['kodZaklad'] + "/0", '', 'GET')
-        for item in itemlikar:
-            itemlikargrupdiagnoz = {"kodDoctor": item['kodDoctor'], "icdGrDiagnoz": settingsvar.icdGrDiagnoz,
+    if settingsvar.receptitem == 'receptprofillmedzaklad' or settingsvar.receptitem == 'backreceptprofillmedzaklad' or settingsvar.receptitem == 'reception':
+        settingsvar.likargrupdiagnoz = []
+    else:
+        itemlikar = []
+        itemlikargrupdiagnoz = {}
+        for itemzaklad in settingsvar.grupmedzaklad:
+            itemlikar = rest_api('/api/ApiControllerDoctor/' + "0/" + itemzaklad['kodZaklad'] + "/0", '', 'GET')
+            for item in itemlikar:
+                itemlikargrupdiagnoz = {"kodDoctor": item['kodDoctor'], "icdGrDiagnoz": settingsvar.icdGrDiagnoz,
                                     "kodZaklad": itemzaklad['kodZaklad'], "name": item['name'],
                                     "surname": item['surname'], "specialnoct": item['specialnoct']}
-            settingsvar.likargrupdiagnoz.append(itemlikargrupdiagnoz)
+                settingsvar.likargrupdiagnoz.append(itemlikargrupdiagnoz)
 
     if len(settingsvar.likargrupdiagnoz) > 0:
         selectlikargrdiagnozzaklad(settingsvar.likargrupdiagnoz)
@@ -1807,7 +1809,7 @@ def receptprofillmedzaklad(request):
     if settingsvar.kabinet == "guest":
         settingsvar.backpage = "guest"
         settingsvar.kabinetitem = 'receptprofillmedzaklad'
-
+        settingsvar.receptitem = 'receptprofillmedzaklad'
 
     backreceptprofillmedzaklad(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -2040,7 +2042,8 @@ def shablonlistlikar():
     directdiagnoz = settingsvar.directdiagnoz
     settingsvar.html = 'diagnoz/selectedprofillikar.html'
     settingsvar.nextstepdata = {}
-    if settingsvar.backpage == 'guest' and settingsvar.receptitem == 'receptprofillmedzaklad':
+    if settingsvar.backpage == 'guest' and (
+            settingsvar.receptitem == 'receptprofillmedzaklad' or settingsvar.receptitem == 'backreceptprofillmedzaklad'):
         workdirection = True
     if (
             settingsvar.backpage == 'profillmedzaklad' or settingsvar.backpage == 'selectdprofillikar' or settingsvar.backpage == 'shablonlistlikar') and settingsvar.receptitem == 'directiondiagnoz':
@@ -2050,7 +2053,8 @@ def shablonlistlikar():
         settingsvar.receptitem = 'receptprofillmedzaklad'
         workdirection = True
     if settingsvar.backpage == 'shablonlistlikar': settingsvar.backpage = 'workdiagnozlikar'
-    if settingsvar.kabinet == 'guest' and settingsvar.receptitem == 'receptprofillmedzaklad':
+    if settingsvar.kabinet == 'guest' and (
+            settingsvar.receptitem == 'receptprofillmedzaklad' or settingsvar.receptitem == 'backreceptprofillmedzaklad'):
         workdirection = True
     if (settingsvar.kabinet != 'likarinterwiev'
             and settingsvar.kabinet != 'guest' and settingsvar.kabinet != 'interwiev'): settingsvar.receptitem = 'selectedprofillikar'
