@@ -1661,21 +1661,27 @@ def selectmedzaklad(request, statuszaklad):
         case "2":
             # --- вибір сімейного лікаря
             tmp = []
-            listlikarfamily = rest_api('/api/ApiControllerDoctor/' + '0/2/0/', '', 'GET')
-            if len(listlikarfamily) > 0:
-                for item in listlikarfamily:
-                    medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '', 'GET')
-                    if len(medzaklad) > 0:
-                        item['zakladname'] = medzaklad['name']
-                        item['adreszak'] = item['uriwebDoctor'] + ', ' + item['email'] + ', тел. ' + item['telefon']
-                        item['tel'] = item['telefon']
-                    tmp.append(item)
-                settingsvar.receptitem = 'receptfamilylikar'
-                settingsvar.listlikar = tmp
-                selectlikarrofil(tmp)
+            if settingsvar.receptitem == 'clinicmedzaklad':
+                settingsvar.grupmedzaklad = rest_api('/api/MedicalInstitutionController/' + '0/0/0/' + statuszaklad,
+                                                     '',
+                                                     'GET')
             else:
-                errorprofil('Шановний користувач! За вашим запитом відсутні профільні лікарі.')
-            return
+                listlikarfamily = rest_api('/api/ApiControllerDoctor/' + '0/2/0/', '', 'GET')
+                if len(listlikarfamily) > 0:
+                    for item in listlikarfamily:
+                        medzaklad = rest_api('/api/MedicalInstitutionController/' + item['edrpou'] + '/0/0/0', '',
+                                             'GET')
+                        if len(medzaklad) > 0:
+                            item['zakladname'] = medzaklad['name']
+                            item['adreszak'] = item['uriwebDoctor'] + ', ' + item['email'] + ', тел. ' + item['telefon']
+                            item['tel'] = item['telefon']
+                        tmp.append(item)
+                    settingsvar.receptitem = 'receptfamilylikar'
+                    settingsvar.listlikar = tmp
+                    selectlikarrofil(tmp)
+                else:
+                    errorprofil('Шановний користувач! За вашим запитом відсутні профільні лікарі.')
+                    return
 
         case "5":
 
@@ -1703,7 +1709,7 @@ def selectmedzaklad(request, statuszaklad):
                                                      'GET')
     # --- Формування переліку лікарів із медзакладів не мають своїх напрямків
     # --- і які працюють з визначеним діагнозом за напрямками мед. закладу.
-    if settingsvar.receptitem == 'receptprofillmedzaklad' or settingsvar.receptitem == 'backreceptprofillmedzaklad' or settingsvar.receptitem == 'reception':
+    if settingsvar.receptitem == 'receptprofillmedzaklad' or settingsvar.receptitem == 'backreceptprofillmedzaklad' or settingsvar.receptitem == 'reception' or settingsvar.receptitem == 'clinicmedzaklad':
         settingsvar.likargrupdiagnoz = []
     else:
         itemlikar = []
@@ -1809,7 +1815,7 @@ def receptprofillmedzaklad(request):
     if settingsvar.kabinet == "guest":
         settingsvar.backpage = "guest"
         settingsvar.kabinetitem = 'receptprofillmedzaklad'
-        settingsvar.receptitem = 'receptprofillmedzaklad'
+        settingsvar.receptitem = 'reception'
 
     backreceptprofillmedzaklad(request)
     return render(request, settingsvar.html, context=settingsvar.nextstepdata)
@@ -1842,10 +1848,11 @@ def backreceptprofillmedzaklad(request):
         if settingsvar.kabinet == 'guest' or settingsvar.kabinet == 'interwiev' or settingsvar.kabinetitem == 'likarinterwiev':
 
             match settingsvar.receptitem:
-                case 'backreceptprofillmedzaklad':
-                    settingsvar.receptitem = 'reception'
                 case 'receptprofillmedzaklad':
                     settingsvar.receptitem = 'backreceptprofillmedzaklad'
+                case 'backreceptprofillmedzaklad':
+                    settingsvar.receptitem = 'receptprofillmedzaklad'
+
 
                 case 'getsearchcomplateForm' | 'InputsearchcomplateForm':
                     settingsvar.receptitem = 'interwievcomplaint'
