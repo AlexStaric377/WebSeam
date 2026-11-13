@@ -1986,7 +1986,11 @@ def selectlikarrofil(listrofillikar):
 def selectdprofillikar(request, selected_kodzaklad, selected_idstatus, selected_name):
     settingsvar.backpage = 'selectdprofillikar'
     settingsvar.gruplikar = []
-    settingsvar.kodzaklad = selected_kodzaklad.strip()
+    if ',' in selected_kodzaklad:
+        i = selected_kodzaklad.find(',')
+        settingsvar.kodzaklad = selected_kodzaklad[:i]
+    else:
+        settingsvar.kodzaklad = selected_kodzaklad.strip()
     settingsvar.namemedzaklad = selected_name
     settingsvar.idstatus = selected_idstatus.strip()
     medzak = rest_api('/api/MedicalInstitutionController/' + settingsvar.kodzaklad + "/0/0/0", '', 'GET')
