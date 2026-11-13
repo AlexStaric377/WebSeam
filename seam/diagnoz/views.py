@@ -2301,19 +2301,22 @@ def inputprofilpacient(request, selected_doctor):
                                 case 'selectfamilylikar':
                                     settingsvar.backpage = 'selectfamilylikar'
                                     backurl = 'selectfamilylikar'
-                            if len(likarGrupDiagnoz) > 0:
-                                settingsvar.nextstepdata = {
-                                    'iduser': iduser,
-                                    'complaintlist': likarGrupDiagnoz,
-                                    'backurl': backurl,
-                                    'piblikar': settingsvar.namelikar,  # + " т." + settingsvar.mobtellikar,
-                                    'medzaklad': settingsvar.namemedzaklad,  # + " " + settingsvar.adrzaklad,
-                                    'directdiagnoz': settingsvar.directdiagnoz,
-                                    'listapinull': True,
-                                    'сontentnull': ''
-                                }
-                            else:
-                                settingsvar.nextstepdata = {}
+                            if len(likarGrupDiagnoz) == 0:
+                                likarGrupDiagnoz = rest_api('/api/MedGrupDiagnozController/' + '0/0/0/' +
+                                                            medzaklad['kodZaklad'], '', 'GET')
+
+                            settingsvar.nextstepdata = {
+                                'iduser': iduser,
+                                'complaintlist': likarGrupDiagnoz,
+                                'backurl': backurl,
+                                'piblikar': settingsvar.namelikar,  # + " т." + settingsvar.mobtellikar,
+                                'medzaklad': settingsvar.namemedzaklad,  # + " " + settingsvar.adrzaklad,
+                                'directdiagnoz': settingsvar.directdiagnoz,
+                                'listapinull': True,
+                                'сontentnull': ''
+                            }
+
+
                 case 'selectlikarfamily' | 'interwievcomplaint' | 'interwiev' | 'pacientinterwiev' | 'likarinterwiev' | 'getsearchcomplateForm':
                     dateregistrationappointment(request)
 
